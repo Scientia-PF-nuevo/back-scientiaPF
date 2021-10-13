@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Curso , User } = require('../db');
+const { Course , User } = require('../db');
 const fetch = require('node-fetch');
 const cors = require('cors');
 // Importar todos los routers;
@@ -15,7 +15,7 @@ router.use(
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
 const userRouter = require('./User.js')
-const coursesRouter = require('./Cursos.js')
+const coursesRouter = require('./Courses.js')
 
 
 

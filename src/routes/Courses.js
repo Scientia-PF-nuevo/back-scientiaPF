@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { Curso } = require('../db');
+const { Course } = require('../db');
 
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
@@ -10,12 +10,12 @@ server.get('/', (req, res) => {
 			 name : name
 					
 			},
-		}).then((cursos) => {
-			if (cursos.length == 0) {
+		}).then((courses) => {
+			if (courses.length == 0) {
 				res.status(404).send({msg: 'No se encontro ningun curso'})
 				console.log({msg: 'No se encontro ningun curso'})
 			} else {
-				res.status(200).send(cursos)
+				res.status(200).send(courses)
 			}
 		})
 	} 
