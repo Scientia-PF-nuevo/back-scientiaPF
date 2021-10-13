@@ -66,6 +66,79 @@ server.post('/newuser', async (req, res) => {
 	}
 })
 
+server.post('/register', async (req, res)=> { 
+ 
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      address,
+      phone,
+      city,
+      province,
+      postal,
+      code,
+      country,
+    } = req.body;
+    try {
+       const user = await User.create(
+        {
+          firstName,
+          lastName,
+          email,
+          password,
+          address,
+          phone,
+          city,
+          province,
+          postal,
+          code,
+          country,
+        },
+        {
+          fields: [
+            "firstName",
+            "lastName",
+            "email",
+            "password",
+            "address",
+            "phone",
+            "city",
+            "province",
+            "postal",
+            "code",
+            "country",
+          ],
+        }
+      );
+  
+      if (user) {
+        res.status(200).send({
+          msg: "User created successfully",
+          status: 200,
+          user,
+        });
+      } else {
+        res.status(500).send({
+          msg: "error al crear el usuario",
+          status: 500,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        msg: "error al crear el usuario",
+        status: 500,
+      });
+    }
+   
+})
+
+
+
+
+
 
 module.exports = server
 
