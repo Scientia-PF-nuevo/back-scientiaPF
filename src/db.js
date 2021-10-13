@@ -40,7 +40,7 @@ Category.belongsToMany(Course, {through: 'course_category'})
 
 Review.belongsTo(User)
 Review.belongsTo(Course)
-Product.hasMany(Review)
+Course.hasMany(Review)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
