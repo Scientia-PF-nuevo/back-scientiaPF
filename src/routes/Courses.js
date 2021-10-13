@@ -37,7 +37,7 @@ server.post('/newcourse', (req, res) => {
 		res.status(400).send({msg: 'Todos los campos requeridos'})
 	}
 
-	Curso.create({
+	Course.create({
 		name,
 		description,
 		price,
