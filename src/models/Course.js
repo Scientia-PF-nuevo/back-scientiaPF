@@ -16,16 +16,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    video:{
+    url:{
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    category: {
-      type: DataTypes.ARRAY(DataTypes.TEXT),
-      allowNull: false
-    }
-
-
-
+   
   });
 };

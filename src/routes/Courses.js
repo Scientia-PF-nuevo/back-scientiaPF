@@ -4,29 +4,39 @@ const { Course, Category } = require('../db');
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
 	const{ name } = req.query;
-    if (name) {
-		Product.findAll({
+    name ?
+		Course.findOne({
 			where: {
-			 name : name
+			 name:name 
 					
 			},
 		}).then((courses) => {
-			if (courses.length == 0) {
-				res.status(404).send({msg: 'No se encontro ningun curso'})
-				console.log({msg: 'No se encontro ningun curso'})
+			//console.log(courses)
+			if (courses == null) {
+				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
+				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
 				res.status(200).send(courses)
 			}
+		})  :
+		Course.findAll().then((courses) => {
+			if (courses.length == 0) {
+				res.status(404).send({msg: 'No se encontro ningun curso en la bd'})
+				//console.log({msg: 'No se encontro ningun curso'})
+			}else {
+				res.status(200).send(courses)
+			}
 		})
-	} 
+	
 })
 
 
 //esta ruta es solo de prueba para cargar manualmente cursos para probar
 // si nos funciona la dejamos
+// localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
 	const { name, description, price,  video, category } = req.body
-
+	
 	if (
 		!name ||
 		!description ||
@@ -41,20 +51,69 @@ server.post('/newcourse', async (req, res) => {
 			name,
 			description,
 			price,
-			video,
-			category
+			video
+		})
+		const categ = await Category.findOne({
+			where: {
+				name: category
+			}
+		})
+			await newCourse.addCategories(categ)
+			res.status(201).send({msg: 'curso cargado exitosamente', newCourse})	
+
+	}catch (err){
+		//console.log("error: ",err);
+		res.status(400).send({msg:"error"})
+	}
+
+})
+// localhost:3001/courses/newcategory
+server.post('/newcategory', async (req, res) => {
+	const { name } = req.body
+
+	if (
+		!name 
+	) {
+		res.status(400).send({msg: 'Nombre de categoria requerida'})
+	}
+	try{
+		const newCategory = await Category.create({
+			name,
 		})
 		
-		await newCourse.setCategory(category)
-		res.status(201).send({msg: 'curso cargado exitosamente', curso})
+		res.status(201).send({msg: 'categoria cargada exitosamente', newCategory})
+
+	}catch (err){
+		//console.log("error: ",err);
+		res.status(400).send({msg:"fallo la carga de la categoria"})
+	}
+})
+
+// localhost:3001/courses/allcategories 
+server.get('/allcategories', async (req,res) => {
+	try{
+		const allcategories = await Category.findAll()
+		
+		res.status(201).send({msg: 'todas las categorias', allcategories})
 
 	}catch (err){
 		console.log("error: ",err);
 		res.status(400).send({msg:"error"})
 	}
-
 })
-
+// localhost:3001/courses/coursescategory
+server.get("/coursescategory", async(req, res)=>{
+    const{name} =req.body;
+  
+    const categories = await Category.findAll({ 
+      where:{name:name},
+      include:Course
+    })
+	Promise.all(categories)
+	.then(data => 
+	 res.json(data)
+	)
+})
 
 
 
