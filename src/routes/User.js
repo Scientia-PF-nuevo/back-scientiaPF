@@ -19,7 +19,7 @@ try {
 })
 
 //  localhost:3001/user/email  ---- busca usuario por email
-server.post('/email', async (req, res) => {
+server.get('/email', async (req, res) => {
     const { email } = req.body;
     console.log(email)
     try {
@@ -38,7 +38,7 @@ server.post('/email', async (req, res) => {
  }
 )
 // localhost:3001/users/newuser  ---- crear usuariopassword
-server.post('/newuser', async (req, res) => {
+server.get('/newuser', async (req, res) => {
 	const { firstName, lastName, email, password} = req.body
 
 	if (!firstName || !lastName || !email || !password) {
@@ -53,7 +53,7 @@ server.post('/newuser', async (req, res) => {
 			}
 		})
 		if (usuario) {
-			res.status(400).send({ msg: 'El email ya existe', status: 400 })
+			res.status(200).send({ msg: 'El email ya existe', status: 200 })
 		} else {
 			try {
 				const user = await User.create({ firstName, lastName, email, password,})
