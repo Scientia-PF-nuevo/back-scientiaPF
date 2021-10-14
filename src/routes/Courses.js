@@ -35,13 +35,13 @@ server.get('/', (req, res) => {
 // si nos funciona la dejamos
 // localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
-	const { name, description, price,  video, category } = req.body
+	const { name, description, price,  url, category } = req.body
 	
 	if (
 		!name ||
 		!description ||
 		!price ||
-		!video ||
+		!url ||
 		!category
 	) {
 		res.status(400).send({msg: 'Todos los campos requeridos'})
@@ -51,7 +51,7 @@ server.post('/newcourse', async (req, res) => {
 			name,
 			description,
 			price,
-			video
+			url
 		})
 		const categ = await Category.findOne({
 			where: {
