@@ -22,13 +22,14 @@ server.get('/', (req, res) => {
 			} else {
 					const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
 				const obj ={ name:courses.name,
-							date :date,
-							description:courses.description,
-							price:courses.price,
-							url:courses.url,
-							id:courses.id,
-							categories: courses.categories[0].name,
-							reviews: courses.reviews	
+					date :date,
+					description:courses.description,
+					price:courses.price,
+					url:courses.url,
+					id:courses.id,
+					categories: courses.categories[0].name,
+					score:Math.random()*5
+					//score a modificar
 
 				}
 				//console.log(courses)
@@ -55,21 +56,22 @@ server.get('/', (req, res) => {
 						url:c.url,
 						id:c.id,
 						categories:c.categories[0].name,
-						reviews: c.reviews	
+						score: Math.random()*5
+						//score a modificar
 					}
 					return obj;
 				})
 				//console.log(filteredCourses) 
-
+				
 				res.status(200).send(filteredCourses)
 			}
 		})
+		
+	})
 	
-})
-
-
-//esta ruta es solo de prueba para cargar manualmente cursos para probar
-// si nos funciona la dejamos
+	
+	//esta ruta es solo de prueba para cargar manualmente cursos para probar
+	// si nos funciona la dejamos
 // localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
 	const { name, description, price,  url, category, email } = req.body
@@ -155,14 +157,14 @@ server.get("/coursescategory", async(req, res)=>{
 })
 
 server.post("/newreview", async(req, res)=>{
-    const{comments, score , email, courseName } =req.body;
+    const{comments, score, email, courseName } =req.body;
 
-	console.log(comments)
+	console.log(score)
   
     const newReview = await Review.create({ 
       
-		  comments:comments,
-		  score:score
+		comments:comments,
+		score:score
 		
     })
 	
