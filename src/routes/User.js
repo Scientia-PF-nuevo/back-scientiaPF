@@ -77,8 +77,7 @@ server.post('/register', async (req, res)=> {
       phone,
       city,
       province,
-      postal,
-      code,
+      postalcode,
       country,
     } = req.body;
     try {
@@ -92,8 +91,7 @@ server.post('/register', async (req, res)=> {
           phone,
           city,
           province,
-          postal,
-          code,
+          postalcode,
           country,
         },
         {
@@ -106,8 +104,7 @@ server.post('/register', async (req, res)=> {
             "phone",
             "city",
             "province",
-            "postal",
-            "code",
+            "postalcode",
             "country",
           ],
         }

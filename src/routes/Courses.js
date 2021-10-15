@@ -16,6 +16,7 @@ server.get('/', (req, res) => {
 				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
+					
 				res.status(200).send(courses)
 			}
 		})  :
@@ -24,7 +25,22 @@ server.get('/', (req, res) => {
 				res.status(404).send({msg: 'No se encontro ningun curso en la bd'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			}else {
-				res.status(200).send(courses)
+
+				const filteredCourses = courses.map(c => {
+					const d =JSON.stringify(c.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+					const obj = {
+						date:d,
+						name:c.name,
+						description:c.description,
+						price:c.price,
+						url:c.url,
+						id:c.id	
+					}
+					return obj;
+				})
+				//console.log(filteredCourses) 
+
+				res.status(200).send(filteredCourses)
 			}
 		})
 	
