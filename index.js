@@ -19,10 +19,38 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
+const courses =require("./testCourses");
+const category = require("./testCategories")
+const { default: fetch } = require('node-fetch');
+
+const cargaCategoria = async () => {
+   category.forEach( (c) => {
+    const response= fetch('http://localhost:3001/courses/newcategory',{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(c)
+    })
+   })
+}
+const cargaCursos = async () => {
+  courses.forEach((c)=>{ 
+    const response= fetch('http://localhost:3001/courses/newcourse',{
+  method: 'POST',
+  headers:{ "Content-Type": "application/json"},
+  body: JSON.stringify(c)
+})
+  })
+}
+
 
 // Syncing all the models at once.
-conn.sync({ force: false }).then(() => {
+conn.sync({ force: true }).then(() => {
   server.listen(3001, () => {
     console.log('%s listening at 3001'); // eslint-disable-line no-console
+   cargaCategoria();
+   cargaCursos();
+
   });
+
+ 
 });
