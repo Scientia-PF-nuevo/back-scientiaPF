@@ -20,35 +20,65 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
 const courses =require("./testCourses");
+const Users = require("./testUsers");
+const reviews = require("./testReviews");
 const category = require("./testCategories")
 const { default: fetch } = require('node-fetch');
+const { response } = require('./src/app.js');
 
-const cargaCategoria = async () => {
-   category.forEach( (c) => {
-    const response= fetch('http://localhost:3001/courses/newcategory',{
+const cargaCategoria =  () => {
+    category.forEach( (c) => {
+    const response=  fetch('http://localhost:3001/courses/newcategory',{
       method: 'POST',
       headers:{ "Content-Type": "application/json"},
       body: JSON.stringify(c)
     })
+    
    })
+   
 }
-const cargaCursos = async () => {
-  courses.forEach((c)=>{ 
-    const response= fetch('http://localhost:3001/courses/newcourse',{
+const cargaCursos =  () => {
+   courses.forEach((c)=>{ 
+    const response=  fetch('http://localhost:3001/courses/newcourse',{
   method: 'POST',
   headers:{ "Content-Type": "application/json"},
   body: JSON.stringify(c)
+})
+
+  })
+  
+}
+const cargaUsers = () =>{
+   Users.forEach(async(u)=>{
+    const response= fetch('http://localhost:3001/users/register',{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(u)
+})
+
+  })
+  
+}
+
+const cargaReviews = async() =>{
+  Users.forEach((u)=>{
+    const response= fetch('http://localhost:3001/courses/newreview',{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(u)
 })
   })
 }
 
 
 // Syncing all the models at once.
-conn.sync({ force: true }).then(() => {
-  server.listen(3001, () => {
+conn.sync({ force: true }).then(async() => {
+  server.listen(3001, async() => {
+    cargaUsers();
+    cargaCategoria();
+    cargaCursos();
+    // cargaReviews() 
     console.log('%s listening at 3001'); // eslint-disable-line no-console
-   cargaCategoria();
-   cargaCursos();
 
   });
 

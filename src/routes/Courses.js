@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { Course, Category } = require('../db');
+const { Course, Category, Review , User} = require('../db');
 
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
@@ -10,17 +10,37 @@ server.get('/', (req, res) => {
 			 name:name 
 					
 			},
+			include: [
+				{model: Category },
+				{model: Review}
+			]
 		}).then((courses) => {
 			//console.log(courses)
 			if (courses == null) {
 				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
-					
-				res.status(200).send(courses)
+					const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+				const obj ={ name:courses.name,
+					date :date,
+					description:courses.description,
+					price:courses.price,
+					url:courses.url,
+					id:courses.id,
+					categories: courses.categories[0].name,
+					score:Math.random()*5
+					//score a modificar
+
+				}
+				//console.log(courses)
+				res.status(200).send(obj)
 			}
 		})  :
-		Course.findAll().then((courses) => {
+		Course.findAll({
+			include: [
+					{model: Category},
+					{model: Review}
+        ]}).then((courses) => {
 			if (courses.length == 0) {
 				res.status(404).send({msg: 'No se encontro ningun curso en la bd'})
 				//console.log({msg: 'No se encontro ningun curso'})
@@ -34,21 +54,24 @@ server.get('/', (req, res) => {
 						description:c.description,
 						price:c.price,
 						url:c.url,
-						id:c.id	
+						id:c.id,
+						categories:c.categories[0].name,
+						score: Math.random()*5
+						//score a modificar
 					}
 					return obj;
 				})
 				//console.log(filteredCourses) 
-
+				
 				res.status(200).send(filteredCourses)
 			}
 		})
+		
+	})
 	
-})
-
-
-//esta ruta es solo de prueba para cargar manualmente cursos para probar
-// si nos funciona la dejamos
+	
+	//esta ruta es solo de prueba para cargar manualmente cursos para probar
+	// si nos funciona la dejamos
 // localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
 	const { name, description, price,  url, category, email } = req.body
@@ -132,6 +155,51 @@ server.get("/coursescategory", async(req, res)=>{
 	 res.json(data)
 	)
 })
+
+server.post("/newreview", async(req, res)=>{
+    const{comments, score, email, courseName } =req.body;
+
+	console.log(score)
+  
+    const newReview = await Review.create({ 
+      
+		comments:comments,
+		score:score
+		
+    })
+	
+	const course = await Course.findOne({
+		where: {
+			name: courseName
+		}
+	})
+	const user= await User.findOne({
+		where: {
+			email: email
+		}
+	})
+		await newReview.setCourse(course)
+		await newReview.setUser(user)
+
+		res.status(201).send({msg: 'review cargado exitosamente', newReview})	
+
+})
+
+server.get("/allreviews", async(req, res)=>{
+   
+  
+    const rev = await Review.findAll({ 
+    
+      include:Course
+    })
+	Promise.all(rev)
+	.then(data => 
+	 res.json(data)
+	)
+})
+
+
+
 
 
 
