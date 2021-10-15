@@ -20,6 +20,7 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
 const courses =require("./testCourses");
+const Users = require("./testUsers");
 const category = require("./testCategories")
 const { default: fetch } = require('node-fetch');
 
@@ -41,14 +42,24 @@ const cargaCursos = async () => {
 })
   })
 }
+const cargaUsers = async() =>{
+  Users.forEach((u)=>{
+    const response= fetch('http://localhost:3001/users/register',{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(u)
+})
+  })
+}
 
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(() => {
   server.listen(3001, () => {
+    cargaCategoria();
+    cargaCursos();
+    cargaUsers();
     console.log('%s listening at 3001'); // eslint-disable-line no-console
-   cargaCategoria();
-   cargaCursos();
 
   });
 
