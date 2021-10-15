@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { Course, Category } = require('../db');
+const { Course, Category, Review } = require('../db');
 
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
@@ -10,17 +10,36 @@ server.get('/', (req, res) => {
 			 name:name 
 					
 			},
+			include: [
+				{model: Category },
+				{model: Review}
+			]
 		}).then((courses) => {
 			//console.log(courses)
 			if (courses == null) {
 				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
-					
-				res.status(200).send(courses)
+					const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+				const obj ={ name:courses.name,
+							date :date,
+							description:courses.description,
+							price:courses.price,
+							url:courses.url,
+							id:courses.id,
+							categories: courses.categories[0].name,
+							reviews: courses.reviews	
+
+				}
+				//console.log(courses)
+				res.status(200).send(obj)
 			}
 		})  :
-		Course.findAll().then((courses) => {
+		Course.findAll({
+			include: [
+					{model: Category},
+					{model: Review}
+        ]}).then((courses) => {
 			if (courses.length == 0) {
 				res.status(404).send({msg: 'No se encontro ningun curso en la bd'})
 				//console.log({msg: 'No se encontro ningun curso'})
@@ -34,7 +53,9 @@ server.get('/', (req, res) => {
 						description:c.description,
 						price:c.price,
 						url:c.url,
-						id:c.id	
+						id:c.id,
+						categories:c.categories[0].name,
+						reviews: c.reviews	
 					}
 					return obj;
 				})
