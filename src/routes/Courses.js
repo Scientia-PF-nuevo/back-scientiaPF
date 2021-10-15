@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { Course, Category, Review } = require('../db');
+const { Course, Category, Review , User} = require('../db');
 
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
@@ -153,6 +153,51 @@ server.get("/coursescategory", async(req, res)=>{
 	 res.json(data)
 	)
 })
+
+server.post("/newreview", async(req, res)=>{
+    const{comments, score , email, courseName } =req.body;
+
+	console.log(comments)
+  
+    const newReview = await Review.create({ 
+      
+		  comments:comments,
+		  score:score
+		
+    })
+	
+	const course = await Course.findOne({
+		where: {
+			name: courseName
+		}
+	})
+	const user= await User.findOne({
+		where: {
+			email: email
+		}
+	})
+		await newReview.setCourse(course)
+		await newReview.setUser(user)
+
+		res.status(201).send({msg: 'review cargado exitosamente', newReview})	
+
+})
+
+server.get("/allreviews", async(req, res)=>{
+   
+  
+    const rev = await Review.findAll({ 
+    
+      include:Course
+    })
+	Promise.all(rev)
+	.then(data => 
+	 res.json(data)
+	)
+})
+
+
+
 
 
 
