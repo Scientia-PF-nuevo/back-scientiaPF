@@ -61,7 +61,7 @@ const cargaUsers = () =>{
 }
 
 const cargaReviews = async() =>{
-  Users.forEach((u)=>{
+  reviews.forEach((u)=>{
     const response= fetch('http://localhost:3001/courses/newreview',{
       method: 'POST',
       headers:{ "Content-Type": "application/json"},
@@ -72,12 +72,14 @@ const cargaReviews = async() =>{
 
 
 // Syncing all the models at once.
-conn.sync({ force: false }).then(async() => {
+conn.sync({ force: true }).then(async() => {
   server.listen(3001, async() => {
-     /* cargaUsers();
-     cargaCategoria();
-     cargaCursos(); */
-    // cargaReviews() 
+     cargaUsers();
+     cargaCategoria()
+
+     
+     cargaReviews() 
+     cargaCursos();
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 
   });
