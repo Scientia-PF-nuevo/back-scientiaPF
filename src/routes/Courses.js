@@ -18,9 +18,14 @@ server.get('/', (req, res) => {
 		}else{
 			const n = name.toLowerCase()
 			const response= [];
-		courses.forEach(element => {
-		//	console.log(element.name)
-		
+		courses.forEach(element => {		
+			let suma=0;
+			let average;
+			const SCs = element.reviews.map((r,index)=>{						
+				suma = suma+r.score;
+				console.log(suma)
+				average = suma/index;						
+			});
 		 if(element.name.includes(n)){
 				const date = JSON.stringify(element.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
 				const sc=Math.random()*5
@@ -31,7 +36,7 @@ server.get('/', (req, res) => {
 					url:element.url,
 					id:courses.id,
 					categories: element.categories[0].name,
-					score:sc.toFixed(2)
+					score:average
 					//score a modificar
 }
 				//console.log(courses)
@@ -50,38 +55,7 @@ server.get('/', (req, res) => {
 }))
 
 		
-	/*Course.findOne({
-			where: {
-			 name:name 
-					
-			},
-			include: [
-				{model: Category },
-				{model: Review}
-			]
-		}).then((courses) => {
-			//console.log(courses)
-			if (courses == null) {
-				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
-				//console.log({msg: 'No se encontro ningun curso'})
-			
-			
-			} else {
-				const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
-				const obj ={ name:courses.name,
-					date :date,
-					description:courses.description,
-					price:courses.price,
-					url:courses.url,
-					id:courses.id,
-					categories: courses.categories[0].name,
-					score:Math.random()*5
-					//score a modificar
-				}
-				//console.log(courses)
-				res.status(200).send(obj)
-			}
-		})*/  :
+	 :
 		Course.findAll({
 			include: [
 					{model: Category},
@@ -93,6 +67,14 @@ server.get('/', (req, res) => {
 			}else {
 				
 				const filteredCourses = courses.map(c => {
+					let suma=0;
+					let average;
+					const SCs = c.reviews.map((r,index)=>{						
+						suma = suma+r.score;
+						console.log(suma)
+						average = suma/index;						
+					});
+					
 					const d =JSON.stringify(c.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
 					const sc =Math.random()*5;
 					const obj = {
@@ -103,7 +85,7 @@ server.get('/', (req, res) => {
 						url:c.url,
 						id:c.id,
 						categories:c.categories[0].name,
-						score:sc.toFixed(2)
+						score:average
 						//score a modificar
 					}
 					return obj;
