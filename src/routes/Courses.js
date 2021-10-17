@@ -26,7 +26,7 @@ server.get('/', (req, res) => {
 				console.log(suma)
 				average = suma/index;						
 			});
-		 if(element.name.includes(n)){
+		 if(element.name.toLowerCase().includes(n)){
 				const date = JSON.stringify(element.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
 				const sc=Math.random()*5
 				const obj ={ name:element.name,
@@ -34,7 +34,7 @@ server.get('/', (req, res) => {
 					description:element.description,
 					price:element.price,
 					url:element.url,
-					id:courses.id,
+					id:element.id,
 					categories: element.categories[0].name,
 					score:average
 					//score a modificar
@@ -45,7 +45,7 @@ server.get('/', (req, res) => {
 		});
 		if(!response.length){
 			console.log("vacio",response)
-			res.status(404).send({msg: 'No se encontro ningun curso por nombre'})			
+			res.status(204).send({msg: 'No se encontro ningun curso por nombre'})			
 				
 			}else { 
 				res.status(200).send(response)
@@ -164,7 +164,7 @@ server.get('/allcategories', async (req,res) => {
 	try{
 		const allcategories = await Category.findAll()
 		
-		res.status(201).send({msg: 'todas las categorias', allcategories})
+		res.status(201).send(allcategories)
 
 	}catch (err){
 		console.log("error: ",err);
