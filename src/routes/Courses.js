@@ -4,8 +4,53 @@ const { Course, Category, Review , User} = require('../db');
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
 	const{ name } = req.query;
-    name ?
-		Course.findOne({
+    
+	name ?(
+	
+	Course.findAll({
+		include: [
+				{model: Category},
+				{model: Review}
+	]}).then((courses) => {
+		if (courses == null) {
+			res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
+			//console.log({msg: 'No se encontro ningun curso'})
+		}else{
+			const n = name.toLowerCase()
+			const response= [];
+		courses.forEach(element => {
+		//	console.log(element.name)
+		
+		 if(element.name.includes(n)){
+				const date = JSON.stringify(element.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+				const sc=Math.random()*5
+				const obj ={ name:element.name,
+					date :date,
+					description:element.description,
+					price:element.price,
+					url:element.url,
+					id:courses.id,
+					categories: element.categories[0].name,
+					score:sc.toFixed(2)
+					//score a modificar
+}
+				//console.log(courses)
+				response.push(obj)
+			}
+		});
+		if(!response.length){
+			console.log("vacio",response)
+			res.status(404).send({msg: 'No se encontro ningun curso por nombre'})			
+				
+			}else { 
+				res.status(200).send(response)
+
+				console.log("cond datos"), response}
+	}
+}))
+
+		
+	/*Course.findOne({
 			where: {
 			 name:name 
 					
@@ -17,12 +62,13 @@ server.get('/', (req, res) => {
 		}).then((courses) => {
 			//console.log(courses)
 			if (courses == null) {
-				res.status(204).send({msg: 'No se encontro ningun curso por nombre'})
+				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
 				//console.log({msg: 'No se encontro ningun curso'})
+			
+			
 			} else {
-					const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
-					const obj ={ 
-					name:courses.name,
+				const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+				const obj ={ name:courses.name,
 					date :date,
 					description:courses.description,
 					price:courses.price,
@@ -31,12 +77,11 @@ server.get('/', (req, res) => {
 					categories: courses.categories[0].name,
 					score:Math.random()*5
 					//score a modificar
-
 				}
 				//console.log(courses)
 				res.status(200).send(obj)
 			}
-		})  :
+		})*/  :
 		Course.findAll({
 			include: [
 					{model: Category},
@@ -46,9 +91,10 @@ server.get('/', (req, res) => {
 				res.status(404).send({msg: 'No se encontro ningun curso en la bd'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			}else {
-
+				
 				const filteredCourses = courses.map(c => {
 					const d =JSON.stringify(c.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
+					const sc =Math.random()*5;
 					const obj = {
 						date:d,
 						name:c.name,
@@ -57,7 +103,7 @@ server.get('/', (req, res) => {
 						url:c.url,
 						id:c.id,
 						categories:c.categories[0].name,
-						score: Math.random()*5
+						score:sc.toFixed(2)
 						//score a modificar
 					}
 					return obj;
