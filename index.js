@@ -74,9 +74,9 @@ const cargaReviews = async() =>{
 // Syncing all the models at once.
 conn.sync({ force: false }).then(async() => {
   server.listen(3001, async() => {
-    // cargaUsers();
-    // cargaCategoria();
-    // cargaCursos();
+     /* cargaUsers();
+     cargaCategoria();
+     cargaCursos(); */
     // cargaReviews() 
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 

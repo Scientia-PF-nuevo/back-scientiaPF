@@ -17,11 +17,12 @@ server.get('/', (req, res) => {
 		}).then((courses) => {
 			//console.log(courses)
 			if (courses == null) {
-				res.status(404).send({msg: 'No se encontro ningun curso por nombre'})
+				res.status(204).send({msg: 'No se encontro ningun curso por nombre'})
 				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
 					const date = JSON.stringify(courses.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
-				const obj ={ name:courses.name,
+					const obj ={ 
+					name:courses.name,
 					date :date,
 					description:courses.description,
 					price:courses.price,
