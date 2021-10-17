@@ -2,7 +2,10 @@ const server = require('express').Router()
 const { Op } = require('sequelize')
 const {Order, User ,Course, Order_course} =require('../db.js')
 
+
 //localhost:3000/order/:userId crear orden completa
+
+
 server.get('/:userEmail', async (req, res) => {
     const userEmail = req.params.userEmail
     const findUserOrder =await Order.findAll({
