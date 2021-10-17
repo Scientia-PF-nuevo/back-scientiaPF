@@ -77,7 +77,6 @@ server.get('/', (req, res) => {
 					categories: courses.categories[0].name,
 					score:Math.random()*5
 					//score a modificar
-
 				}
 				//console.log(courses)
 				res.status(200).send(obj)

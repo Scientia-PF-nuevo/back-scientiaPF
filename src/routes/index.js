@@ -16,11 +16,13 @@ router.use(
 // Ejemplo: router.use('/auth', authRouter);
 const userRouter = require('./User.js')
 const coursesRouter = require('./Courses.js')
+const orderRouter=require('./Order.js')
 
 
 
 router.use('/users', userRouter)
 router.use('/courses', coursesRouter)
+router.use('/order',orderRouter)
 
 
 
