@@ -1,6 +1,6 @@
 const server = require('express').Router()
 const { Course, Category, Review , User} = require('../db');
-
+//prueba
 //localhost:3001/courses    obtener todos los cursos
 server.get('/', (req, res) => {
 	const{ name } = req.query;
