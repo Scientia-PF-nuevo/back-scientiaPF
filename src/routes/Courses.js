@@ -130,7 +130,7 @@ server.post('/newcourse', async (req, res) => {
 		})
 			await newCourse.addCategories(categ)
 			res.status(201).send({msg: 'curso cargado exitosamente', newCourse})	
-
+		
 	}catch (err){
 		//console.log("error: ",err);
 		res.status(400).send({msg:"error"})
