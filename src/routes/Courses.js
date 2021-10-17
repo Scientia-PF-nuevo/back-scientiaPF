@@ -28,7 +28,7 @@ server.get('/', (req, res) => {
 			});
 		 if(element.name.toLowerCase().includes(n)){
 				const date = JSON.stringify(element.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
-				const sc=Math.random()*5
+				
 				const obj ={ name:element.name,
 					date :date,
 					description:element.description,
@@ -76,7 +76,7 @@ server.get('/', (req, res) => {
 					});
 					
 					const d =JSON.stringify(c.createdAt).slice(0,8).split('-').reverse().join('').replace(`"`, "")
-					const sc =Math.random()*5;
+					
 					const obj = {
 						date:d,
 						name:c.name,
