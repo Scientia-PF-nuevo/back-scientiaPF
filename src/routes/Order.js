@@ -11,8 +11,11 @@ server.get('/:userEmail', async (req, res) => {
             userEmail:userEmail
         },includes:[Course]            
     });
-
-    res.json(findUserOrder)
+    if(findUserOrder.length >1){
+        res.json(findUserOrder)
+    }else{ 
+        res.send("el usuario no tiene ordenes")}
+    
 });
 
 server.post('/:userEmail', async (req, res) => {
