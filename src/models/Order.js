@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
       defaultValue: 'carrito',
     },
     coursesId:{
-        type:DataTypes.ARRAY(DataTypes.INTEGER)
+        type: DataTypes.INTEGER
     }
   });
 };
