@@ -34,10 +34,10 @@ server.get("/token", (req, res) => {
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
 try {
-  const usuarios = await User.findAll();
-  if(usuarios.length > 1){
-    console.log(usuarios)
-    res.send({msg:"todos los usuarios", status: 200, usuarios})
+  const users = await User.findAll();
+  if(users.length > 1){
+    //console.log(usuarios)
+    res.status(200).send(users)
  }else {
     res.send({msg: "no existen usuarios"})
  }
