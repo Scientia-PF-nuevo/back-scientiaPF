@@ -11,8 +11,10 @@ server.get('/:userEmail', async (req, res) => {
             userEmail:userEmail
         },includes:[Course]            
     });
-
-    res.json(findUserOrder)
+    if(findUserOrder.length >0){
+        res.json(findUserOrder)
+    }else{ 
+        res.send("el usuario no tiene ordenes")}
 });
 
 server.post('/:userEmail', async (req, res) => {
@@ -31,16 +33,15 @@ server.post('/:userEmail', async (req, res) => {
                 });
                 const c =await Course.findOne({
                     where: {
-                        id:e,               
+                        id: e,               
                     }
                 });
                 order.addCourse(c)
                 order.setUser(user)
-
             });
-
         res.send({msg:"orden procesada exitosamente"});
     });
+    
     server.delete('/:userEmail', async (req, res) => {
             const { courseId } = req.body;
 

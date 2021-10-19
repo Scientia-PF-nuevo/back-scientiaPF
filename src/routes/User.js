@@ -34,10 +34,10 @@ server.get("/token", (req, res) => {
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
 try {
-  const usuarios = await User.findAll();
-  if(usuarios.length > 1){
-    console.log(usuarios)
-    res.send({msg:"todos los usuarios", status: 200, usuarios})
+  const users = await User.findAll();
+  if(users.length > 1){
+    //console.log(usuarios)
+    res.status(200).send(users)
  }else {
     res.send({msg: "no existen usuarios"})
  }
@@ -48,7 +48,7 @@ try {
 })
 
 //  localhost:3001/user/email  ---- busca usuario por email
-server.get('/email', async (req, res) => {
+server.get ('/email', async (req, res) => {
     const { email } = req.body;
     console.log(email)
     try {
@@ -64,8 +64,8 @@ server.get('/email', async (req, res) => {
     } catch (err) {
       res.send(err , {status:500 ,msg:"se requiere un email"})
     }
- }
-)
+})
+
 // localhost:3001/users/newuser  ---- crear usuariopassword
 // server.get('/newuser', async (req, res) => {
 // 	const { firstName, lastName, email, password} = req.body
@@ -96,7 +96,6 @@ server.get('/email', async (req, res) => {
 // })
 
 server.post('/register', async (req, res)=> { 
- 
     const {
       firstName,
       lastName,
@@ -110,7 +109,7 @@ server.post('/register', async (req, res)=> {
       country,
     } = req.body;
     try {
-       const user = await User.create(
+      const user = await User.create(
         {
           firstName,
           lastName,
@@ -158,7 +157,6 @@ server.post('/register', async (req, res)=> {
         status: 500,
       });
     }
-   
 })
 
 
