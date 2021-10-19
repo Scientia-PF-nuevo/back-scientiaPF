@@ -10,6 +10,9 @@ module.exports = (sequelize) => {
     },
     coursesId:{
         type: DataTypes.INTEGER
+    },
+    price:{
+      type:DataTypes.INTEGER
     }
   });
 };

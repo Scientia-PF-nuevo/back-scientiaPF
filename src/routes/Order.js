@@ -18,7 +18,7 @@ server.get('/:userEmail', async (req, res) => {
 });
 
 server.post('/:userEmail', async (req, res) => {
-    const { state, courseId } = req.body;
+    const { state, courseId, } = req.body;
         const userEmail = req.params.userEmail
 
             const user= await User.findOne({

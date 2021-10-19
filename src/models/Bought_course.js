@@ -3,14 +3,14 @@ const { DataTypes } = require('sequelize')
 // Luego le injectamos la conexion a sequelize
 module.exports = (sequelize) => {
 	// defino el modelo
-	sequelize.define('add_purchase', {
+	sequelize.define('bought_course', {
 		course: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
 		state: {
-			type: DataTypes.ENUM('completed', 'in progress'),
-			default: 'in progress'
+			type: DataTypes.ENUM('completed', 'started'),
+			default: 'started'
 		},
 		owner: {
 			type: DataTypes.TEXT,

@@ -22,7 +22,8 @@ module.exports = (sequelize) => {
     },
     urlVideo: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true,
+      defultValue:''
     },
     email:{
       type: DataTypes.TEXT,

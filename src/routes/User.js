@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { User } = require('../db');
+const { User, Bought_course } = require('../db');
 const jwt =require("jsonwebtoken");
 const authorize = require('../middleware/authorization')
 const AUTH_SIGN =process.env;
@@ -55,7 +55,8 @@ server.get ('/email', async (req, res) => {
       const usuario = await User.findOne({
           where: {
               email:email
-          }
+          },
+          include: [Bought_course]
       })
       if(usuario){
         res.send({msg:"este es tu usuario", usuario})
