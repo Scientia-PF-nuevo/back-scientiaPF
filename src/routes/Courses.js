@@ -193,10 +193,8 @@ server.get("/coursescategory", async(req, res)=>{
 server.post("/newreview", async(req, res)=>{
     const{comments, score, email, courseName } =req.body;
 
-	console.log(score)
-  
     const newReview = await Review.create({ 
-      
+    
 		comments:comments,
 		score:score
 		
@@ -220,11 +218,10 @@ server.post("/newreview", async(req, res)=>{
 })
 
 server.get("/allreviews", async(req, res)=>{
-   
-  
+
     const rev = await Review.findAll({ 
     
-      include:Course
+    	include:Course
     })
 	Promise.all(rev)
 	.then(data => 
