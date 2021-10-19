@@ -1,6 +1,7 @@
 const server = require('express').Router()
 const { Course, Category, Review , User, Bought_course} = require('../db');
 const axios = require ('axios');
+const { response } = require('express');
 
 
 server.post('/:email', async (req, res) => {
@@ -21,26 +22,31 @@ server.post('/:email', async (req, res) => {
                     
                 }
             })
-            console.log(typeof(course))
+            // console.log(typeof(course))
             
-            const purchase = await Bought_course.create({
-               
-                    course: course.id,                    
+            const purchase = await Bought_course.create({               
+                    courseName: course.id,                    
                     owner:email,
                     price:course.price,
                     state:'started'
                 
             })
-            
-            
-            purchase.addCourse(course);
+            console.log(purchase.courseName)
+            purchase.setCourse(course);
             purchase.setUser(user)
 
+            Bought_course.findOne({
+                where:{
+                    courseName:course.id
+                }                
+            })
+            .then((B)=> B.json())
             
-            
+            // return created.json();
 
         })
-        // res.send(response)
+        // Promise.all(response).then(()=>res.send(response))
+        res.send(response)
     })
     
     

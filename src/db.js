@@ -47,8 +47,12 @@ Order.belongsTo(User)
 Order.belongsToMany(Course, { through: 'order_course' })
 Course.belongsToMany(Order, { through: 'order_course' })
 
-Course.belongsToMany(Bought_course, { through: 'course_boughtCourse' })
-User.belongsToMany(Bought_course, { through: 'course_boughtCourse' })
+Course.hasMany(Bought_course)
+Bought_course.belongsTo(Course)
+
+User.hasMany(Bought_course)
+Bought_course.belongsTo(User)
+
 
 
 module.exports = {
