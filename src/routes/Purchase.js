@@ -25,7 +25,7 @@ server.post('/:email', async (req, res) => {
             // console.log(typeof(course))
             
             const purchase = await Bought_course.create({               
-                    courseName: course.id,                    
+                    courseId: course.id,                    
                     owner:email,
                     price:course.price,
                     state:'started'
@@ -35,18 +35,18 @@ server.post('/:email', async (req, res) => {
             purchase.setCourse(course);
             purchase.setUser(user)
 
-            Bought_course.findOne({
-                where:{
-                    courseName:course.id
-                }                
-            })
-            .then((B)=> B.json())
-            
+            // const created = await Bought_course.findOne({
+            //     where:{
+            //         courseId:course.id
+            //     },
+            //     raw:true
+            // })
+            // console.log(created)
             // return created.json();
 
         })
-        // Promise.all(response).then(()=>res.send(response))
-        res.send(response)
+        
+        res.send({msg:"Compras creadas"})
     })
     
     
