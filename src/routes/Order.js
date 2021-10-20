@@ -9,7 +9,7 @@ server.get('/:userEmail', async (req, res) => {
     const findUserOrder =await Order.findAll({
         where:{
             userEmail:userEmail
-        },includes:[Course]            
+        },includes:[Order]            
     });
     if(findUserOrder.length >0){
         res.json(findUserOrder)
@@ -26,16 +26,20 @@ server.post('/:userEmail', async (req, res) => {
                         email: userEmail
                         }
                     });
+                 console.log(userEmail)   
             courseId.forEach(async(e)=>{
-                const order = await Order.create({      
-                    coursesId:e,
-                            state            
-                });
                 const c =await Course.findOne({
                     where: {
                         id: e,               
                     }
                 });
+                //console.log(c.price)
+                const order = await Order.create({      
+                    coursesId:e,
+                            state,
+                            price:c.price            
+                });
+                
                 order.addCourse(c)
                 order.setUser(user)
             });
