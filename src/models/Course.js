@@ -20,11 +20,14 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    urlVideo: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defultValue:''
+    },
     email:{
       type: DataTypes.TEXT,
       allowNull: false,
     },
-
-   
   });
 };

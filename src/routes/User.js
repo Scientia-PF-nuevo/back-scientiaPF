@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { User } = require('../db');
+const { User, Bought_course } = require('../db');
 const jwt =require("jsonwebtoken");
 const authorize = require('../middleware/authorization')
 const AUTH_SIGN =process.env;
@@ -48,14 +48,15 @@ try {
 })
 
 //  localhost:3001/user/email  ---- busca usuario por email
-server.get('/email', async (req, res) => {
+server.get ('/email', async (req, res) => {
     const { email } = req.body;
     console.log(email)
     try {
       const usuario = await User.findOne({
           where: {
               email:email
-          }
+          },
+          include: [Bought_course]
       })
       if(usuario){
         res.send({msg:"este es tu usuario", usuario})
@@ -64,8 +65,8 @@ server.get('/email', async (req, res) => {
     } catch (err) {
       res.send(err , {status:500 ,msg:"se requiere un email"})
     }
- }
-)
+})
+
 // localhost:3001/users/newuser  ---- crear usuariopassword
 // server.get('/newuser', async (req, res) => {
 // 	const { firstName, lastName, email, password} = req.body
@@ -96,7 +97,6 @@ server.get('/email', async (req, res) => {
 // })
 
 server.post('/register', async (req, res)=> { 
- 
     const {
       firstName,
       lastName,
@@ -110,7 +110,7 @@ server.post('/register', async (req, res)=> {
       country,
     } = req.body;
     try {
-       const user = await User.create(
+      const user = await User.create(
         {
           firstName,
           lastName,
@@ -158,7 +158,6 @@ server.post('/register', async (req, res)=> {
         status: 500,
       });
     }
-   
 })
 
 
