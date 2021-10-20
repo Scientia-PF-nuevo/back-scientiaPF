@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { Course, Category, Review , User, Bought_course} = require('../db');
+const { Course, Category, Review , User, Bought_course, Order} = require('../db');
 const axios = require ('axios');
 const { response } = require('express');
 
@@ -15,15 +15,12 @@ server.post('/:email', async (req, res) => {
     .then((curses)=>{ 
         const data = curses.data;
         let response = data.map(async (c)=>{
-            // console.log(c.id)
-            const course = await Course.findOne({
+            //console.log(c)
+            const course = await Course.findOne({ 
                 where:{
-                    id:c.id
-                    
+                    id:c.coursesId
                 }
             })
-            // console.log(typeof(course))
-            
             const purchase = await Bought_course.create({               
                     courseId: course.id,                    
                     owner:email,
@@ -31,20 +28,21 @@ server.post('/:email', async (req, res) => {
                     state:'started'
                 
             })
-            console.log(purchase.courseName)
             purchase.setCourse(course);
             purchase.setUser(user)
-
-            // const created = await Bought_course.findOne({
-            //     where:{
-            //         courseId:course.id
-            //     },
-            //     raw:true
-            // })
-            // console.log(created)
-            // return created.json();
-
-        })
+           
+            const del = async () => {
+                const findUserOrder =await Order.findOne({
+                    where:{
+                        id:c.id
+                    },includes:[Order]            
+                });
+                await findUserOrder.destroy();
+            }
+            del();
+               
+      })
+      
         
         res.send({msg:"Compras creadas"})
     })

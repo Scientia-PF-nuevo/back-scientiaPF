@@ -47,7 +47,7 @@ try {
 
 })
 
-//  localhost:3001/user/email  ---- busca usuario por email
+//  localhost:3001/users/email  ---- busca usuario por email
 server.get ('/email', async (req, res) => {
     const { email } = req.body;
     console.log(email)
