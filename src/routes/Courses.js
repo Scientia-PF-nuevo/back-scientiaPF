@@ -1,5 +1,6 @@
 const server = require('express').Router()
-const { Course, Category, Review , User} = require('../db');
+const { Course, Category, Review , User, Bought_course} = require('../db');
+
 
 
 //prueba
@@ -229,6 +230,40 @@ server.get("/allreviews", async(req, res)=>{
 	)
 })
 
+server.put("/:email",async(req,res)=>{
+	const email = req.params;
+	const {courseId, state, timeWatched, lenghtVideo} = req.body;
+	
+	try{
+		const find = await Bought_course.findOne({
+			where:{
+				courseId
+			}
+		});
+		if(find){
+			const course = await Bought_course.update({
+				state:state,
+				timeWatched:timeWatched,
+				lenghtVideo:lenghtVideo
+			},
+			{where:{courseId:courseId}}
+			)
+			res.send("curso modificado")
+
+		}else{
+			res.send({msg:"El curso no existe"})
+		}
+
+	}catch(e){
+		console.log(e)
+	}
+})
+
+	
+
+	
+	
+	
 
 
 

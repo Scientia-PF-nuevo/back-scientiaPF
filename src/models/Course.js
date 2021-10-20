@@ -25,6 +25,11 @@ module.exports = (sequelize) => {
       allowNull: true,
       defultValue:''
     },
+    urlPdf:{
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defultValue:''
+    },
     email:{
       type: DataTypes.TEXT,
       allowNull: false,
