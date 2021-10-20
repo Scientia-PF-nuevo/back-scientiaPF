@@ -9,8 +9,12 @@ module.exports = (sequelize) => {
 			allowNull: false
 		},
 		state: {
-			type: DataTypes.ENUM('completed', 'started'),
-			default: 'started'
+			type: DataTypes.BOOLEAN,
+			default: false
+		},
+		inProgress: {
+			type: DataTypes.INTEGER,
+			default: 0
 		},
 		owner: {
 			type: DataTypes.TEXT,

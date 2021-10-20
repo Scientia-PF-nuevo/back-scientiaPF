@@ -25,12 +25,11 @@ server.post('/:email', async (req, res) => {
                     courseId: course.id,                    
                     owner:email,
                     price:course.price,
-                    state:'started'
-                
+                    state: false,
+                    inProgress: 0
             })
             purchase.setCourse(course);
             purchase.setUser(user)
-           
             const del = async () => {
                 const findUserOrder =await Order.findOne({
                     where:{
@@ -40,14 +39,9 @@ server.post('/:email', async (req, res) => {
                 await findUserOrder.destroy();
             }
             del();
-               
-      })
-      
-        
+    })
         res.send({msg:"Compras creadas"})
     })
-    
-    
 })
 
 module.exports = server

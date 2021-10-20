@@ -18,12 +18,13 @@ const userRouter = require('./User.js')
 const coursesRouter = require('./Courses.js')
 const orderRouter=require('./Order.js')
 const purchases  = require('./Purchase')
+const time = require('./Time')
 
 router.use('/users', userRouter)
 router.use('/courses', coursesRouter)
 router.use('/order',orderRouter)
 router.use('/purchase', purchases)
-
+router.use('/time', time)
 
 
 module.exports = router
