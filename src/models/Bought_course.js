@@ -9,8 +9,16 @@ module.exports = (sequelize) => {
 			allowNull: false
 		},
 		state: {
-			type: DataTypes.ENUM('completed', 'started'),
-			default: 'started'
+			type: DataTypes.ENUM('completed', 'started', 'bought' ),
+			defaultValue: 'bought'
+		},
+		timeWatched:{
+			type:DataTypes.INTEGER,
+			defaultValue:0
+		},
+		lenghtVideo:{
+			type:DataTypes.INTEGER,
+			defaultValue:0
 		},
 		owner: {
 			type: DataTypes.TEXT,
@@ -19,6 +27,7 @@ module.exports = (sequelize) => {
 		price: {
 			type: DataTypes.INTEGER,
 			allowNull: false
-		}
+		},
+
 	})
 }
