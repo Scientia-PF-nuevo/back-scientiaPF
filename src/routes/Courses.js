@@ -197,7 +197,8 @@ server.post("/newreview", async(req, res)=>{
     const newReview = await Review.create({ 
     
 		comments:comments,
-		score:score
+		score:score,
+		commentUser:email
 		
     })
 	

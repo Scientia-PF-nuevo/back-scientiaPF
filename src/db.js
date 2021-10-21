@@ -39,6 +39,8 @@ Course.belongsToMany(Category, {through: 'course_category'})
 Category.belongsToMany(Course, {through: 'course_category'})
 
 Review.belongsTo(User)
+User.hasMany(Review)
+
 Review.belongsTo(Course)
 Course.hasMany(Review)
 

@@ -8,6 +8,10 @@ module.exports = (sequelize) => {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
+		courseName: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
 		state: {
 			type: DataTypes.ENUM('completed', 'started', 'bought' ),
 			defaultValue: 'bought'
@@ -27,7 +31,6 @@ module.exports = (sequelize) => {
 		price: {
 			type: DataTypes.INTEGER,
 			allowNull: false
-		},
-
+		}
 	})
 }
