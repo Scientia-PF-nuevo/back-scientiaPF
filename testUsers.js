@@ -97,6 +97,7 @@ const Users = [{"firstName":"Gilbert","lastName":"Schmuhl","email":"gschmuhl0@wa
 {"firstName":"Berkie","lastName":"Ricciardelli","email":"bricciardelli2o@oracle.com","password":"kpQIUVNf","address":"4010 Sauthoff Trail","phone":"665-587-1477","city":"Psyzh","postalcode":"369110","country":"Russia"},
 {"firstName":"Barrie","lastName":"Medway","email":"bmedway2p@virginia.edu","password":"7BccIE","address":"6 Oak Junction","phone":"558-535-3496","city":"Jinhe","country":"China"},
 {"firstName":"Nixie","lastName":"Ostrich","email":"nostrich2q@foxnews.com","password":"uArVClkx","address":"58574 Killdeer Court","phone":"373-110-1177","city":"Siaton","postalcode":"6219","country":"Philippines"},
-{"firstName":"Jacenta","lastName":"Sanzio","email":"jsanzio2r@hc360.com","password":"cq79fWK6UgT","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Ukraine"}]
+{"firstName":"Jacenta","lastName":"Sanzio","email":"jsanzio2r@hc360.com","password":"cq79fWK6UgT","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Ukraine"},
+{"firstName":"Emmanuel","lastName":"Navas","email":"enavas3@gmail.com","password":"12345","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"}]
 
 module.exports = Users

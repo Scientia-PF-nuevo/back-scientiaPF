@@ -23,6 +23,8 @@ const courses =require("./testCourses");
 const Users = require("./testUsers");
 const reviews = require("./testReviews");
 const category = require("./testCategories")
+const buy = require("./testBuy");
+const payment = require("./testPayment");
 const { default: fetch } = require('node-fetch');
 const { response } = require('./src/app.js');
 
@@ -69,15 +71,37 @@ const cargaReviews = async() =>{
 })
   })
 }
-
+const cargaCompra = async() =>{
+  buy.forEach((u)=>{
+    //console.log(u.email , "este es mi console.log")
+    const response= fetch(`http://localhost:3001/order/${u.email}`,{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(u)
+    })
+  })
+ 
+}
+const cargaPago= async() =>{
+  payment.forEach((u)=>{
+    
+    const response= fetch(`http://localhost:3001/purchase/orders_destroy/${u.email}`,{
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      
+    })
+  })
+}
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async() => {
   server.listen(3001, async() => {
      cargaUsers();
-     cargaCategoria()
+     cargaCategoria();
      cargaCursos();
-     cargaReviews() 
+     cargaReviews(); 
+     //cargaCompra();
+    // cargaPago();
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 
   });

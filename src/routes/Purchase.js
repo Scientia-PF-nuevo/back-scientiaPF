@@ -72,6 +72,7 @@ server.post('/orders_destroy/:email', async (req, res) => {
     const fetching = axios.get(`http://localhost:3001/order/${email}`)
         .then(async (curses) => {
             const data = curses.data;
+          //  console.log(curses)
             let response = data.map(async (c) => {
 
                 const course = await Course.findOne({
@@ -84,7 +85,7 @@ server.post('/orders_destroy/:email', async (req, res) => {
                 const id = await course.get('id')
                
                 const purchase = await Bought_course.create({
-                    courseId: 2,
+                    courseId: id,
                     owner: email,
                     price: price,
                     state: 'started'
