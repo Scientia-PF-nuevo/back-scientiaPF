@@ -19,68 +19,99 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
-const courses =require("./testCourses");
+const courses = require("./testCourses");
 const Users = require("./testUsers");
 const reviews = require("./testReviews");
 const category = require("./testCategories")
+const buy = require("./testBuy");
+const payment = require("./testPayment");
 const { default: fetch } = require('node-fetch');
-const { response } = require('./src/app.js');
+const axios = require('axios');
 
-const cargaCategoria =  () => {
-    category.forEach( (c) => {
-    const response=  fetch('http://localhost:3001/courses/newcategory',{
+const cargaCategoria = () => {
+  category.forEach((c) => {
+    const response = fetch('http://localhost:3001/courses/newcategory', {
       method: 'POST',
-      headers:{ "Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(c)
     })
-    
-   })
+
+  })
+
+}
+const cargaCursos = () => {
+  courses.forEach((c) => {
+    const response = fetch('http://localhost:3001/courses/newcourse', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(c)
+    })
+
+  })
+
+}
+const cargaUsers = () => {
+  Users.forEach(async (u) => {
+    const response = fetch('http://localhost:3001/users/register', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(u)
+    })
+
+  })
+
+}
+
+const cargaReviews = async () => {
+  reviews.forEach((u) => {
+    const response = fetch('http://localhost:3001/courses/newreview', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(u)
+    })
+  })
+}
+const cargaPago = () => {
+  payment.forEach((u) => {
+    const response = fetch(`http://localhost:3001/purchase/orders_destroy/${u.email}`, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(u)
+    })
+  })
+}
+const cargaCompra = async () => {
+  buy.forEach(async(u) => {
+   const response = await fetch(`http://localhost:3001/order/${u.email}`, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(u)
+    })
    
-}
-const cargaCursos =  () => {
-   courses.forEach((c)=>{ 
-    const response=  fetch('http://localhost:3001/courses/newcourse',{
-  method: 'POST',
-  headers:{ "Content-Type": "application/json"},
-  body: JSON.stringify(c)
-})
-
   })
   
-}
-const cargaUsers = () =>{
-   Users.forEach(async(u)=>{
-    const response= fetch('http://localhost:3001/users/register',{
-      method: 'POST',
-      headers:{ "Content-Type": "application/json"},
-      body: JSON.stringify(u)
-})
 
-  })
-  
-}
-
-const cargaReviews = async() =>{
-  reviews.forEach((u)=>{
-    const response= fetch('http://localhost:3001/courses/newreview',{
-      method: 'POST',
-      headers:{ "Content-Type": "application/json"},
-      body: JSON.stringify(u)
-})
-  })
 }
 
 
 // Syncing all the models at once.
-conn.sync({ force: true }).then(async() => {
-  server.listen(3001, async() => {
-     cargaUsers();
-     cargaCategoria()
-     cargaCursos();
-     cargaReviews() 
+conn.sync({ force: true }).then(async () => {
+  server.listen(3001, async () => {
+    /* cargaUsers();
+    cargaCategoria();
+    cargaCursos();
+    cargaReviews();
+    cargaCompra(); */
+    setTimeout(cargaUsers, 0000, 'usuarios reg')
+    setTimeout(cargaCategoria, 1000, 'categorias')
+    setTimeout(cargaCursos, 2000, 'cursos')
+    setTimeout(cargaReviews, 3000, 'reviews');
+    setTimeout(cargaCompra, 4000, 'compra de ema');
+    setTimeout(cargaPago, 5000, 'pago de emma');
+
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 
   });
 
- 
+
 });
