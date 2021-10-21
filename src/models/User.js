@@ -48,10 +48,6 @@ module.exports = (sequelize) => {
 		country: {
 			type: DataTypes.STRING,
 			defaultValue: ''
-		},
-		courses: {
-			type: DataTypes.ARRAY(DataTypes.INTEGER),
-			defaultValue: [],
 		}
 	})
 }
