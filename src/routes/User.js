@@ -1,7 +1,7 @@
 const server = require('express').Router()
-const { User, Bought_course } = require('../db');
+const { User, Bought_course,Review,Course } = require('../db');
 const jwt =require("jsonwebtoken");
-const authorize = require('../middleware/authorization')
+const authorize = require('../middleware/authorization');
 const AUTH_SIGN =process.env;
 
 //localhost:3000/user/token
@@ -48,8 +48,8 @@ try {
 })
 
 //  localhost:3001/users/email  ---- busca usuario por email
-server.get ('/email', async (req, res) => {
-    const { email } = req.body;
+server.get ('/email/:email', async (req, res) => {
+    const { email } = req.params;
     console.log(email)
     try {
       const usuario = await User.findOne({
@@ -59,7 +59,50 @@ server.get ('/email', async (req, res) => {
           include: [Bought_course]
       })
       if(usuario){
-        res.send({msg:"este es tu usuario", usuario})
+        const coursesPlusReviews=[];
+        const coursesId = usuario.bought_courses.map(async(c)=>{
+          const reviews = []
+          const course = await Course.findOne({
+            where:{
+              id:c.courseId
+            },
+            include:[Review]
+          })
+          
+          course.dataValues.reviews.forEach((r)=>{            
+            if(c.courseId === r.dataValues.courseId) {
+              reviews.push(r.dataValues)
+            } 
+
+          })
+          const courseAndReview = {
+            course:c,
+            reviews
+          }
+          coursesPlusReviews.push(courseAndReview)
+
+          return console.log(reviews)
+        })
+        
+        Promise.all(coursesId).then(()=>{
+
+          const obj={
+            firstName:usuario.firstName,
+            lastName:usuario.lastName,
+            email:usuario.email,
+            address:usuario.addres,
+            phone:usuario.phone,
+            city:usuario.city,
+            province:usuario.province,
+            postalcode:usuario.postalcode,
+            country:usuario.country,
+            bought_courses:usuario.bought_courses,
+            coursesPlusReviews
+  
+          }
+          res.send( obj)
+
+        })
       }
       
     } catch (err) {
@@ -67,34 +110,7 @@ server.get ('/email', async (req, res) => {
     }
 })
 
-// localhost:3001/users/newuser  ---- crear usuariopassword
-// server.get('/newuser', async (req, res) => {
-// 	const { firstName, lastName, email, password} = req.body
 
-// 	if (!firstName || !lastName || !email || !password) {
-// 		res.status(400).json({
-// 			message: 'Debe enviar los campos requeridos'
-// 		})
-// 	}
-// 	try {
-// 		const usuario = await User.findOne({
-// 			where: {
-// 				email: email
-// 			}
-// 		})
-// 		if (usuario) {
-// 			res.status(200).send({ msg: 'El email ya existe', status: 200 })
-// 		} else {
-// 			try {
-// 				const user = await User.create({ firstName, lastName, email, password,})
-// 				res.status(201).send({ msg: 'Usuario creado con exito', user, status: 201 })
-// 			}
-// 			catch (err) { res.status(400).send(err) }
-// 		}
-// 	} catch (err) {
-// 		res.status(500).send(err)
-// 	}
-// })
 
 server.post('/register', async (req, res)=> { 
     const {
