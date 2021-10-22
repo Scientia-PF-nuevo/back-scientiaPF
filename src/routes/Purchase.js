@@ -189,10 +189,7 @@ server.post('/orders_destroy/:email', async (req, res) => {
                 })}catch(e){
                     return res.status(500).send(e)
                 }
-                
-
-           
-            })
+             })
         })
 
 })
