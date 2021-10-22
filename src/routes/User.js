@@ -59,8 +59,9 @@ server.get ('/email/:email', async (req, res) => {
           include: [Bought_course]
       })
       if(usuario){
-        const coursesPlusReviews=[];
+        const coursesAndData=[];
         const coursesId = usuario.bought_courses.map(async(c)=>{
+
           const reviews = []
           const course = await Course.findOne({
             where:{
@@ -68,24 +69,26 @@ server.get ('/email/:email', async (req, res) => {
             },
             include:[Review]
           })
-          
+          console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
             if(c.courseId === r.dataValues.courseId) {
               reviews.push(r.dataValues)
             } 
 
           })
-          const courseAndReview = {
+          const courseAndReviewAndUrl = {
             course:c,
-            reviews
+            reviews,
+            urlVideo:course.urlVideo,
+            url:course.dataValues.url
           }
-          coursesPlusReviews.push(courseAndReview)
+          coursesAndData.push(courseAndReviewAndUrl)
 
           return reviews
         })
         
         Promise.all(coursesId).then(()=>{
-
+          
           const obj={
             firstName:usuario.firstName,
             lastName:usuario.lastName,
@@ -97,11 +100,20 @@ server.get ('/email/:email', async (req, res) => {
             postalcode:usuario.postalcode,
             country:usuario.country,
             bought_courses:usuario.bought_courses,
-            coursesPlusReviews
+            coursesAndData,
+            
   
           }
           res.send( obj)
-
+          // key={course.courseId}
+          //     id={course.courseId}
+          //     name={course.state}
+          //     score={course.price}
+          //     date={course.createdAt}
+          //     price={course.price}
+          //     // url={course.courseP}
+          //     categories={course.owner}
+          //     description={course.owner}
         })
       }
       
