@@ -61,7 +61,6 @@ server.post('/:email', async (req, res) => {
             })
         }
         else {
-            const des = await Stock.create({discountId: 2, active: true, amount: 5, percentage: 0.30})
             const descuento = await Stock.findOne({
                 where: {
                     discountId: disc
