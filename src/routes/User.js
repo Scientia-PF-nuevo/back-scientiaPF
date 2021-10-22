@@ -1,7 +1,7 @@
 const server = require('express').Router()
 const { User, Bought_course,Review,Course } = require('../db');
 const jwt =require("jsonwebtoken");
-const authorize = require('../middleware/authorization');
+/* const authorize = require('../middleware/authorization');
 const AUTH_SIGN =process.env;
 
 //localhost:3000/user/token
@@ -29,7 +29,7 @@ server.get("/token", (req, res) => {
 	})
     
     });
-
+ */
 
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
