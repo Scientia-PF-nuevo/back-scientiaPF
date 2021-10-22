@@ -20,7 +20,7 @@ server.post('/:email', async (req, res) => {
         })
         let totalPrice = 0;
         const coursesIds = [];
-        const fetching = axios.get(`http://localhost:3001/order/${email}`)
+        const fetching = await axios.get(`http://localhost:3001/order/${email}`)
             .then(async (curses) => {
                 const data = curses.data;
                 let response = data.map(async (c) => {
@@ -68,7 +68,9 @@ server.post('/:email', async (req, res) => {
             })
     } else {
         const descuento = await Stock.findOne({
-            where: { discountId: disc }
+            where: {
+                id: disc
+            }
         })
         if (descuento === null) {
             return res.json({ msg: "el codigo no existe o ya fue utilizado demaciadas veces" })
@@ -77,7 +79,7 @@ server.post('/:email', async (req, res) => {
             const ifActive = descuento.ifActive
             const amount = descuento.amount
             const percentage = descuento.percentage
-            if (!ifActive || amount === 0) {
+            if (ifActive === false || amount === 0) {
                 return res.json({ msg: "el codigo de descuento fue utilizado demaciadas veces" })
             }
             const user = await User.findOne({
@@ -87,7 +89,7 @@ server.post('/:email', async (req, res) => {
             })
             let totalPrice = 0;
             const coursesIds = [];
-            const fetching = axios.get(`http://localhost:3001/order/${email}`)
+            const fetching = await axios.get(`http://localhost:3001/order/${email}`)
                 .then(async (curses) => {
                     const data = curses.data;
                     let response = data.map(async (c) => {
