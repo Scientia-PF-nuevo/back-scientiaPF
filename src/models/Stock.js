@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 	// defino el modelo
+	module.exports = (sequelize) => {
 	sequelize.define('stock', {
 		discountId: {
 			type: DataTypes.INTEGER,
@@ -17,7 +18,7 @@ const { DataTypes } = require('sequelize')
 		percentage: {
 			type: DataTypes.DECIMAL,
 			allowNull: false
-		}
+		},
 	})
 }
 
