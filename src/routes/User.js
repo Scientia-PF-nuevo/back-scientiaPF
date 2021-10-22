@@ -81,7 +81,7 @@ server.get ('/email/:email', async (req, res) => {
           }
           coursesPlusReviews.push(courseAndReview)
 
-          return console.log(reviews)
+          return reviews
         })
         
         Promise.all(coursesId).then(()=>{
