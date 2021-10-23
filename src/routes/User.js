@@ -1,5 +1,5 @@
 const server = require('express').Router()
-const { User, Bought_course,Review,Course } = require('../db');
+const { User, Bought_course,Review,Course, Category } = require('../db');
 const jwt =require("jsonwebtoken");
 
 // localhost:3001/users  ----   busca todos los usuarios
@@ -38,7 +38,9 @@ server.get ('/email/:email', async (req, res) => {
             where:{
               id:c.courseId
             },
-            include:[Review]
+            include:[
+              {model:Review},
+              {model:Category}]
           })
           console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
@@ -49,6 +51,7 @@ server.get ('/email/:email', async (req, res) => {
           })
           const courseInfo = {
             course:c,
+            categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url
