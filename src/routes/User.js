@@ -1,35 +1,6 @@
 const server = require('express').Router()
-const { User, Bought_course,Review,Course } = require('../db');
+const { User, Bought_course,Review,Course, Category } = require('../db');
 const jwt =require("jsonwebtoken");
-/* const authorize = require('../middleware/authorization');
-const AUTH_SIGN =process.env;
-
-//localhost:3000/user/token
-server.get("/token", (req, res) => {
-	const userEmail = req.body.userEmail;
-    const password = req.body.password;
-
-	User.findOne({
-		where:{
-			email:userEmail,
-			password:password
-		}
-	}).then((user)=>{
-		// res.send(user)
-		if(user){
-				const payload = {
-				userEmail: user.email,
-				scopes: "customer:read"
-			};
-			const token = jwt.sign(payload,'123456',{
-				expiresIn: 60 * 24 // expires in 24 hours
-			});
-			res.send({user:userEmail, token:token});
-		} else res.status(401).send("Datos no validos")
-	})
-    
-    });
- */
 
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
@@ -67,7 +38,9 @@ server.get ('/email/:email', async (req, res) => {
             where:{
               id:c.courseId
             },
-            include:[Review]
+            include:[
+              {model:Review},
+              {model:Category}]
           })
           console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
@@ -76,13 +49,14 @@ server.get ('/email/:email', async (req, res) => {
             } 
 
           })
-          const courseAndReviewAndUrl = {
+          const courseInfo = {
             course:c,
+            categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url
           }
-          coursesAndData.push(courseAndReviewAndUrl)
+          coursesAndData.push(courseInfo)
 
           return reviews
         })
@@ -99,22 +73,15 @@ server.get ('/email/:email', async (req, res) => {
             province:usuario.province,
             postalcode:usuario.postalcode,
             country:usuario.country,
-            bought_courses:usuario.bought_courses,
+            // bought_courses:usuario.bought_courses,
             coursesAndData,
             
   
           }
           res.send( obj)
-          // key={course.courseId}
-          //     id={course.courseId}
-          //     name={course.state}
-          //     score={course.price}
-          //     date={course.createdAt}
-          //     price={course.price}
-          //     // url={course.courseP}
-          //     categories={course.owner}
-          //     description={course.owner}
         })
+      } else {
+        res.status(404).send("El usuario no se ha encontrado")
       }
       
     } catch (err) {
