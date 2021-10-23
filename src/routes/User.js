@@ -1,35 +1,6 @@
 const server = require('express').Router()
 const { User, Bought_course,Review,Course } = require('../db');
 const jwt =require("jsonwebtoken");
-/* const authorize = require('../middleware/authorization');
-const AUTH_SIGN =process.env;
-
-//localhost:3000/user/token
-server.get("/token", (req, res) => {
-	const userEmail = req.body.userEmail;
-    const password = req.body.password;
-
-	User.findOne({
-		where:{
-			email:userEmail,
-			password:password
-		}
-	}).then((user)=>{
-		// res.send(user)
-		if(user){
-				const payload = {
-				userEmail: user.email,
-				scopes: "customer:read"
-			};
-			const token = jwt.sign(payload,'123456',{
-				expiresIn: 60 * 24 // expires in 24 hours
-			});
-			res.send({user:userEmail, token:token});
-		} else res.status(401).send("Datos no validos")
-	})
-    
-    });
- */
 
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
@@ -105,15 +76,6 @@ server.get ('/email/:email', async (req, res) => {
   
           }
           res.send( obj)
-          // key={course.courseId}
-          //     id={course.courseId}
-          //     name={course.state}
-          //     score={course.price}
-          //     date={course.createdAt}
-          //     price={course.price}
-          //     // url={course.courseP}
-          //     categories={course.owner}
-          //     description={course.owner}
         })
       }
       

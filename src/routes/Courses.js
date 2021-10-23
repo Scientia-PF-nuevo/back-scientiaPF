@@ -7,7 +7,8 @@ const {
 	Bought_course
 } = require('../db');
 
-
+const getScore = require('../functions/getScore')
+const stringifyDate = require('../functions/stringifyDate')
 
 //prueba
 //localhost:3001/courses    obtener todos los cursos
@@ -39,15 +40,10 @@ server.get('/', (req, res) => {
 					const n = name.toLowerCase()
 					const response = [];
 					courses.forEach(element => {
-						let suma = 0;
-						let average;
-						const SCs = element.reviews.map((r, index) => {
-							suma = suma + r.score;
-							//console.log(suma)
-							average = suma / index;
-						});
+						let average=getScore(element)
+
 						if (element.name.toLowerCase().includes(n)) {
-							const date = JSON.stringify(element.createdAt).slice(0, 8).split('-').reverse().join('').replace(`"`, "")
+							const date = stringifyDate(element.createdAt)
 
 							const obj = {
 								name: element.name,
@@ -58,7 +54,6 @@ server.get('/', (req, res) => {
 								id: element.id,
 								categories: element.categories[0].name,
 								score: average
-								//score a modificar
 							}
 							//console.log(courses)
 							response.push(obj)
@@ -96,16 +91,9 @@ server.get('/', (req, res) => {
 			} else {
 
 				const filteredCourses = courses.map(c => {
-					let suma = 0;
-					let average;
-					//console.log(c)
-					const SCs = c.reviews.map((r, index) => {
-						suma = suma + r.score;
-						//console.log(suma)
-						average = suma / index;
-					});
-
-					const d = JSON.stringify(c.createdAt).slice(0, 8).split('-').reverse().join('').replace(`"`, "")
+					let average = getScore(c)
+					const d = stringifyDate(c.createdAt)
+					
 
 					const obj = {
 						date: d,
@@ -120,7 +108,7 @@ server.get('/', (req, res) => {
 					}
 					return obj;
 				})
-				//console.log(filteredCourses) 
+				//console.log(filteredCourses)
 
 				res.status(200).send(filteredCourses)
 			}
@@ -128,27 +116,53 @@ server.get('/', (req, res) => {
 
 })
 
-server.get('/:id', (req, res) => {
+server.get('/id/:id',async  (req, res) => {
 	const {
 		id
 	} = req.params;
-
+	console.log(id)
 
 	try {
-		var course = await Course.findOne({
+		id?(
+		Course.findOne({
 			where: {
 				id: id
 			},
+			include:[
+				{model: Category},
+				{model: Review}
+			]
+		}).then((course)=>{
+			console.log(course)
+			if (course) {
+				const average = getScore(course)
+				const date = stringifyDate(course.createdAt)
+				const obj ={
+					name: course.name,
+					date: date,
+					description: course.description,
+					price: course.price,
+					url: course.url,
+					id: course.id,
+					categories: course.categories[0].name,
+					score: average,
+					reviews:course.reviews,
+					urlVideo:course.urlVideo,
+            		url:course.url
+					
+				}
+				
+				
+				res.status(200).send({obj})
+			} else {
+				res.status(404).send({
+					msg: 'No se encontro ningun curso'
+				})
+			}
 		})
-		if (course) {
-			res.status(200).send({
-				course
-			})
-		} else {
-			res.status(404).send({
-				msg: 'No se encontro ningun curso'
-			})
-		}
+
+	):res.status(404).send("Id no enviado")
+		
 	} catch (error) {
 		res.status(404).send({
 			msg: 'No se encontro ningun curso'
@@ -242,8 +256,9 @@ server.post('/newcategory', async (req, res) => {
 	}
 })
 
-// localhost:3001/courses/allcategories 
+// localhost:3001/courses/allcategories
 server.get('/allcategories', async (req, res) => {
+	console.log("estoy aqui")
 	try {
 		const allcategories = await Category.findAll()
 
