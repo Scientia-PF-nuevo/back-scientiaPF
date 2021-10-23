@@ -47,13 +47,13 @@ server.get ('/email/:email', async (req, res) => {
             } 
 
           })
-          const courseAndReviewAndUrl = {
+          const courseInfo = {
             course:c,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url
           }
-          coursesAndData.push(courseAndReviewAndUrl)
+          coursesAndData.push(courseInfo)
 
           return reviews
         })
@@ -70,13 +70,15 @@ server.get ('/email/:email', async (req, res) => {
             province:usuario.province,
             postalcode:usuario.postalcode,
             country:usuario.country,
-            bought_courses:usuario.bought_courses,
+            // bought_courses:usuario.bought_courses,
             coursesAndData,
             
   
           }
           res.send( obj)
         })
+      } else {
+        res.status(404).send("El usuario no se ha encontrado")
       }
       
     } catch (err) {
