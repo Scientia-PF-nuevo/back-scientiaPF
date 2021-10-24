@@ -34,6 +34,9 @@ const { Course, User, Review, Category, Order, Bought_course, Stock } = sequeliz
 
 // Aca vendrian las relaciones
 
+User.hasMany(Course,{foreignKey:'userEmail'})
+Course.belongsTo(User)
+
 Course.belongsToMany(Category, {through: 'course_category'})
 Category.belongsToMany(Course, {through: 'course_category'})
 

@@ -1,11 +1,5 @@
 const server = require('express').Router()
-const {
-	Course,
-	Category,
-	Review,
-	User,
-	Bought_course
-} = require('../db');
+const {Course,Category,Review,User,Bought_course} = require('../db');
 
 const getScore = require('../functions/getScore')
 const stringifyDate = require('../functions/stringifyDate')
@@ -120,7 +114,7 @@ server.get('/id/:id',async  (req, res) => {
 	const {
 		id
 	} = req.params;
-	console.log(id)
+	
 
 	try {
 		id?(
@@ -130,11 +124,13 @@ server.get('/id/:id',async  (req, res) => {
 			},
 			include:[
 				{model: Category},
-				{model: Review}
+				{model: Review},
+				{model: User}
 			]
 		}).then((course)=>{
-			console.log(course)
+			
 			if (course) {
+				console.log(course.user)
 				const average = getScore(course)
 				const date = stringifyDate(course.createdAt)
 				const obj ={
@@ -148,8 +144,8 @@ server.get('/id/:id',async  (req, res) => {
 					score: average,
 					reviews:course.reviews,
 					urlVideo:course.urlVideo,
-            		url:course.url
-					
+            		url:course.url,
+					uploadedBy:course.user.email
 				}
 				
 				
@@ -174,30 +170,18 @@ server.get('/id/:id',async  (req, res) => {
 // si nos funciona la dejamos
 // localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
-	const {
-		name,
-		description,
-		price,
-		url,
-		category,
-		email,
-		urlVideo
-	} = req.body
+	const {name,description,price,url,category,email,urlVideo} = req.body
 
-	if (
-		!name ||
-		!description ||
-		!price ||
-		!url ||
-		!category ||
-		!email ||
-		!urlVideo
-	) {
+	if (!name ||!description ||!price ||!url ||!category ||!email ||!urlVideo) {
 		res.status(400).send({
 			msg: 'Todos los campos requeridos'
 		})
 	}
 	try {
+		const user = await User.findOne({
+			where: {email:email}
+		})
+		
 		const newCourse = await Course.create({
 			name,
 			description,
@@ -206,12 +190,15 @@ server.post('/newcourse', async (req, res) => {
 			email,
 			urlVideo
 		})
+
 		const categ = await Category.findOne({
 			where: {
 				name: category
 			}
 		})
 		await newCourse.addCategories(categ)
+		await user.addCourses(newCourse)
+
 		res.status(201).send({
 			msg: 'curso cargado exitosamente',
 			newCourse
@@ -315,6 +302,10 @@ server.post("/newreview", async (req, res) => {
 			email: email
 		}
 	})
+	// await course.addReview(newReview)
+	// await newReview.addUser(user)
+	// await User.setReviews(newReview)
+	
 	await newReview.setCourse(course)
 	await newReview.setUser(user)
 
