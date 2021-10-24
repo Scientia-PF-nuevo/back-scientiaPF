@@ -92,17 +92,7 @@ server.get ('/email/:email', async (req, res) => {
 
 
 server.post('/register', async (req, res)=> { 
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      address,
-      phone,
-      city,
-      province,
-      postalcode,
-      country,
+    const {firstName, lastName,email,password,address,phone,city,province,postalcode,country,
     } = req.body;
     try {
       const user = await User.create(
@@ -155,6 +145,41 @@ server.post('/register', async (req, res)=> {
     }
 })
 
+server.put('/updateInfo/:email',async(req,res)=>{
+  const {firstName, lastName,password,address,phone,city,province,postalcode,country,
+  } = req.body;
+  const email = req.params.email;
+  const user = await User.findOne({
+    where: {
+      email
+    }
+  })
+  if(user){
+    try{
+      const update = await User.update({
+          firstName,
+          lastName,
+          password,
+          address,
+          phone,
+          city, 
+          province, 
+          postalcode,
+          country
+      },{
+        where:{
+        email:email
+      }
+    })
+      res.send("Informacion actualizada con exito")
+    } catch(e){
+      console.log(e)
+    }
+  }else {
+    res.status(404).send("El email no corresponde a un usuario")
+  }
+
+})
 
 
 
