@@ -116,6 +116,231 @@ server.get('/', (req, res) => {
 
 })
 
+server.get('/filter', (req, res) => {
+	const {
+	   level1 , 
+	   level2, 
+	   level3,
+	   price1, 
+	   price2, 
+	   languaje1, 
+	   languaje2,
+	   languaje3,
+	   ranking1,
+	   ranking2,
+	   ranking3, 
+	   ranking4, 
+	   ranking5 } = req.query;
+	   
+	   const filterArray = [
+		level1 , 
+		level2, 
+		level3,
+		price1, 
+		price2, 
+		languaje1, 
+		languaje2,
+		languaje3,
+		ranking1,
+		ranking2,
+		ranking3, 
+		ranking4, 
+		ranking5 ];
+
+   
+   
+	   Course.findAll({
+		   include: [{
+				   model: Category
+			   },
+			   {
+				   model: Review
+			   }
+		   ]
+	   }).then((courses) => {
+		   if (courses.length == 0) {
+			   res.status(404).send({
+				   msg: 'No se encontro ningun curso en la bd'
+			   })
+			   //console.log({msg: 'No se encontro ningun curso'})
+		   } else {
+			   const array= [];
+			   //console.log("entro")
+				   
+				   if (level1 || 
+					   level2 ||
+					   level3 ||
+					   price1 || 
+					   price2 || 
+					   languaje1 || 
+					   languaje2 ||
+					   languaje3 ||
+					   ranking1 ||
+					   ranking2 ||
+					   ranking3 ||
+					   ranking4 || 
+					   ranking5 ){
+						const data = [];
+
+						var filteredLevel = courses.filter((c) => {
+							return (c.level == level1 || c.level == level2 || c.level == level3 )
+						});
+						if(filteredLevel.length == 0){
+							const p = courses.filter((c)=>{
+								return (c.price == price1 || c.price == price2 
+							)})
+							if(p.length == 0){
+								
+							}
+							data.push(p)
+							
+
+
+						} else{
+							const f = filteredLevel.filter((c)=>{
+								return (c.price == price1 || c.price == price2 
+							)})
+							data.push(f)
+						}
+
+						/* 
+						courses.forEach((c)=>{
+							//console.log(c)
+							let average = Math.floor(getScore(c));
+							if(c.level=== level1) filtering.push(c); 
+							if(c.level=== level2) filtering.push(c); 
+							if(c.level=== level3) filtering.push(c); 
+							if(c.ranking===ranking1) filtering.push(c)
+							if(c.ranking===ranking2) filtering.push(c)
+							if(c.ranking===ranking3) filtering.push(c)
+							if(c.ranking===ranking4) filtering.push(c)
+							if(c.ranking===ranking5) filtering.push(c)
+							if(c.price === price1) filtering.push(c)
+							if(c.price === price2) filtering.push(c)
+							if(c.languaje === languaje1) filtering.push(c)
+							if(c.languaje === languaje2) filtering.push(c)
+
+
+
+						}) */
+						if(data.length == 0){ res.send(filteredLevel)}
+						else{res.send(data)}
+				    	
+
+						
+						
+					/* 
+						if(array.length == 0){
+							const filteredCourses = courses.map(c => {
+								let average = Math.floor(getScore(c));
+								const d = stringifyDate(c.createdAt)
+								const obj = {
+									date: d,
+									name: c.name,
+									description: c.description,
+									price: c.price,
+									url: c.url,
+									id: c.id,
+									categories: c.categories[0].name,
+									score: average
+									//score a modificar
+								}
+								return obj;
+							})
+							array.push(c)
+						} *//* else{
+							const filteredCourses = array.map(c => {
+								let average = Math.floor(getScore(c));
+								const d = stringifyDate(c.createdAt)
+								const obj = {
+									date: d,
+									name: c.name,
+									description: c.description,
+									price: c.price,
+									url: c.url,
+									id: c.id,
+									categories: c.categories[0].name,
+									score: average
+									//score a modificar
+								}
+								return obj;
+							})
+							array.push(c)
+						}
+						 */
+				   
+				   /* if(languaje1 || languaje2 || languaje3 === c.level && array.length == 0){
+					const filteredCourses = courses.map(c => {
+						let average = Math.floor(getScore(c));
+						const d = stringifyDate(c.createdAt)
+						const obj = {
+							date: d,
+							name: c.name,
+							description: c.description,
+							price: c.price,
+							url: c.url,
+							id: c.id,
+							categories: c.categories[0].name,
+							score: average
+							//score a modificar
+						}
+						return obj;
+					})
+					array.push(c)
+				   }
+				   if(price1 || price2 === c.level && array.length == 0){
+					const filteredCourses = courses.map(c => {
+						let average = Math.floor(getScore(c));
+						const d = stringifyDate(c.createdAt)
+						const obj = {
+							date: d,
+							name: c.name,
+							description: c.description,
+							price: c.price,
+							url: c.url,
+							id: c.id,
+							categories: c.categories[0].name,
+							score: average
+							//score a modificar
+						}
+						return obj;
+					})
+					array.push(c)
+					}
+					if(ranking1 || ranking2 || ranking3 || ranking4 || ranking5 === c.level && array.length == 0){
+						const filteredCourses = courses.map(c => {
+							let average = Math.floor(getScore(c));
+							const d = stringifyDate(c.createdAt)
+							const obj = {
+								date: d,
+								name: c.name,
+								description: c.description,
+								price: c.price,
+								url: c.url,
+								id: c.id,
+								categories: c.categories[0].name,
+								score: average
+								//score a modificar
+							}
+							return obj;
+						})
+						array.push(c)
+					   }	 */
+				  
+				}
+				   
+			   
+			   
+			   //console.log(filteredCourses)
+   
+			  /*  res.status(200).send(filteredCourses) */
+		   }
+	   })
+   
+   
+   
+   })
+
 server.get('/id/:id',async  (req, res) => {
 	const {
 		id
@@ -181,7 +406,9 @@ server.post('/newcourse', async (req, res) => {
 		url,
 		category,
 		email,
-		urlVideo
+		urlVideo,
+		languaje,
+		level
 	} = req.body
 
 	if (
@@ -191,7 +418,10 @@ server.post('/newcourse', async (req, res) => {
 		!url ||
 		!category ||
 		!email ||
-		!urlVideo
+		!urlVideo ||
+		!languaje ||
+		!level
+		
 	) {
 		res.status(400).send({
 			msg: 'Todos los campos requeridos'
@@ -204,7 +434,9 @@ server.post('/newcourse', async (req, res) => {
 			price,
 			url,
 			email,
-			urlVideo
+			urlVideo,
+			languaje,
+			level
 		})
 		const categ = await Category.findOne({
 			where: {
@@ -294,7 +526,7 @@ server.post("/newreview", async (req, res) => {
 		comments,
 		score,
 		email,
-		courseName
+		courseId
 	} = req.body;
 
 	const newReview = await Review.create({
@@ -307,7 +539,7 @@ server.post("/newreview", async (req, res) => {
 
 	const course = await Course.findOne({
 		where: {
-			name: courseName
+			id: courseId
 		}
 	})
 	const user = await User.findOne({

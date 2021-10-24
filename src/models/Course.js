@@ -34,5 +34,15 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    languaje:{
+      type: DataTypes.TEXT,
+      default :"",
+      allowNull: true,
+    },
+    level:{
+      type: DataTypes.TEXT,
+      allowNull: true,
+      default :"",
+    }
   });
 };
