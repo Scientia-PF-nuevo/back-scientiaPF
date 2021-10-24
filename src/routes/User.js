@@ -87,7 +87,7 @@ server.get ('/email/:email', async (req, res) => {
             coursesAndData,
             uploadedCourses
           }
-          res.send( obj)
+          res.send(obj)
         })
       } else {
         res.status(404).send("El usuario no se ha encontrado")

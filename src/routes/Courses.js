@@ -281,7 +281,7 @@ server.post("/newreview", async (req, res) => {
 		comments,
 		score,
 		email,
-		courseName
+		courseId
 	} = req.body;
 
 	const newReview = await Review.create({
@@ -294,7 +294,7 @@ server.post("/newreview", async (req, res) => {
 
 	const course = await Course.findOne({
 		where: {
-			name: courseName
+			id: courseId
 		}
 	})
 	const user = await User.findOne({
