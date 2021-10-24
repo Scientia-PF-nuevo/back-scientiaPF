@@ -116,7 +116,7 @@ server.get('/', (req, res) => {
 
 })
 
-server.get('/filter', (req, res) => {
+server.get('/filters', (req, res) => {
 	const {
 	   level1 , 
 	   level2, 
@@ -149,83 +149,161 @@ server.get('/filter', (req, res) => {
 
    
    
-	   Course.findAll({
-		   include: [{
-				   model: Category
-			   },
-			   {
-				   model: Review
-			   }
-		   ]
-	   }).then((courses) => {
-		   if (courses.length == 0) {
-			   res.status(404).send({
-				   msg: 'No se encontro ningun curso en la bd'
-			   })
-			   //console.log({msg: 'No se encontro ningun curso'})
-		   } else {
-			   const array= [];
-			   //console.log("entro")
-				   
-				   if (level1 || 
-					   level2 ||
-					   level3 ||
-					   price1 || 
-					   price2 || 
-					   languaje1 || 
-					   languaje2 ||
-					   languaje3 ||
-					   ranking1 ||
-					   ranking2 ||
-					   ranking3 ||
-					   ranking4 || 
-					   ranking5 ){
-						const data = [];
+		Course.findAll({
+			include: [{
+					model: Category
+				},
+				{
+					model: Review
+				}
+			]
+		}).then((courses) => {
+			if (courses.length == 0) {
+				res.status(404).send({
+					msg: 'No se encontro ningun curso en la bd'
+				})
+				//console.log({msg: 'No se encontro ningun curso'})
+			} else {
+				const array= [];
+				//console.log("entro")
+					
+					if (level1 || 
+						level2 ||
+						level3 ||
+						price1 || 
+						price2 || 
+						languaje1 || 
+						languaje2 ||
+						languaje3 ||
+						ranking1 ||
+						ranking2 ||
+						ranking3 ||
+						ranking4 || 
+						ranking5 ){
+						// const data = [];
 
-						var filteredLevel = courses.filter((c) => {
-							return (c.level == level1 || c.level == level2 || c.level == level3 )
-						});
-						if(filteredLevel.length == 0){
-							const p = courses.filter((c)=>{
-								return (c.price == price1 || c.price == price2 
-							)})
-							if(p.length == 0){
-								
-							}
-							data.push(p)
+						// var filteredLevel = courses.filter((c) => {
+						// 	return (c.level == level1 || c.level == level2 || c.level == level3 )
+						// });
+						// if(filteredLevel.length == 0){
+						// 	const p = courses.filter((c)=>{
+						// 		return (c.price == price1 || c.price == price2 
+						// 	)})
 							
+						// 	data.push(p)
+						// } else{
+						// 	const f = filteredLevel.filter((c)=>{
+						// 		return (c.price == price1 || c.price == price2 
+						// 	)})
+						// 	data.push(f)
+						// }
+						// 	let data =[]
+						// if(level1){
+						// 	filter= courses.forEach((c)=>{
+						// 		if(c.level.includes(level1)) {
+						// 			data.push(c)}
+						// 		 })
+						// }
+						// res.send(data)
 
+						/* let justStrings;
 
-						} else{
-							const f = filteredLevel.filter((c)=>{
-								return (c.price == price1 || c.price == price2 
-							)})
-							data.push(f)
+						  courses.forEach((c)=>{
+							  console.log(c.level)
+							const asArray = Object.entries(c);
+							const filtered=asArray.filter(([key,value])=> value==level1)
+							console.log(filtered)
+							justStrings = Object.fromEntries(filtered);
+						  })
+
+						res.send(justStrings) */
+
+							let data=[];
+							let filteredLevel =[]
+							let filteredPrice =[]
+							let filteredRanking=[]
+							let filteredLanguaje=[]
+						if(level1 || level2 || level3){
+							courses.forEach((c)=>{						
+								if(c.level == level1 || c.level == level2 || c.level == level3 ) {
+									// data.push(c)
+									filteredLevel.push(c)
+								}
+							})
+
 						}
+						if( price1 || price2 ) {
+							console.log("hay precio")
+						
+							if(filteredLevel.length==0){
+								console.log("filteredlevel=0")							
+								courses.forEach((c)=>{
+									if(c.price == price1 || c.price == price2) {
+										data.push(c)
+									}
+								})
+								
+							} else{
+								console.log("aca")
+								filteredLevel.forEach((c)=>{	
+									
+									if(c.price == price1 || c.price == price2) {
+										data.push(c)}
+									
+								})
+							}
+							console.log(data.length)
+							res.send(data)
+						} else res.send(filteredLevel) 
+						
+						// if(languaje1 || languaje2 || languaje3){
+						// 	if(filteredLevel.length==0 && filteredPrice.length==0){
+						// 		courses.forEach((c)=>{
+						// 			if(c.languaje == languaje1 || c.languaje == languaje|| c.languaje == languaje3) {
+						// 				data.push(c)
+						// 			}
+						// 		})
+						// 	}
+						// }
+						
+						//  else{
+						// 	data.forEach((c)=>{
+						// 		if(c.price == price1 || c.price == price2) data.push(c)
+						// 	})
+						// }
+						// if(ranking1 || ranking2 || ranking3 || ranking4 || ranking5){
+						// 	courses.forEach((c)=>{
+						// 		const average = getScore(c)
+						// 		if(average == ranking1 || average == ranking2 || average == ranking3 || average == ranking4 || average == ranking5) filteredRanking.push(c)
+						// 	})
+						// }
+						// if(languaje1 || languaje2 || languaje3 ){
+						// 	courses.forEach((c)=>{
+						// 		if(languaje1 ==c.languaje|| languaje2==c.languaje || languaje3==c.languaje) filteredLanguaje.push(c)
+						// 	})
+						// }
 
-						/* 
-						courses.forEach((c)=>{
-							//console.log(c)
-							let average = Math.floor(getScore(c));
-							if(c.level=== level1) filtering.push(c); 
-							if(c.level=== level2) filtering.push(c); 
-							if(c.level=== level3) filtering.push(c); 
-							if(c.ranking===ranking1) filtering.push(c)
-							if(c.ranking===ranking2) filtering.push(c)
-							if(c.ranking===ranking3) filtering.push(c)
-							if(c.ranking===ranking4) filtering.push(c)
-							if(c.ranking===ranking5) filtering.push(c)
-							if(c.price === price1) filtering.push(c)
-							if(c.price === price2) filtering.push(c)
-							if(c.languaje === languaje1) filtering.push(c)
-							if(c.languaje === languaje2) filtering.push(c)
+						// data = filteredLevel.concat(filteredPrice.concat(filteredRanking.concat(filteredLanguaje)))
+						
+						// res.send(data)
+							// function removeDuplicates(originalArray, prop) {
+							// 	var newArray = [];
+							// 	var lookupObject  = {};
+						
+							// 	for(var i in originalArray) {
+							// 	lookupObject[originalArray[i][prop]] = originalArray[i];
+							// 	}
+						
+							// 	for(i in lookupObject) {
+							// 		newArray.push(lookupObject[i]);
+							// 	}
+							// 	return newArray;
+							// }
+						
+						// let uniqueArray = removeDuplicates(data, "id");
+						// res.send(data)
 
-
-
-						}) */
-						if(data.length == 0){ res.send(filteredLevel)}
-						else{res.send(data)}
-				    	
+						
 
 						
 						
