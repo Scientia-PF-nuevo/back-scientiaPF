@@ -218,7 +218,7 @@ server.get('/filters', (req, res) => {
 
 						res.send(justStrings) */
 
-							let data=[];
+							 let data=[];
 							let filteredLevel =[]
 							let filteredPrice =[]
 							let filteredRanking=[]
@@ -226,7 +226,7 @@ server.get('/filters', (req, res) => {
 						if(level1 || level2 || level3){
 							courses.forEach((c)=>{						
 								if(c.level == level1 || c.level == level2 || c.level == level3 ) {
-									// data.push(c)
+									
 									filteredLevel.push(c)
 								}
 							})
@@ -236,36 +236,58 @@ server.get('/filters', (req, res) => {
 							console.log("hay precio")
 						
 							if(filteredLevel.length==0){
-								console.log("filteredlevel=0")							
+								// console.log("filteredlevel=0")							
 								courses.forEach((c)=>{
+
 									if(c.price == price1 || c.price == price2) {
-										data.push(c)
+										// data.push(c)
+										filteredPrice.push(c)
 									}
 								})
 								
 							} else{
 								console.log("aca")
+
+								//data = filteredLevel.filter((c)=>{return c.price === price1 || c.price === price2})
+
 								filteredLevel.forEach((c)=>{	
-									
 									if(c.price == price1 || c.price == price2) {
-										data.push(c)}
-									
+										// console.log(true)
+										// data.push(c)}
+										filteredPrice.push(c)}
 								})
 							}
-							console.log(data.length)
-							res.send(data)
-						} else res.send(filteredLevel) 
-						
-						// if(languaje1 || languaje2 || languaje3){
-						// 	if(filteredLevel.length==0 && filteredPrice.length==0){
-						// 		courses.forEach((c)=>{
-						// 			if(c.languaje == languaje1 || c.languaje == languaje|| c.languaje == languaje3) {
-						// 				data.push(c)
-						// 			}
-						// 		})
-						// 	}
-						// }
-						
+							// console.log(data.length)
+							// res.send(data)
+						} 
+						// else res.send(filteredLevel) 
+ 
+						if(languaje1 || languaje2 || languaje3){
+								if(filteredLevel.length==0 && filteredPrice.length==0){
+									courses.forEach((c)=>{
+										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3) {
+											data.push(c)
+											
+										}
+									})
+								} else if(filteredLevel.length==0 && filteredPrice.length>0){
+									filteredPrice.forEach((c)=>{
+										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3){
+											data.push(c)
+										}
+									})
+								} else if(filteredLevel.length>0 && filteredPrice.length==0){
+									filteredLevel.forEach((c)=>{
+										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3){
+											data.push(c)
+										}
+									})
+								} 
+
+							}
+						if(data.length>0) res.send(data)
+						else if(filteredPrice.length>0) res.send(filteredPrice)
+						else res.send(filteredLevel)
 						//  else{
 						// 	data.forEach((c)=>{
 						// 		if(c.price == price1 || c.price == price2) data.push(c)
