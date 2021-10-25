@@ -266,26 +266,69 @@ server.get('/filters', (req, res) => {
 								if(filteredLevel.length==0 && filteredPrice.length==0){
 									courses.forEach((c)=>{
 										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3) {
-											data.push(c)
-											
+											// data.push(c)
+											filteredLanguaje.push(c)
 										}
 									})
+									console.log(filteredLanguaje[0].languaje)
 								} else if(filteredLevel.length==0 && filteredPrice.length>0){
 									filteredPrice.forEach((c)=>{
 										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3){
-											data.push(c)
+											// data.push(c)
+											filteredLanguaje.push(c)
 										}
 									})
 								} else if(filteredLevel.length>0 && filteredPrice.length==0){
 									filteredLevel.forEach((c)=>{
 										if(c.languaje == languaje1 || c.languaje == languaje2|| c.languaje == languaje3){
-											data.push(c)
+											// data.push(c)
+											filteredLanguaje.push(c)
 										}
 									})
 								} 
 
 							}
+						if(ranking1 || ranking2 || ranking3 || ranking4 ||ranking5){
+							if(filteredLevel.length==0 && filteredPrice.length==0 && filteredLanguaje.length ==0){
+								console.log("aca")
+								courses.forEach((c)=>{
+									const average = getScore(c)
+									if(average == ranking1 || average == ranking2|| average == ranking3|| average == ranking4 || average == ranking5) {
+										data.push(c)
+										
+									}
+								})
+							} else if(filteredLanguaje.length >0){
+								filteredLanguaje.forEach((c)=>{
+									const average = getScore(c)
+									if(average == ranking1 || average == ranking2|| average == ranking3|| average == ranking4 || average == ranking5) {
+										data.push(c)
+										
+									}
+								})
+							} else if( filteredPrice.length>0 && filteredLanguaje.length ==0){
+								filteredPrice.forEach((c)=>{
+									const average = getScore(c)
+									if(average == ranking1 || average == ranking2|| average == ranking3|| average == ranking4 || average == ranking5) {
+										data.push(c)
+										
+									}
+								})
+							}else if(filteredLevel.length>0 && filteredPrice.length==0 && filteredLanguaje.length ==0){
+								filteredLevel.forEach((c)=>{
+									const average = getScore(c)
+									if(average == ranking1 || average == ranking2|| average == ranking3|| average == ranking4 || average == ranking5) {
+										data.push(c)
+										
+									}
+								})
+							}
+						}
+						
+						
+						console.log(data.length)
 						if(data.length>0) res.send(data)
+						else if(filteredLanguaje.length>0) res.send(filteredLanguaje)
 						else if(filteredPrice.length>0) res.send(filteredPrice)
 						else res.send(filteredLevel)
 						//  else{
