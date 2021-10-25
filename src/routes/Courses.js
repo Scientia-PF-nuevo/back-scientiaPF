@@ -53,7 +53,9 @@ server.get('/', (req, res) => {
 								url: element.url,
 								id: element.id,
 								categories: element.categories[0].name,
-								score: average
+								score: average,
+								level:element.level,
+								language:element.languaje
 							}
 							//console.log(courses)
 							response.push(obj)
@@ -103,7 +105,9 @@ server.get('/', (req, res) => {
 						url: c.url,
 						id: c.id,
 						categories: c.categories[0].name,
-						score: average
+						score: average,
+						level:c.level,
+						language:c.languaje
 						//score a modificar
 					}
 					return obj;
@@ -117,35 +121,9 @@ server.get('/', (req, res) => {
 })
 
 server.get('/filters', (req, res) => {
-	const {
-	   level1 , 
-	   level2, 
-	   level3,
-	   price1, 
-	   price2, 
-	   languaje1, 
-	   languaje2,
-	   languaje3,
-	   ranking1,
-	   ranking2,
-	   ranking3, 
-	   ranking4, 
-	   ranking5 } = req.query;
+	const {level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5 } = req.query;
 	   
-	   const filterArray = [
-		level1 , 
-		level2, 
-		level3,
-		price1, 
-		price2, 
-		languaje1, 
-		languaje2,
-		languaje3,
-		ranking1,
-		ranking2,
-		ranking3, 
-		ranking4, 
-		ranking5 ];
+	   
 
    
    
@@ -164,9 +142,7 @@ server.get('/filters', (req, res) => {
 				})
 				//console.log({msg: 'No se encontro ningun curso'})
 			} else {
-				const array= [];
-				//console.log("entro")
-					
+				const array= [];					
 					if (level1 || 
 						level2 ||
 						level3 ||
@@ -179,46 +155,8 @@ server.get('/filters', (req, res) => {
 						ranking2 ||
 						ranking3 ||
 						ranking4 || 
-						ranking5 ){
-						// const data = [];
-
-						// var filteredLevel = courses.filter((c) => {
-						// 	return (c.level == level1 || c.level == level2 || c.level == level3 )
-						// });
-						// if(filteredLevel.length == 0){
-						// 	const p = courses.filter((c)=>{
-						// 		return (c.price == price1 || c.price == price2 
-						// 	)})
-							
-						// 	data.push(p)
-						// } else{
-						// 	const f = filteredLevel.filter((c)=>{
-						// 		return (c.price == price1 || c.price == price2 
-						// 	)})
-						// 	data.push(f)
-						// }
-						// 	let data =[]
-						// if(level1){
-						// 	filter= courses.forEach((c)=>{
-						// 		if(c.level.includes(level1)) {
-						// 			data.push(c)}
-						// 		 })
-						// }
-						// res.send(data)
-
-						/* let justStrings;
-
-						  courses.forEach((c)=>{
-							  console.log(c.level)
-							const asArray = Object.entries(c);
-							const filtered=asArray.filter(([key,value])=> value==level1)
-							console.log(filtered)
-							justStrings = Object.fromEntries(filtered);
-						  })
-
-						res.send(justStrings) */
-
-							 let data=[];
+						ranking5 ){		
+							let data=[];
 							let filteredLevel =[]
 							let filteredPrice =[]
 							let filteredRanking=[]
@@ -234,34 +172,47 @@ server.get('/filters', (req, res) => {
 						}
 						if( price1 || price2 ) {
 							console.log("hay precio")
-						
 							if(filteredLevel.length==0){
-								// console.log("filteredlevel=0")							
-								courses.forEach((c)=>{
+								if(price1 =="free" || price2 =="free"){
+									
+									courses.forEach((c)=>{
+										if(c.price == 0) {
+											filteredPrice.push(c)
+										}
+									}) 
+								} 
+								if(price1 =="paid" || price2 =="paid"){
+									courses.forEach((c)=>{
+										if(c.price > 0) {
+											filteredPrice.push(c)
+										}
+									}) 
+								} 
 
-									if(c.price == price1 || c.price == price2) {
-										// data.push(c)
-										filteredPrice.push(c)
-									}
-								})
 								
 							} else{
-								console.log("aca")
-
-								//data = filteredLevel.filter((c)=>{return c.price === price1 || c.price === price2})
-
-								filteredLevel.forEach((c)=>{	
-									if(c.price == price1 || c.price == price2) {
-										// console.log(true)
-										// data.push(c)}
-										filteredPrice.push(c)}
-								})
+								console.log("estoy aca")
+								if(price1 =="free" || price2 =="free"){
+									console.log("true free")
+									filteredLevel.forEach((c)=>{
+										if(c.price == 0) {
+											console.log("pusheando free")
+											filteredPrice.push(c)
+										}
+									}) 
+								} 
+								if(price1 =="paid" || price2 =="paid"){
+									filteredLevel.forEach((c)=>{
+										if(c.price > 0) {
+											console.log("pusheando pagado")
+											filteredPrice.push(c)
+										}
+									}) 
+								}
 							}
-							// console.log(data.length)
-							// res.send(data)
+							
 						} 
-						// else res.send(filteredLevel) 
- 
+						
 						if(languaje1 || languaje2 || languaje3){
 								if(filteredLevel.length==0 && filteredPrice.length==0){
 									courses.forEach((c)=>{
@@ -326,134 +277,18 @@ server.get('/filters', (req, res) => {
 						}
 						
 						
-						console.log(data.length)
-						if(data.length>0) res.send(data)
-						else if(filteredLanguaje.length>0) res.send(filteredLanguaje)
-						else if(filteredPrice.length>0) res.send(filteredPrice)
-						else res.send(filteredLevel)
-						//  else{
-						// 	data.forEach((c)=>{
-						// 		if(c.price == price1 || c.price == price2) data.push(c)
-						// 	})
-						// }
-						// if(ranking1 || ranking2 || ranking3 || ranking4 || ranking5){
-						// 	courses.forEach((c)=>{
-						// 		const average = getScore(c)
-						// 		if(average == ranking1 || average == ranking2 || average == ranking3 || average == ranking4 || average == ranking5) filteredRanking.push(c)
-						// 	})
-						// }
-						// if(languaje1 || languaje2 || languaje3 ){
-						// 	courses.forEach((c)=>{
-						// 		if(languaje1 ==c.languaje|| languaje2==c.languaje || languaje3==c.languaje) filteredLanguaje.push(c)
-						// 	})
-						// }
+						let coursesToSend =[];
+						if(data.length>0) coursesToSend=data
+						else if(filteredLanguaje.length>0) coursesToSend=filteredLanguaje
+							
+						else if(filteredPrice.length>0) coursesToSend=filteredPrice
 
-						// data = filteredLevel.concat(filteredPrice.concat(filteredRanking.concat(filteredLanguaje)))
-						
-						// res.send(data)
-							// function removeDuplicates(originalArray, prop) {
-							// 	var newArray = [];
-							// 	var lookupObject  = {};
-						
-							// 	for(var i in originalArray) {
-							// 	lookupObject[originalArray[i][prop]] = originalArray[i];
-							// 	}
-						
-							// 	for(i in lookupObject) {
-							// 		newArray.push(lookupObject[i]);
-							// 	}
-							// 	return newArray;
-							// }
-						
-						// let uniqueArray = removeDuplicates(data, "id");
-						// res.send(data)
+						else coursesToSend=filteredLevel
 
-						
-
-						
-						
-					/* 
-						if(array.length == 0){
-							const filteredCourses = courses.map(c => {
-								let average = Math.floor(getScore(c));
-								const d = stringifyDate(c.createdAt)
-								const obj = {
-									date: d,
-									name: c.name,
-									description: c.description,
-									price: c.price,
-									url: c.url,
-									id: c.id,
-									categories: c.categories[0].name,
-									score: average
-									//score a modificar
-								}
-								return obj;
-							})
-							array.push(c)
-						} *//* else{
-							const filteredCourses = array.map(c => {
-								let average = Math.floor(getScore(c));
-								const d = stringifyDate(c.createdAt)
-								const obj = {
-									date: d,
-									name: c.name,
-									description: c.description,
-									price: c.price,
-									url: c.url,
-									id: c.id,
-									categories: c.categories[0].name,
-									score: average
-									//score a modificar
-								}
-								return obj;
-							})
-							array.push(c)
-						}
-						 */
-				   
-				   /* if(languaje1 || languaje2 || languaje3 === c.level && array.length == 0){
-					const filteredCourses = courses.map(c => {
-						let average = Math.floor(getScore(c));
-						const d = stringifyDate(c.createdAt)
-						const obj = {
-							date: d,
-							name: c.name,
-							description: c.description,
-							price: c.price,
-							url: c.url,
-							id: c.id,
-							categories: c.categories[0].name,
-							score: average
-							//score a modificar
-						}
-						return obj;
-					})
-					array.push(c)
-				   }
-				   if(price1 || price2 === c.level && array.length == 0){
-					const filteredCourses = courses.map(c => {
-						let average = Math.floor(getScore(c));
-						const d = stringifyDate(c.createdAt)
-						const obj = {
-							date: d,
-							name: c.name,
-							description: c.description,
-							price: c.price,
-							url: c.url,
-							id: c.id,
-							categories: c.categories[0].name,
-							score: average
-							//score a modificar
-						}
-						return obj;
-					})
-					array.push(c)
-					}
-					if(ranking1 || ranking2 || ranking3 || ranking4 || ranking5 === c.level && array.length == 0){
-						const filteredCourses = courses.map(c => {
-							let average = Math.floor(getScore(c));
-							const d = stringifyDate(c.createdAt)
+						const filteredCourses = coursesToSend.map(c => {
+							let average = getScore(c)
+							const d = stringifyDate(c.createdAt)							
+		
 							const obj = {
 								date: d,
 								name: c.name,
@@ -462,23 +297,18 @@ server.get('/filters', (req, res) => {
 								url: c.url,
 								id: c.id,
 								categories: c.categories[0].name,
-								score: average
-								//score a modificar
+								score: average,
+								level:c.level,
+								language:c.languaje
+								
 							}
 							return obj;
 						})
-						array.push(c)
-					   }	 */
-				  
+						res.send(filteredCourses)
 				}
-				   
-			   
-			   
-			   //console.log(filteredCourses)
-   
-			  /*  res.status(200).send(filteredCourses) */
-		   }
-	   })
+				
+		   	}
+	   	})
    
    
    
@@ -557,7 +387,6 @@ server.post('/newcourse', async (req, res) => {
 	if (
 		!name ||
 		!description ||
-		!price ||
 		!url ||
 		!category ||
 		!email ||
@@ -570,7 +399,7 @@ server.post('/newcourse', async (req, res) => {
 			msg: 'Todos los campos requeridos'
 		})
 	}
-	try {
+	
 		const newCourse = await Course.create({
 			name,
 			description,
@@ -592,12 +421,7 @@ server.post('/newcourse', async (req, res) => {
 			newCourse
 		})
 
-	} catch (err) {
-		//console.log("error: ",err);
-		res.status(400).send({
-			msg: "error"
-		})
-	}
+	 
 
 })
 // localhost:3001/courses/newcategory

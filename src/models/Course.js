@@ -4,6 +4,11 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('course', {
+    // id:{
+    //   type:DataTypes.INTEGER,
+    //   unique:true,
+    //   primaryKey:true
+    // },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -34,15 +39,18 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    solds:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
+      defaultValue:0
+    },
     languaje:{
-      type: DataTypes.TEXT,
-      default :"",
-      allowNull: true,
+      type:DataTypes.TEXT,
+      allowNull:false
     },
     level:{
-      type: DataTypes.TEXT,
-      allowNull: true,
-      default :"",
+      type:DataTypes.TEXT,
+      allowNull:false
     }
   });
 };
