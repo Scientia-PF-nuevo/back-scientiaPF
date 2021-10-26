@@ -21,14 +21,18 @@ try {
 //  localhost:3001/users/email  ---- busca usuario por email
 server.get ('/email/:email', async (req, res) => {
     const { email } = req.params;
-    console.log(email)
+    // console.log(email)
     try {
       const usuario = await User.findOne({
           where: {
               email:email
           },
-          include: [Bought_course]
+          include: [
+            {model:Bought_course},
+            {model:Course}
+          ]
       })
+      
       if(usuario){
         const coursesAndData=[];
         const coursesId = usuario.bought_courses.map(async(c)=>{
@@ -40,7 +44,9 @@ server.get ('/email/:email', async (req, res) => {
             },
             include:[
               {model:Review},
-              {model:Category}]
+              {model:Category},
+              {model:User},
+            ]
           })
           console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
@@ -54,7 +60,8 @@ server.get ('/email/:email', async (req, res) => {
             categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
-            url:course.dataValues.url
+            url:course.dataValues.url,
+            uploadedBy:course.user.email
           }
           coursesAndData.push(courseInfo)
 
@@ -62,7 +69,10 @@ server.get ('/email/:email', async (req, res) => {
         })
         
         Promise.all(coursesId).then(()=>{
-          
+          const uploadedCourses =[]
+          if(usuario.courses){
+            usuario.courses.forEach((c)=>uploadedCourses.push(c.id))
+          }
           const obj={
             firstName:usuario.firstName,
             lastName:usuario.lastName,
@@ -75,10 +85,9 @@ server.get ('/email/:email', async (req, res) => {
             country:usuario.country,
             // bought_courses:usuario.bought_courses,
             coursesAndData,
-            
-  
+            uploadedCourses
           }
-          res.send( obj)
+          res.send(obj)
         })
       } else {
         res.status(404).send("El usuario no se ha encontrado")
@@ -92,17 +101,7 @@ server.get ('/email/:email', async (req, res) => {
 
 
 server.post('/register', async (req, res)=> { 
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      address,
-      phone,
-      city,
-      province,
-      postalcode,
-      country,
+    const {firstName, lastName,email,password,address,phone,city,province,postalcode,country,
     } = req.body;
     try {
       const user = await User.create(
@@ -155,6 +154,41 @@ server.post('/register', async (req, res)=> {
     }
 })
 
+server.put('/updateInfo/:email',async(req,res)=>{
+  const {firstName, lastName,password,address,phone,city,province,postalcode,country,
+  } = req.body;
+  const email = req.params.email;
+  const user = await User.findOne({
+    where: {
+      email
+    }
+  })
+  if(user){
+    try{
+      const update = await User.update({
+          firstName,
+          lastName,
+          password,
+          address,
+          phone,
+          city, 
+          province, 
+          postalcode,
+          country
+      },{
+        where:{
+        email:email
+      }
+    })
+      res.send("Informacion actualizada con exito")
+    } catch(e){
+      console.log(e)
+    }
+  }else {
+    res.status(404).send("El email no corresponde a un usuario")
+  }
+
+})
 
 
 
