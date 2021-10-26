@@ -97,7 +97,7 @@ server.get('/', (req, res) => {
 			} else {
 
 				const filteredCourses = courses.map(c => {
-					let average = Math.round(getScore(element))
+					let average = Math.round(getScore(c))
 					const d = stringifyDate(c.createdAt)
 					
 
@@ -170,8 +170,26 @@ server.get('/filters', (req, res) => {
 
 				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[8],booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12])
 				
+				let coursesToSend = filteredCourses4.map((element)=>{
+					let average = Math.round(getScore(element))
+						const d = stringifyDate(element.createdAt)
+					 const obj = {
+						name: element.name,
+						date: d,
+						description: element.description,
+						price: element.price,
+						url: element.url,
+						id: element.id,
+						categories: element.categories[0].name,
+						score: average,
+						level:element.level,
+						language:element.languaje
+					}
+					return obj
+				})
+				
 				console.log(filteredCourses4.length)
-				filteredCourses.length>0 ? res.send(filteredCourses4) : res.send("No hay cursos")
+				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
 		// 					
 		    	}
 	   	 })
@@ -217,7 +235,7 @@ server.get('/id/:id',async  (req, res) => {
 				}
 				
 				
-				res.status(200).send({obj})
+				res.status(200).send(obj)
 			} else {
 				res.status(404).send({
 					msg: 'No se encontro ningun curso'
