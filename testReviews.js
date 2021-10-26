@@ -89,6 +89,11 @@ const reviews=[
 {"courseId":18,"comments":"Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend.","score":3,"email":"mbranscomb25@paginegialle.it"},
 {"courseId":18,"comments":"Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy.","score":2,"email":"emcglynn26@ted.com"},
 
+{"courseId":19,"comments":"Etiam faucibus cursus urna. Ut tellus. Nulla ut erat id mauris vulputate elementum.","score":1,"email":"gdarlison23@woothemes.com"},
+{"courseId":19,"comments":"Duis mattis egestas metus. Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh. Quisque id justo sit amet sapien dignissim vestibulum.","score":1,"email":"rfitzsimons24@pagesperso-orange.fr"},
+{"courseId":19,"comments":"Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend.","score":1,"email":"mbranscomb25@paginegialle.it"},
+{"courseId":19,"comments":"Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy.","score":1,"email":"emcglynn26@ted.com"},
+
 ]
 
 module.exports = reviews
