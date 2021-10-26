@@ -1,4 +1,5 @@
 const data = [
+
 {"name":"Curso de javascript",
 "description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus",
 "email":"gschmuhl0@walmart.com","url":"https://conceptodefinicion.de/wp-content/uploads/2017/10/Javascript2.jpg","price":1,"urlVideo":"https://www.youtube.com/watch?v=z95mZVUcJ-E&ab_channel=SoyDalto","category":"programming"},
@@ -19,6 +20,7 @@ const data = [
 {"name":"Curso de fotografia digital","description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus","email":"czylberdikd@uiuc.edu","urlVideo":"https://www.youtube.com/watch?v=tsKiqFCQsYQ&t=4s&ab_channel=YoneyGallardo","url":"https://universoabiertoblog.files.wordpress.com/2018/11/curso-fotografia-digital.jpg","price":9,"category":"photography"},
 {"name":"Curso de restauracion de camara fotografica","description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus","email":"ehebbse@slate.com","urlVideo":"https://www.youtube.com/watch?v=SZ2csAqIhKk&ab_channel=Restoration2R","url":"https://previews.123rf.com/images/ryzhov/ryzhov1701/ryzhov170100083/70505860-c%C3%A1mara-r%C3%A9flex-digital-rota-en-la-reparaci%C3%B3n-de-centro-de-servicio-de-primer-plano.jpg","price":11,"category":"photography"},
 {"name":"Curso mantenimiento de camaras de seguridad","description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus","email":"sklimschg@bizjournals.com","urlVideo":"https://www.youtube.com/watch?v=w32ckA5wWn8&ab_channel=AltatecSeguridad","url":"https://http2.mlstatic.com/D_NQ_NP_806790-MLA44475826727_012021-O.webp","price":16,"category":"photography"},
+
 
 
 

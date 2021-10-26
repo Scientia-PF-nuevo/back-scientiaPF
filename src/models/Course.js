@@ -39,5 +39,18 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    solds:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
+      defaultValue:0
+    },
+    languaje:{
+      type:DataTypes.TEXT,
+      allowNull:false
+    },
+    level:{
+      type:DataTypes.TEXT,
+      allowNull:false
+    }
   });
 };
