@@ -61,7 +61,7 @@ server.get ('/email/:email', async (req, res) => {
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            uploadedBy:course.user.email
+            //uploadedBy:course.user.email
           }
           coursesAndData.push(courseInfo)
 
@@ -160,9 +160,11 @@ server.put('/updateInfo/:email',async(req,res)=>{
   const email = req.params.email;
   const user = await User.findOne({
     where: {
-      email
+      email,
+      password
     }
   })
+
   if(user){
     try{
       const update = await User.update({
@@ -185,11 +187,38 @@ server.put('/updateInfo/:email',async(req,res)=>{
       console.log(e)
     }
   }else {
-    res.status(404).send("El email no corresponde a un usuario")
+    res.status(404).send("El email y constraseña no corresponden a un usuario")
   }
 
 })
 
+server.put('/updatePw/:email',async(req,res)=>{
+  const {oldPassword,newPassword} = req.body;
+  const {email} = req.params
+  console.log(email)
+  const user = await User.findOne({
+    where: {
+      email,
+      password: oldPassword
+    }
+  })
+  if(user){
+    try{
+      const update = await User.update({
+          password: newPassword
+      },{
+        where:{
+        email:email
+      }
+    })
+      res.send("Informacion actualizada con exito")
+    } catch(e){
+      console.log(e)
+    }
+  }else {
+    res.status(404).send("El email y password no corresponden a un usuario")
+  }
+})
 
 
 
