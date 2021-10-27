@@ -252,6 +252,59 @@ server.get('/id/:id',async  (req, res) => {
 // si nos funciona la dejamos
 // localhost:3001/courses/newcourse
 server.post('/newcourse', async (req, res) => {
+	const {
+		name,
+		description,
+		price,
+		url,
+		category,
+		email,
+		urlVideo,
+		languaje,
+		level
+	} = req.body
+
+	if (
+		!name ||
+		!description ||
+		!url ||
+		!category ||
+		!email ||
+		!urlVideo ||
+		!languaje ||
+		!level
+		
+	) {
+		res.status(400).send({
+			msg: 'Todos los campos requeridos'
+		})
+	}
+	
+		const newCourse = await Course.create({
+			name,
+			description,
+			price,
+			url,
+			email,
+			urlVideo,
+			languaje,
+			level
+		})
+		const categ = await Category.findOne({
+			where: {
+				name: category
+			}
+		})
+		await newCourse.addCategories(categ)
+		res.status(201).send({
+			msg: 'curso cargado exitosamente',
+			newCourse
+		})
+
+	 
+
+})
+/* server.post('/newcourse', async (req, res) => {
 
 	const {
 		name,
@@ -276,7 +329,7 @@ server.post('/newcourse', async (req, res) => {
 		!level
 		
 	) {	
-
+		console.log("no llegan los parametros")
 		res.status(400).send({
 			msg: 'Todos los campos requeridos'
 		})
@@ -313,13 +366,14 @@ server.post('/newcourse', async (req, res) => {
 		})
 	}
 	catch (error) {
+		console.log("error de ruta")
 		res.status(400).send({
 			msg: 'Error ruta crear curso'
 		})
 	}
 	 
 
-})
+}) */
 // localhost:3001/courses/newcategory
 server.post('/newcategory', async (req, res) => {
 	const {
