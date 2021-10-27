@@ -7,6 +7,7 @@ const filterLevel = require('../functions/filterLevel')
 const filterPrice = require('../functions/filterPrice')
 const filterLanguaje = require('../functions/filterLanguaje')
 const filterRanking = require('../functions/filterRanking')
+const redirectLogin = require('../middleware/redirectLogin')
 
 //prueba
 //localhost:3001/courses    obtener todos los cursos
@@ -17,6 +18,7 @@ server.get('/', (req, res) => {
 	const {
 		name
 	} = req.query;
+	
 
 	name ? (
 
@@ -304,7 +306,8 @@ server.get('/id/:id',async  (req, res) => {
 	 
 
 }) */
-server.post('/newcourse', async (req, res) => {
+//agregar middleware para que solo pueda ser usado por el usuario que lo creo
+server.post('/newcourse' , async (req, res) => {
 
 	const {
 		name,
@@ -376,7 +379,7 @@ server.post('/newcourse', async (req, res) => {
 
 })
 // localhost:3001/courses/newcategory
-server.post('/newcategory', async (req, res) => {
+server.post('/newcategory' ,async (req, res) => {
 	const {
 		name
 	} = req.body
@@ -439,7 +442,7 @@ server.get("/coursescategory", async (req, res) => {
 		)
 })
 
-server.post("/newreview", async (req, res) => {
+server.post("/newreview" ,async (req, res) => {
 	const {
 		comments,
 		score,
@@ -491,7 +494,7 @@ server.get("/allreviews", async (req, res) => {
 		)
 })
 
-server.put("/:email", async (req, res) => {
+server.put("/:email", redirectLogin, async (req, res) => {
 	const email = req.params;
 	const {
 		courseId,
