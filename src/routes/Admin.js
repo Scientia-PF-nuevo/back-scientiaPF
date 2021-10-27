@@ -20,7 +20,7 @@ server.put('/promote/:email', /*isAdmin,*/ (req, res) => {
 server.put('/ban/:email', /*isAdmin,*/ (req, res) => {
 	const estado  = req.body.isAdmin;
 	const email = req.params.email;
-    User.findByPk({where:{email:email}})
+    User.findOne({where:{email:email}})
 		.then((user) => {
 			if (!user) return res.status(404).send('User not found')
 			return user.update({ active: estado })

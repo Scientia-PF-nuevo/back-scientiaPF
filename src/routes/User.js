@@ -32,7 +32,7 @@ server.get ('/email/:email', async (req, res) => {
             {model:Course}
           ]
       })
-      
+      //res.send(usuario)
       if(usuario){
         const coursesAndData=[];
         const coursesId = usuario.bought_courses.map(async(c)=>{
@@ -48,20 +48,21 @@ server.get ('/email/:email', async (req, res) => {
               {model:User},
             ]
           })
-          console.log(course)
+         // console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
             if(c.courseId === r.dataValues.courseId) {
               reviews.push(r.dataValues)
             } 
 
           })
+        //res.send(course)
           const courseInfo = {
             course:c,
             categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            uploadedBy:course.user.email
+            //uploadedBy:course.userEmail
           }
           coursesAndData.push(courseInfo)
 
