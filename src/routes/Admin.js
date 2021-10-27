@@ -10,16 +10,24 @@ server.get("/listdata" ,async(req, res)=>{
 
   const courses = await Course.findAll();
   
-   const filter= courses.filter(course => course.state === 'pendingToAprove')
+   const filter= courses.filter(course => course.state === 'pendingToApprove')
   res.send(filter);
 
 
 } )
 
 // put para cambiar el estado del curso 
-server.patch("/editcoursestate:/state" ,(req, res)=>{
-  //curso para aprovar link de video, Imagen, email, 
- const { state } = req.params 
+server.patch("/editcoursestate:/state:/id" ,(req, res)=>{
+ 
+  const { state, id } = req.params 
+
+	Course.findByPk(id)
+		.then((course) => {
+			if (!course) return res.status(404).send('Id not valid')
+			return course.update({ state: state })
+		})
+		.then((course) => res.send(course))
+		.catch((err) => res.status(500).send(err))
 
 
 } )
@@ -30,11 +38,11 @@ server.put('/promote/:email', /*isAdmin,*/ (req, res) => {
 	const estado  = req.body.isAdmin;
     const email = req.params.email;
 	User.findOne({where: {email:email}})
-		.then((user) => {
-			if (!user) return res.status(404).send('User not found')
-			return user.update({ isAdmin: estado })
+		.then((course) => {
+			if (!course) return res.status(404).send('User not found')
+			return course.update({ isAdmin: estado })
 		})
-		.then((user) => res.send(user))
+		.then((course) => res.send(course))
 		.catch((err) => res.status(500).send(err))
 });
 
@@ -44,11 +52,11 @@ server.put('/ban/:email', /*isAdmin,*/ (req, res) => {
 	const estado  = req.body.isAdmin;
 	const email = req.params.email;
     User.findOne({where:{email:email}})
-		.then((user) => {
-			if (!user) return res.status(404).send('User not found')
-			return user.update({ active: estado })
+		.then((course) => {
+			if (!course) return res.status(404).send('User not found')
+			return course.update({ active: estado })
 		})
-		.then((user) => res.send(user))
+		.then((course) => res.send(course))
 		.catch((err) => res.status(500).send(err))
 });
 
@@ -64,7 +72,7 @@ server.post('/newadmin', async (req, res)=> {
             res.send(400).send('Faltan datos');
         }
     try {
-      const user = await User.create(
+      const course = await User.create(
         {
           firstName,
           lastName,
@@ -94,11 +102,11 @@ server.post('/newadmin', async (req, res)=> {
         }
       );
   
-      if (user) {
+      if (course) {
         res.status(200).send({
           msg: "Admin created successfully",
           status: 200,
-          user,
+          course,
         });
       } else {
         res.status(500).send({
