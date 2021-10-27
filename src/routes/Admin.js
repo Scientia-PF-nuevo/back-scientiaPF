@@ -1,8 +1,28 @@
 const server = require('express').Router()
-const { User } = require('../db.js')
+const { User, Course } = require('../db.js')
 
 
 
+
+
+server.get("/listdata" ,async(req, res)=>{
+  //curso para aprovar link de video, Imagen, email, 
+
+  const courses = await Course.findAll();
+  
+   const filter= courses.filter(course => course.state === 'pendingToAprove')
+  res.send(filter);
+
+
+} )
+
+// put para cambiar el estado del curso 
+server.patch("/editcoursestate:/state" ,(req, res)=>{
+  //curso para aprovar link de video, Imagen, email, 
+ const { state } = req.params 
+
+
+} )
 
 
 //para promover un usuario normal a admin

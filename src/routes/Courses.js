@@ -251,7 +251,7 @@ server.get('/id/:id',async  (req, res) => {
 //esta ruta es solo de prueba para cargar manualmente cursos para probar
 // si nos funciona la dejamos
 // localhost:3001/courses/newcourse
-server.post('/newcourse', async (req, res) => {
+/* server.post('/newcourse', async (req, res) => {
 	const {
 		name,
 		description,
@@ -303,8 +303,8 @@ server.post('/newcourse', async (req, res) => {
 
 	 
 
-})
-/* server.post('/newcourse', async (req, res) => {
+}) */
+server.post('/newcourse', async (req, res) => {
 
 	const {
 		name,
@@ -358,6 +358,7 @@ server.post('/newcourse', async (req, res) => {
 			}
 		})
 		await newCourse.addCategories(categ)
+		
 		await user.addCourses(newCourse)
 
 		res.status(201).send({
@@ -373,7 +374,7 @@ server.post('/newcourse', async (req, res) => {
 	}
 	 
 
-}) */
+})
 // localhost:3001/courses/newcategory
 server.post('/newcategory', async (req, res) => {
 	const {
