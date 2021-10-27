@@ -51,6 +51,10 @@ module.exports = (sequelize) => {
     level:{
       type:DataTypes.TEXT,
       allowNull:false
-    }
+    },
+    state: {
+      type: DataTypes.ENUM('pendingToAprove', 'active', 'ban', 'rejected'),
+      defaultValue: 'pendingToAprove',
+   } 
   });
 };

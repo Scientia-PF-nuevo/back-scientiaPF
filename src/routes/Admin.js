@@ -2,6 +2,9 @@ const server = require('express').Router()
 const { User } = require('../db.js')
 
 
+
+
+
 //para promover un usuario normal a admin
 server.put('/promote/:email', /*isAdmin,*/ (req, res) => {
 	const estado  = req.body.isAdmin;
@@ -92,7 +95,10 @@ server.post('/newadmin', async (req, res)=> {
     }
 })
 
+// consulta de ordenes pendientes
+server.get('/orders', async (req, res) => {
 
+})
 
 
 module.exports = server
