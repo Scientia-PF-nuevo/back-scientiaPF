@@ -32,7 +32,7 @@ server.get ('/email/:email', async (req, res) => {
             {model:Course}
           ]
       })
-      
+      //res.send(usuario)
       if(usuario){
         const coursesAndData=[];
         const coursesId = usuario.bought_courses.map(async(c)=>{
@@ -48,20 +48,22 @@ server.get ('/email/:email', async (req, res) => {
               {model:User},
             ]
           })
-          console.log(course)
+         // console.log(course)
           course.dataValues.reviews.forEach((r)=>{            
             if(c.courseId === r.dataValues.courseId) {
               reviews.push(r.dataValues)
             } 
 
           })
+        //res.send(course)
           const courseInfo = {
             course:c,
             categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            //uploadedBy:course.user.email
+            uploadedBy:course.user.email
+
           }
           coursesAndData.push(courseInfo)
 
@@ -116,6 +118,7 @@ server.post('/register', async (req, res)=> {
           province,
           postalcode,
           country,
+          active:true,
         },
         {
           fields: [
@@ -219,6 +222,7 @@ server.put('/updatePw/:email',async(req,res)=>{
     res.status(404).send("El email y password no corresponden a un usuario")
   }
 })
+
 
 
 

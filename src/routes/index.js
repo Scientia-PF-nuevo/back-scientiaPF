@@ -19,12 +19,14 @@ const coursesRouter = require('./Courses.js')
 const orderRouter=require('./Order.js')
 const purchases  = require('./Purchase')
 const createStock = require('./CreateStock')
+const createAdmin = require('./Admin')
 
 router.use('/users', userRouter)
 router.use('/courses', coursesRouter)
 router.use('/order',orderRouter)
 router.use('/purchase', purchases)
 router.use('/disc', createStock)
+router.use('/admin', createAdmin)
 
 
 module.exports = router
