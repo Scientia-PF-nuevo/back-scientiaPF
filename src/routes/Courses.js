@@ -250,62 +250,7 @@ server.get('/id/:id',async  (req, res) => {
 	}
 })
 
-//esta ruta es solo de prueba para cargar manualmente cursos para probar
-// si nos funciona la dejamos
-// localhost:3001/courses/newcourse
-/* server.post('/newcourse', async (req, res) => {
-	const {
-		name,
-		description,
-		price,
-		url,
-		category,
-		email,
-		urlVideo,
-		languaje,
-		level
-	} = req.body
 
-	if (
-		!name ||
-		!description ||
-		!url ||
-		!category ||
-		!email ||
-		!urlVideo ||
-		!languaje ||
-		!level
-		
-	) {
-		res.status(400).send({
-			msg: 'Todos los campos requeridos'
-		})
-	}
-	
-		const newCourse = await Course.create({
-			name,
-			description,
-			price,
-			url,
-			email,
-			urlVideo,
-			languaje,
-			level
-		})
-		const categ = await Category.findOne({
-			where: {
-				name: category
-			}
-		})
-		await newCourse.addCategories(categ)
-		res.status(201).send({
-			msg: 'curso cargado exitosamente',
-			newCourse
-		})
-
-	 
-
-}) */
 //agregar middleware para que solo pueda ser usado por el usuario que lo creo
 server.post('/newcourse' , async (req, res) => {
 
