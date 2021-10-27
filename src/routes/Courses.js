@@ -9,8 +9,6 @@ const filterLanguaje = require('../functions/filterLanguaje')
 const filterRanking = require('../functions/filterRanking')
 const redirectLogin = require('../middleware/redirectLogin')
 
-//prueba
-//localhost:3001/courses    obtener todos los cursos
 
 
 
@@ -18,18 +16,16 @@ server.get('/', (req, res) => {
 	const {
 		name
 	} = req.query;
-	
 
 	name ? (
 
 			Course.findAll({
-				include: [{
-						model: Category
-					},
-					{
-						model: Review
-					}
-				]
+				include: [{model: Category},
+						{model: Review,}
+				],
+				where: {
+					state:'active'
+				}
 			}).then((courses) => {
 				if (courses == null) {
 					res.status(404).send({
@@ -44,6 +40,7 @@ server.get('/', (req, res) => {
 
 						if (element.name.toLowerCase().includes(n)) {
 							const date = stringifyDate(element.createdAt)
+
 
 							const obj = {
 								name: element.name,
@@ -77,13 +74,11 @@ server.get('/', (req, res) => {
 
 		:
 		Course.findAll({
-			include: [{
-					model: Category
-				},
-				{
-					model: Review
+			include: [{model: Category},
+				{model: Review}],
+				where: {
+					state:'active'
 				}
-			]
 		}).then((courses) => {
 			if (courses.length == 0) {
 				res.status(404).send({
@@ -108,11 +103,11 @@ server.get('/', (req, res) => {
 						score: average,
 						level:c.level,
 						language:c.languaje
-						//score a modificar
+						
 					}
 					return obj;
 				})
-				//console.log(filteredCourses)
+				
 
 				res.status(200).send(filteredCourses)
 			}
@@ -120,42 +115,74 @@ server.get('/', (req, res) => {
 
 })
 
-server.get('/filters', (req, res) => {
-	const {level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5 } = req.query;
+server.get('/filters', async(req, res) => {
+	const {level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
 	let parametres = [level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
 	let booleanparametres = []
-	booleanparametres= parametres.map((p)=>{
-		
+	booleanparametres= parametres.map((p)=>{	
 		if(p==="false" || typeof(p)==="undefined") return false;
 		else if(p==="true") return true;
-		
-		
 	})
-
-
-   
-   
-		Course.findAll({
-			include: [{
-					model: Category
+		let coursesToFilter = []
+		console.log(category)
+		if(category !== "all"){
+			console.log("filtrando por category")
+			coursesCategory=[];
+			coursesCategory= await Category.findAll({
+				where:{
+					name:category
 				},
-				{
-					model: Review
+				include:{
+					model:Course,
+					where:{
+						state:"active"
+					},
+					include:{model:Review}
+			}
+			})
+			
+			
+			coursesToFilter= coursesCategory[0].dataValues.courses.map((c)=>{
+				
+				const obj = {
+					name: c.name,
+					description: c.description,
+					price: c.price,
+					url: c.url,
+					id: c.id,
+					categories: [{
+						name:category,
+						id:coursesCategory.id,
+						createdAt:coursesCategory.createdAt,
+						updatedAt:coursesCategory.updatedAt,
+						course_category:c.course_category
+					}],
+					reviews:c.reviews,
+					createdAt:c.createdAt,
+					level:c.level,
+					languaje:c.languaje
+
 				}
-			]
-		}).then((courses) => {
-			if (courses.length == 0) {
-				res.status(404).send({
-					msg: 'No se encontro ningun curso en la bd'
-				})
-				//console.log({msg: 'No se encontro ningun curso'})
+				return obj;
+			})
 			} else {
+			coursesToFilter = await Course.findAll({
+				where:{
+					state:'active'
+				},
+				include: [{model: Category},
+				{model: Review}]
+			})
+			console.log("todos")
+			
+		}		
+		
 				let filteredCourses =[]
 				let filteredCourses2 =[]
 				let filteredCourses3 =[]
 				let filteredCourses4 =[]
 
-				filteredCourses = filterLevel(courses,booleanparametres[0],booleanparametres[1],booleanparametres[2])
+				filteredCourses = filterLevel(coursesToFilter,booleanparametres[0],booleanparametres[1],booleanparametres[2])
 
 				console.log(filteredCourses.length)
 				filteredCourses2 = filterPrice(filteredCourses,booleanparametres[3],booleanparametres[4])
@@ -167,6 +194,7 @@ server.get('/filters', (req, res) => {
 				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[8],booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12])
 				
 				let coursesToSend = filteredCourses4.map((element)=>{
+					console.log(element)
 					let average = Math.round(getScore(element))
 						const d = stringifyDate(element.createdAt)
 					 const obj = {
@@ -186,12 +214,7 @@ server.get('/filters', (req, res) => {
 				
 				console.log(filteredCourses4.length)
 				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
-		// 					
-		    	}
-	   	 })
-   
-   
-   
+		
    })
 
 server.get('/id/:id',async  (req, res) => {
@@ -250,9 +273,7 @@ server.get('/id/:id',async  (req, res) => {
 	}
 })
 
-
-//agregar middleware para que solo pueda ser usado por el usuario que lo creo
-server.post('/newcourse' , async (req, res) => {
+server.post('/newcourse', async (req, res) => {
 
 	const {
 		name,
@@ -263,7 +284,8 @@ server.post('/newcourse' , async (req, res) => {
 		email,
 		urlVideo,
 		languaje,
-		level
+		level,
+		state
 	} = req.body
 
 	if (
@@ -297,7 +319,8 @@ server.post('/newcourse' , async (req, res) => {
 			email,
 			urlVideo,
 			languaje,
-			level
+			level,
+			state
 		})
 
 		const categ = await Category.findOne({
@@ -324,7 +347,7 @@ server.post('/newcourse' , async (req, res) => {
 
 })
 // localhost:3001/courses/newcategory
-server.post('/newcategory' ,async (req, res) => {
+server.post('/newcategory', async (req, res) => {
 	const {
 		name
 	} = req.body
@@ -377,7 +400,8 @@ server.get("/coursescategory", async (req, res) => {
 
 	const categories = await Category.findAll({
 		where: {
-			name: name
+			name: name,
+			state:'active'
 		},
 		include: Course
 	})
@@ -387,7 +411,7 @@ server.get("/coursescategory", async (req, res) => {
 		)
 })
 
-server.post("/newreview" ,async (req, res) => {
+server.post("/newreview", async (req, res) => {
 	const {
 		comments,
 		score,
@@ -439,7 +463,7 @@ server.get("/allreviews", async (req, res) => {
 		)
 })
 
-server.put("/:email", redirectLogin, async (req, res) => {
+server.put("/:email",redirectLogin, async (req, res) => {
 	const email = req.params;
 	const {
 		courseId,

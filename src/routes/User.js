@@ -96,7 +96,8 @@ server.get ('/email/:email', redirectLogin, async (req, res) => {
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            uploadedBy:course.user.email
+            uploadedBy:course.user.email,
+            state:course.state
 
           }
           coursesAndData.push(courseInfo)
