@@ -103,11 +103,11 @@ conn.sync({ force: true }).then(async () => {
     cargaReviews();
     cargaCompra(); */
     setTimeout(cargaUsers, 0000, 'usuarios reg')
-    setTimeout(cargaCategoria, 1000, 'categorias')
-    setTimeout(cargaCursos, 2000, 'cursos')
-    setTimeout(cargaReviews, 3000, 'reviews');
-    setTimeout(cargaCompra, 5000, 'compra de ema');
-    setTimeout(cargaPago, 7000, 'pago de emma');
+    setTimeout(cargaCategoria, 7000, 'categorias')
+    setTimeout(cargaCursos, 10000, 'cursos')
+    setTimeout(cargaReviews, 14000, 'reviews');
+    setTimeout(cargaCompra, 16000, 'compra de ema');
+    setTimeout(cargaPago, 19000, 'pago de emma');
 
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 

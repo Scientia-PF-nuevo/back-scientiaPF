@@ -7,6 +7,7 @@ const filterLevel = require('../functions/filterLevel')
 const filterPrice = require('../functions/filterPrice')
 const filterLanguaje = require('../functions/filterLanguaje')
 const filterRanking = require('../functions/filterRanking')
+const redirectLogin = require('../middleware/redirectLogin')
 
 
 
@@ -462,7 +463,7 @@ server.get("/allreviews", async (req, res) => {
 		)
 })
 
-server.put("/:email", async (req, res) => {
+server.put("/:email",redirectLogin, async (req, res) => {
 	const email = req.params;
 	const {
 		courseId,

@@ -7,7 +7,9 @@ mercadopago.configure({
     access_token: 'TEST-5014021276587978-102020-2aa0263c739b5941b77085e513aa6fad-90743208'
 });
 //localhost:3001/purchase/
-server.post('/:email', async (req, res) => {
+const redirectLogin = require('../middleware/redirectLogin')
+
+server.post('/:email', redirectLogin,async (req, res) => {
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer } = req.body
     const disc = req.body.disc ? req.body.disc : 0;
@@ -151,7 +153,7 @@ server.post('/:email', async (req, res) => {
     }
 })
 
-server.post('/orders_destroy/:email', async (req, res) => {
+server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
     const email = req.params.email;
     const user = await User.findOne({
         where: {
@@ -202,7 +204,7 @@ server.post('/orders_destroy/:email', async (req, res) => {
         })
 
 })
-server.get('/feedback', function (req, res) {
+/* server.get('/feedback', function (req, res) {
 
     switch (req.query.status) {
         case 'success': {
@@ -220,7 +222,7 @@ server.get('/feedback', function (req, res) {
         data: req.query
     });
 });
-
+ */
 
 
 

@@ -1,9 +1,10 @@
 const server = require('express').Router()
 const { User, Bought_course,Review,Course, Category } = require('../db');
 const jwt =require("jsonwebtoken");
+const redirectLogin = require('../middleware/redirectLogin')
 
 // localhost:3001/users  ----   busca todos los usuarios
-server.get('/' , async (req, res) => {
+server.get('/', redirectLogin , async (req, res) => {
 try {
   const users = await User.findAll();
   if(users.length > 1){
@@ -18,8 +19,41 @@ try {
 
 })
 
+server.get('/login' , async (req, res) => {
+  const {email , password} = req.body;
+  if(email && password) {
+    const user = await User.findOne({
+      where: {
+          email:email,
+          password:password
+        }
+    })
+  if(user){
+    req.session.userId = user.email;
+    res.send({msg:"usuario logueado",session:req.session})
+    }
+  }else{
+    res.send("User not exist, check your email and password")
+  }
+})
+
+server.post('/logout', redirectLogin, (req, res) => {
+ try{ 
+   req.session.destroy(err =>{
+    if(err) {
+      return res.send(err);
+    }
+    res.clearCookie('sid');
+    res.status(201).send({msg:"logout"})
+  })}
+  catch(err){
+    res.send(err)
+  }
+});
+
+
 //  localhost:3001/users/email  ---- busca usuario por email
-server.get ('/email/:email', async (req, res) => {
+server.get ('/email/:email', redirectLogin, async (req, res) => {
     const { email } = req.params;
     // console.log(email)
     try {
@@ -158,7 +192,7 @@ server.post('/register', async (req, res)=> {
     }
 })
 
-server.put('/updateInfo/:email',async(req,res)=>{
+server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
   const {firstName, lastName,password,address,phone,city,province,postalcode,country,
   } = req.body;
   const email = req.params.email;
@@ -196,7 +230,7 @@ server.put('/updateInfo/:email',async(req,res)=>{
 
 })
 
-server.put('/updatePw/:email',async(req,res)=>{
+server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
   const {oldPassword,newPassword} = req.body;
   const {email} = req.params
   console.log(email)
