@@ -311,7 +311,12 @@ server.post('/newcourse', async (req, res) => {
 			msg: 'curso cargado exitosamente',
 			newCourse
 		})
-
+	}
+	catch (error) {
+		res.status(400).send({
+			msg: 'Error ruta crear curso'
+		})
+	}
 	 
 
 })
