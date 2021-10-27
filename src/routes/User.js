@@ -116,6 +116,7 @@ server.post('/register', async (req, res)=> {
           province,
           postalcode,
           country,
+          active:true,
         },
         {
           fields: [
@@ -189,6 +190,7 @@ server.put('/updateInfo/:email',async(req,res)=>{
   }
 
 })
+
 
 
 

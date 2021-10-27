@@ -48,6 +48,15 @@ module.exports = (sequelize) => {
 		country: {
 			type: DataTypes.STRING,
 			defaultValue: ''
-		}
+		},
+		isAdmin: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false,
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true,
+		},
+
 	})
 }
