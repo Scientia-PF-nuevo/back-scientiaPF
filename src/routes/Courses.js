@@ -8,8 +8,6 @@ const filterPrice = require('../functions/filterPrice')
 const filterLanguaje = require('../functions/filterLanguaje')
 const filterRanking = require('../functions/filterRanking')
 
-//prueba
-//localhost:3001/courses    obtener todos los cursos
 
 
 
@@ -21,13 +19,12 @@ server.get('/', (req, res) => {
 	name ? (
 
 			Course.findAll({
-				include: [{
-						model: Category
-					},
-					{
-						model: Review
-					}
-				]
+				include: [{model: Category},
+						{model: Review,}
+				],
+				where: {
+					state:'active'
+				}
 			}).then((courses) => {
 				if (courses == null) {
 					res.status(404).send({
@@ -42,6 +39,7 @@ server.get('/', (req, res) => {
 
 						if (element.name.toLowerCase().includes(n)) {
 							const date = stringifyDate(element.createdAt)
+
 
 							const obj = {
 								name: element.name,
@@ -75,13 +73,11 @@ server.get('/', (req, res) => {
 
 		:
 		Course.findAll({
-			include: [{
-					model: Category
-				},
-				{
-					model: Review
+			include: [{model: Category},
+				{model: Review}],
+				where: {
+					state:'active'
 				}
-			]
 		}).then((courses) => {
 			if (courses.length == 0) {
 				res.status(404).send({
@@ -106,11 +102,11 @@ server.get('/', (req, res) => {
 						score: average,
 						level:c.level,
 						language:c.languaje
-						//score a modificar
+						
 					}
 					return obj;
 				})
-				//console.log(filteredCourses)
+				
 
 				res.status(200).send(filteredCourses)
 			}
@@ -128,19 +124,25 @@ server.get('/filters', async(req, res) => {
 	})
 		let coursesToFilter = []
 		console.log(category)
-		if(category){
+		if(category !== "all"){
+			console.log("filtrando por category")
 			coursesCategory=[];
 			coursesCategory= await Category.findAll({
 				where:{
 					name:category
 				},
-				include:{model:Course,
-				include:{model:Review}}
+				include:{
+					model:Course,
+					where:{
+						state:"active"
+					},
+					include:{model:Review}
+			}
 			})
-			// res.send(coursesCategory)
-			console.log(coursesCategory[0])
+			
+			
 			coursesToFilter= coursesCategory[0].dataValues.courses.map((c)=>{
-				// res.send(c)
+				
 				const obj = {
 					name: c.name,
 					description: c.description,
@@ -164,29 +166,16 @@ server.get('/filters', async(req, res) => {
 			})
 			} else {
 			coursesToFilter = await Course.findAll({
+				where:{
+					state:'active'
+				},
 				include: [{model: Category},
 				{model: Review}]
 			})
-			console.log("aca")
-			// res.send(coursesToFilter)
-		}
-
+			console.log("todos")
+			
+		}		
 		
-		// Course.findAll({
-		// 	include: [{
-		// 			model: Category
-		// 		},
-		// 		{
-		// 			model: Review
-		// 		}
-		// 	]
-		// }).then((courses) => {
-		// 	if (courses.length == 0) {
-		// 		res.status(404).send({
-		// 			msg: 'No se encontro ningun curso en la bd'
-		// 		})
-		// 		//console.log({msg: 'No se encontro ningun curso'})
-		// 	} else {
 				let filteredCourses =[]
 				let filteredCourses2 =[]
 				let filteredCourses3 =[]
@@ -224,12 +213,7 @@ server.get('/filters', async(req, res) => {
 				
 				console.log(filteredCourses4.length)
 				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
-		// 					
-		    	//}
-	   	 //})
-   
-   
-   
+		
    })
 
 server.get('/id/:id',async  (req, res) => {
@@ -299,7 +283,8 @@ server.post('/newcourse', async (req, res) => {
 		email,
 		urlVideo,
 		languaje,
-		level
+		level,
+		state
 	} = req.body
 
 	if (
@@ -333,7 +318,8 @@ server.post('/newcourse', async (req, res) => {
 			email,
 			urlVideo,
 			languaje,
-			level
+			level,
+			state
 		})
 
 		const categ = await Category.findOne({
@@ -413,7 +399,8 @@ server.get("/coursescategory", async (req, res) => {
 
 	const categories = await Category.findAll({
 		where: {
-			name: name
+			name: name,
+			state:'active'
 		},
 		include: Course
 	})
