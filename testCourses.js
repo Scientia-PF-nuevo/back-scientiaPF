@@ -18,7 +18,7 @@ const data = [
     {"state":"active","name":"Curso de restauracion de camara fotografica","level":"expert","languaje":"other","description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus","email":"htrussf@ovh.net","urlVideo":"https://www.youtube.com/watch?v=SZ2csAqIhKk&ab_channel=Restoration2R","url":"https://previews.123rf.com/images/ryzhov/ryzhov1701/ryzhov170100083/70505860-c%C3%A1mara-r%C3%A9flex-digital-rota-en-la-reparaci%C3%B3n-de-centro-de-servicio-de-primer-plano.jpg","price":11,"category":"photography"},
     {"state":"active","name":"Curso mantenimiento de camaras de seguridad","level":"expert","languaje":"other","description":"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus","email":"sklimschg@bizjournals.com","urlVideo":"https://www.youtube.com/watch?v=w32ckA5wWn8&ab_channel=AltatecSeguridad","url":"https://http2.mlstatic.com/D_NQ_NP_806790-MLA44475826727_012021-O.webp","price":16,"category":"photography"},
     
-    
+  
     ];
     
     module.exports = data;

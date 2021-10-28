@@ -4,7 +4,7 @@ const jwt =require("jsonwebtoken");
 const redirectLogin = require('../middleware/redirectLogin')
 
 // localhost:3001/users  ----   busca todos los usuarios
-server.get('/', redirectLogin , async (req, res) => {
+server.get('/' , async (req, res) => {
 try {
   const users = await User.findAll();
   if(users.length > 1){
@@ -30,6 +30,7 @@ server.get('/login' , async (req, res) => {
     })
     
   if(user){
+
     req.session.userId = user.email;
     console.log(req.session)
     res.send({msg:"usuario logueado",session:req.session})
@@ -123,7 +124,7 @@ server.get ('/email/:email', async (req, res) => {
             province:usuario.province,
             postalcode:usuario.postalcode,
             country:usuario.country,
-            // bought_courses:usuario.bought_courses,
+            isAdmin:usuario.isAdmin ,
             coursesAndData,
             uploadedCourses
           }
