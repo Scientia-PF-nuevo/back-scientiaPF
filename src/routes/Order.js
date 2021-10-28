@@ -6,7 +6,7 @@ const redirectLogin = require('../middleware/redirectLogin')
 
 //localhost:3001/order/:userId crear orden completa
 
-server.get('/:userEmail', redirectLogin, async (req, res) => {
+server.get('/:userEmail', async (req, res) => {
     const userEmail = req.params.userEmail
     const findUserOrder =await Order.findAll({
         where:{
@@ -19,7 +19,7 @@ server.get('/:userEmail', redirectLogin, async (req, res) => {
         res.send("el usuario no tiene ordenes")}
 });
 
-server.post('/:userEmail', redirectLogin, async (req, res) => {
+server.post('/:userEmail', async (req, res) => {
     const { state, courseId, } = req.body;
         const userEmail = req.params.userEmail
 
@@ -48,7 +48,7 @@ server.post('/:userEmail', redirectLogin, async (req, res) => {
         res.send({msg:"orden procesada exitosamente"});
     });
     
-server.delete('/:userEmail', redirectLogin , async (req, res) => {
+server.delete('/:userEmail' , async (req, res) => {
             const { courseId } = req.body;
 
                 const findUserOrder =await Order.findOne({

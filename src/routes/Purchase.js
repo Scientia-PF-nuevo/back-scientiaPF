@@ -9,7 +9,7 @@ mercadopago.configure({
 //localhost:3001/purchase/
 const redirectLogin = require('../middleware/redirectLogin')
 
-server.post('/:email', redirectLogin,async (req, res) => {
+server.post('/:email',async (req, res) => {
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer } = req.body
     const disc = req.body.disc ? req.body.disc : 0;
@@ -153,7 +153,7 @@ server.post('/:email', redirectLogin,async (req, res) => {
     }
 })
 
-server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
+server.post('/orders_destroy/:email' ,async (req, res) => {
     const email = req.params.email;
     const user = await User.findOne({
         where: {
@@ -163,7 +163,7 @@ server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
     const fetching = axios.get(`http://localhost:3001/order/${email}`)
         .then(async (curses) => {
             const data = curses.data;
-            //  console.log(curses)
+             // console.log(curses)
             let response = data.map(async (c) => {
 
                 const course = await Course.findOne({

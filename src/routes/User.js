@@ -56,7 +56,7 @@ server.post('/logout', redirectLogin, (req, res) => {
 
 
 //  localhost:3001/users/email  ---- busca usuario por email
-server.get ('/email/:email', redirectLogin, async (req, res) => {
+server.get ('/email/:email', async (req, res) => {
     const { email } = req.params;
     // console.log(email)
     try {
