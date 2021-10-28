@@ -28,13 +28,16 @@ server.get('/login' , async (req, res) => {
           password:password
         }
     })
+    
   if(user){
     req.session.userId = user.email;
+    console.log(req.session)
     res.send({msg:"usuario logueado",session:req.session})
-    }
+    
   }else{
-    res.send("User not exist, check your email and password")
-  }
+    res.send("Check your email and password")
+   } 
+ }
 })
 
 server.post('/logout', redirectLogin, (req, res) => {

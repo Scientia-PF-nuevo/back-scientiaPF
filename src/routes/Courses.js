@@ -463,7 +463,7 @@ server.get("/allreviews", async (req, res) => {
 		)
 })
 
-server.put("/:email",redirectLogin, async (req, res) => {
+server.put("/:email", async (req, res) => {
 	const email = req.params;
 	const {
 		courseId,
