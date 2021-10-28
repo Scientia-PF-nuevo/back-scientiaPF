@@ -17,12 +17,13 @@ server.get("/listdata" ,async(req, res)=>{
 } )
 
 // put para cambiar el estado del curso 
-server.patch("/editcoursestate:/state:/id" ,(req, res)=>{
+server.put("/editcoursestate/:state/:id" ,(req, res)=>{
  
   const { state, id } = req.params 
 
 	Course.findByPk(id)
 		.then((course) => {
+      console.log(course)
 			if (!course) return res.status(404).send('Id not valid')
 			return course.update({ state: state })
 		})

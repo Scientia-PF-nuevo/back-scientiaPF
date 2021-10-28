@@ -4,8 +4,8 @@ const { DataTypes } = require('sequelize')
 	module.exports = (sequelize) => {
 	sequelize.define('stock', {
 		active: {
-			type: DataTypes.ENUM('true', 'false'),
-			defaultValue: 'false'
+			type: DataTypes.BOOLEAN,
+			defaultValue: true,
 		},
         amount: {
             type: DataTypes.INTEGER,
