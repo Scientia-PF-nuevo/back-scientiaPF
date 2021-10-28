@@ -121,8 +121,8 @@ server.get('/', (req, res) => {
 })
 
 server.get('/filters', async(req, res) => {
-	const {level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
-	let parametres = [level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
+	const {level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
+	let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
 	let booleanparametres = []
 	booleanparametres= parametres.map((p)=>{	
 		if(p==="false" || typeof(p)==="undefined") return false;
@@ -193,13 +193,13 @@ server.get('/filters', async(req, res) => {
 				filteredCourses = filterLevel(coursesToFilter,booleanparametres[0],booleanparametres[1],booleanparametres[2])
 
 				//console.log(filteredCourses.length)
-				filteredCourses2 = filterPrice(filteredCourses,booleanparametres[3],booleanparametres[4])
+				filteredCourses2 = filterPrice(filteredCourses,booleanparametres[3],booleanparametres[4],booleanparametres[5])
 
 				//console.log(filteredCourses2.length)
-				filteredCourses3 = filterLanguaje(filteredCourses2,booleanparametres[5],booleanparametres[6],booleanparametres[7])
+				filteredCourses3 = filterLanguaje(filteredCourses2,booleanparametres[6],booleanparametres[7],booleanparametres[8])
 				//console.log(filteredCourses3.length)
 
-				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[8],booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12])
+				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12],booleanparametres[13])
 				
 				let coursesToSend = filteredCourses4.map((element)=>{
 				//	console.log(element)
