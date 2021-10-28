@@ -10,7 +10,7 @@ server.get("/listdata" ,async(req, res)=>{
 
   const courses = await Course.findAll();
   
-   const filter= courses.filter(course => course.state === 'pendingToApprove')
+  const filter= courses.filter(course => course.state === 'pendingToApprove')
   res.send(filter);
 
 
