@@ -153,12 +153,13 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                         payerEmail:emailBuyer
                         })
                         gift.setCourse(course);
+                        console.log(gift)
                         var mailOptions = {
                             from: emailBuyer,
                             to: emailGift,
                             subject: 'Course gift',
-                            text: 'Using code for change your gift! Your code: '+ gift.coupon,
-                             html: '<b>That was easy!</b>'
+                            text: 'Using code for change your gift!',
+                            html: `<b>Using code for change your gift! Your code:${gift.coupon}</b>`
                       
                           };
                           
