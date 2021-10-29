@@ -1,5 +1,6 @@
 const server = require('express').Router()
 const { Order, User ,Course } =require('../db.js')
+const axios = require('axios');
 
 const redirectLogin = require('../middleware/redirectLogin')
 
@@ -40,16 +41,22 @@ server.post('/:userEmail', async (req, res) => {
                     coursesId:courseId,
                     state:state,
                     price:price            
-                });
-                
-                order.addCourse(c)
-                order.setUser(user)
-            
-        res.send({msg:"orden procesada exitosamente"});
+                })
+                .then((order)=>{
+                    order.addCourse(c)
+                    order.setUser(user)
+                  
+                }).then(async(order)=>{ 
+                    const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                    res.send(fetching.data)
+                   })
+                     
+       //res.send({msg:"orden procesada exitosamente"});
     });
     
 server.delete('/:userEmail' , async (req, res) => {
             const { courseId } = req.body;
+            const userEmail = req.params.userEmail
 
                 const findUserOrder =await Order.findOne({
                     where:{
@@ -58,7 +65,11 @@ server.delete('/:userEmail' , async (req, res) => {
                 });
                if(findUserOrder){
                 findUserOrder.destroy();
-                res.send({msg:"orden eliminada"});
+                
+                    const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                    res.send(fetching.data)
+                    
+                //res.send({msg:"orden eliminada"});
                }else{ 
                 res.send({msg:"no se encontro la orden"})}
         });

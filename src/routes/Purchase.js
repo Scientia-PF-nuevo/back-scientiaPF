@@ -8,11 +8,7 @@ mercadopago.configure({
 });
 //localhost:3001/purchase/
 const redirectLogin = require('../middleware/redirectLogin');
-var EmailCtrl = require('../mailer/mailer');
-
-
-//email route
-server.post('/email', );
+var transporter = require('../mailer/mailer'); 
 
 
 
@@ -157,7 +153,24 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                         payerEmail:emailBuyer
                         })
                         gift.setCourse(course);
-                }
+                        var mailOptions = {
+                            from: emailBuyer,
+                            to: emailGift,
+                            subject: 'Course gift',
+                            text: 'Using code for change your gift! Your code: '+ gift.coupon,
+                             html: '<b>That was easy!</b>'
+                      
+                          };
+                          
+                          transporter.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                              console.log(error);
+                            } else {
+                              console.log('Email sent: ' + info.response);
+                            }
+                          });
+                
+                    }
 
                 const del = async () => {
                     const findUserOrder = await Order.findOne({

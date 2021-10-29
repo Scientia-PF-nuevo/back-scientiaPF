@@ -2,8 +2,7 @@ const server = require('express').Router()
 const { User, Bought_course,Review,Course, Category,Gift} = require('../db');
 const jwt =require("jsonwebtoken");
 const redirectLogin = require('../middleware/redirectLogin');
-var sendMail = require('../mailer/mailer');
-
+//var sendMail = require('../mailer/mailer');
 
 
 // localhost:3001/users  ----   busca todos los usuarios
@@ -35,21 +34,8 @@ server.post('/login' , async (req, res) => {
    })
 
    if (user) {
-    const mailOptions = {
-      from: "yo",
-      to:"joni451604@gmail.com",
-      subject:"no hay",
-      html:"tampoco"
-    }
-  sendMail( (error,info)=>{
-      if (error){
-        console.log(error);
-        res.send(500, err.message);
-    } else {
-        console.log("Email sent");
-        //res.status(200).jsonp(req.body);
-    }
-    })
+
+    
 
     req.session.userId = user.email;
      res.send(user)
@@ -58,25 +44,6 @@ server.post('/login' , async (req, res) => {
    }
  }
 })
-
-// server.get('/login', async (req, res) => {
-//   const { email, password } = req.query;
-//   if (email && password) {
-//     const user = await User.findOne({
-//       where: {
-//         email: email,
-//         password: password
-//       }
-//     })
-
-//     if (user) {
-//       req.session.userId = user.email;
-//       res.send(user)
-//     } else {
-//       res.send("Check your email and password")
-//     }
-//   }
-// })
 
 server.post('/logout', redirectLogin, (req, res) => {
  try{ 
