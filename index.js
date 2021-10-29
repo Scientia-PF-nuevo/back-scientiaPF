@@ -73,7 +73,7 @@ const cargaReviews = async () => {
 }
 const cargaPago = () => {
   payment.forEach((u) => {
-    const response = fetch(`http://localhost:3001/purchase/orders_destroy/${u.email}`, {
+    const response = fetch(`http://localhost:3001/purchase/orders_destroy/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
@@ -82,7 +82,7 @@ const cargaPago = () => {
 }
 const cargaCompra = async () => {
   buy.forEach(async(u) => {
-   const response = await fetch(`http://localhost:3001/order/${u.email}`, {
+   const response = await fetch(`http://localhost:3001/order/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)

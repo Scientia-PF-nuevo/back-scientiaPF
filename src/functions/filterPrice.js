@@ -1,7 +1,7 @@
 // recibe un array de courses y y los parametros de nivel
 function filterPrice(array, price1, price2,price3){ 
     
-    console.log(price1,price2,price3)//price1 = free
+    
     //price2 = paid
     const filtered = [];
      

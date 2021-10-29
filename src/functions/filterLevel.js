@@ -1,7 +1,7 @@
 // recibe un array de courses y y los parametros de nivel
 function filterLevel(array, level1, level2,level3){ 
-    // console.log(typeof(level1),typeof(level2),typeof(level3))
-    console.log((level1),(level2),(level3))
+    
+    
     const filtered = [];
     if (level1&&level2&&level3) return array 
     if (!level1&&!level2&&!level3) return array 

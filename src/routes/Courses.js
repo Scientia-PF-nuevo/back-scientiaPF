@@ -520,7 +520,40 @@ server.put("/:email", async (req, res) => {
 	}
 })
 
+server.get("/getGift",async(req,res)=>{
+	const {
+		email,coupon
+	} = req.body;
+	try {
+		const user = await User.findOne({
+			where: {
+				email: email
+			}
+		})
+		const gift = await Gift.findOne({
+			where: {coupon}
+		})
+		const course = await Course.findOne({
+			where:{
+				id:gift.courseId
+			}
+		})
+		const newBoughtCourse = await Bought_course.create({
+			courseName: course.name,
+			courseId: course.id,
+			owner: email,
+			price: 0,
+			state: 'bought',
 
+		})
+		newBoughtCourse.setCourse(course);
+        newBoughtCourse.setUser(user)
+
+		res.send("El curso ha sido adquirido")
+	} catch (e) {
+		console.log(e)
+	}
+})
 
 
 

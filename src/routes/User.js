@@ -1,7 +1,8 @@
 const server = require('express').Router()
-const { User, Bought_course,Review,Course, Category } = require('../db');
+const { User, Bought_course,Review,Course, Category,Gift} = require('../db');
 const jwt =require("jsonwebtoken");
-const redirectLogin = require('../middleware/redirectLogin')
+const redirectLogin = require('../middleware/redirectLogin');
+
 
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
@@ -41,6 +42,25 @@ server.get('/login' , async (req, res) => {
  }
 })
 
+// server.get('/login', async (req, res) => {
+//   const { email, password } = req.query;
+//   if (email && password) {
+//     const user = await User.findOne({
+//       where: {
+//         email: email,
+//         password: password
+//       }
+//     })
+
+//     if (user) {
+//       req.session.userId = user.email;
+//       res.send(user)
+//     } else {
+//       res.send("Check your email and password")
+//     }
+//   }
+// })
+
 server.post('/logout', redirectLogin, (req, res) => {
  try{ 
    req.session.destroy(err =>{
@@ -73,7 +93,14 @@ server.get ('/email/:email', async (req, res) => {
       //res.send(usuario)
       if(usuario){
         const coursesAndData=[];
+
+        const giftedCourses = await Gift.findAll({
+          where: {
+            payerEmail:usuario.email
+          }
+        })
         const coursesId = usuario.bought_courses.map(async(c)=>{
+
 
           const reviews = []
           const course = await Course.findOne({
@@ -101,7 +128,8 @@ server.get ('/email/:email', async (req, res) => {
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
             uploadedBy:course.user.email,
-            state:course.state
+            state:course.state,
+
 
           }
           coursesAndData.push(courseInfo)
@@ -126,7 +154,8 @@ server.get ('/email/:email', async (req, res) => {
             country:usuario.country,
             isAdmin:usuario.isAdmin ,
             coursesAndData,
-            uploadedCourses
+            uploadedCourses,
+            giftedCourses
           }
           res.send(obj)
         })
@@ -262,7 +291,43 @@ server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
   }
 })
 
+server.post('/validateGift/:email', async(req,res)=>{
+  const{email} = req.params;
+  const {coupon} = req.body;
+  try{const user = await User.findOne({
+    where:{
+      email
+    }
+  })
+  const gift = await Gift.findOne({
+    where:{
+      coupon,
+    }
+  })
+  // console.log(gift.courseId)
+  if(gift.state){
+    const course = await Course.findOne({
+      where:{id:gift.courseId}
+    })
+    const newCourse = await Bought_course.create({
+      courseName: course.name,
+      courseId: course.id,
+      owner: email,
+      price: 0,
+      state: 'bought'
+    })
 
+    newCourse.setCourse(course);
+    newCourse.setUser(user)
+
+    res.send("Cupon validado con exito")
+  } else{
+    res.send("Cupon invalido")
+  }}catch(e){
+    console.log(e)
+  }
+
+})
 
 
 

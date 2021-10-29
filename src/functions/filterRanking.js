@@ -3,7 +3,7 @@ const getScore = require('../functions/getScore')
 //ranking1 = 1 ranking2 = 2 ranking3=3
 function filterRanking(array, ranking1, ranking2,ranking3,ranking4,ranking5){ 
     // console.log(typeof(ranking1),typeof(ranking2),typeof(ranking3))
-    console.log((ranking1),(ranking2),(ranking3),(ranking4),(ranking5))
+    
     const filtered = [];
     if (ranking1&&ranking2&&ranking3&&ranking4&&ranking5) return array 
     if (!ranking1&&!ranking2&&!ranking3&&!ranking4&&!ranking5) return array
