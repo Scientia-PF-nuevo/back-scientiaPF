@@ -115,9 +115,9 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     const fetching = axios.get(`http://localhost:3001/order/${emailBuyer}`)
         .then(async (curses) => {
             const data = curses.data;
-            // console.log(curses)
+            
             let response = data.map(async (c) => {
-
+                //console.log(c)
                 const course = await Course.findOne({
                     where: {
                         id: c.coursesId
