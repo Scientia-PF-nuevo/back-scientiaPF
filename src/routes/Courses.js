@@ -333,7 +333,7 @@ server.post('/newcourse', async (req, res) => {
 			description,
 			price,
 			url,
-			email,
+			email:email,
 			urlVideo,
 			languaje,
 			level,

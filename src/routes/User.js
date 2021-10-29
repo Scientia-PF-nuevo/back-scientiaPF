@@ -104,7 +104,7 @@ server.get ('/email/:email', async (req, res) => {
             } 
 
           })
-        //res.send(course)
+        console.log(course)
           const courseInfo = {
             course:c,
             categories:course.categories[0].name,
