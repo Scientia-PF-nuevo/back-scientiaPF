@@ -89,7 +89,7 @@ server.post('/:userEmail', async (req, res) => {
        //res.send({msg:"orden procesada exitosamente"});
     });
     
-server.delete('/:userEmail/:courseId' , async (req, res) => {
+server.post('/delete/:userEmail/:courseId' , async (req, res) => {
             const courseId = req.params.courseId;
             const userEmail = req.params.userEmail
 
