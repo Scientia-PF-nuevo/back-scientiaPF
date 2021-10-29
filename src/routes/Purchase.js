@@ -8,6 +8,14 @@ mercadopago.configure({
 });
 //localhost:3001/purchase/
 const redirectLogin = require('../middleware/redirectLogin');
+var EmailCtrl = require('../mailer/mailer');
+
+
+//email route
+server.post('/email', );
+
+
+
 server.post('/:email', async (req, res) => {
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer } = req.body

@@ -20,7 +20,7 @@ server.get('/:userEmail', async (req, res) => {
 });
 
 server.post('/:userEmail', async (req, res) => {
-    const { state, courseId, } = req.body;
+    const { state, courseId, price } = req.body;
         const userEmail = req.params.userEmail
 
             const user= await User.findOne({
@@ -29,22 +29,22 @@ server.post('/:userEmail', async (req, res) => {
                         }
                     });
                  console.log(userEmail)   
-            courseId.forEach(async(e)=>{
+            
                 const c =await Course.findOne({
                     where: {
-                        id: e,               
+                        id: courseId,               
                     }
                 });
                 //console.log(c.price)
                 const order = await Order.create({      
-                    coursesId:e,
-                            state,
-                            price:c.price            
+                    coursesId:courseId,
+                    state:state,
+                    price:price            
                 });
                 
                 order.addCourse(c)
                 order.setUser(user)
-            });
+            
         res.send({msg:"orden procesada exitosamente"});
     });
     
@@ -56,8 +56,11 @@ server.delete('/:userEmail' , async (req, res) => {
                         coursesId:courseId
                     },includes:[Course]            
                 });
-                findUserOrder.destroy()
-                res.send("curso eliminado de carrito")
+               if(findUserOrder){
+                findUserOrder.destroy();
+                res.send({msg:"orden eliminada"});
+               }else{ 
+                res.send({msg:"no se encontro la orden"})}
         });
 
 module.exports = server;
