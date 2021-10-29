@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER
     },
     price:{
-      type:DataTypes.INTEGER
+      type:DataTypes.FLOAT
     }
   });
 };
