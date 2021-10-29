@@ -89,8 +89,8 @@ server.post('/:userEmail', async (req, res) => {
        //res.send({msg:"orden procesada exitosamente"});
     });
     
-server.delete('/:userEmail' , async (req, res) => {
-            const { courseId } = req.body;
+server.delete('/:userEmail/:courseId' , async (req, res) => {
+            const courseId = req.params.courseId;
             const userEmail = req.params.userEmail
 
                 const findUserOrder =await Order.findOne({
