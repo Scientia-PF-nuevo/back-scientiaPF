@@ -4,7 +4,7 @@ const jwt =require("jsonwebtoken");
 const redirectLogin = require('../middleware/redirectLogin')
 
 // localhost:3001/users  ----   busca todos los usuarios
-server.get('/', redirectLogin , async (req, res) => {
+server.get('/' , async (req, res) => {
 try {
   const users = await User.findAll();
   if(users.length > 1){
@@ -28,13 +28,17 @@ server.get('/login' , async (req, res) => {
           password:password
         }
     })
+    
   if(user){
+
     req.session.userId = user.email;
+    console.log(req.session)
     res.send({msg:"usuario logueado",session:req.session})
-    }
+    
   }else{
-    res.send("User not exist, check your email and password")
-  }
+    res.send("Check your email and password")
+   } 
+ }
 })
 
 server.post('/logout', redirectLogin, (req, res) => {
@@ -53,7 +57,7 @@ server.post('/logout', redirectLogin, (req, res) => {
 
 
 //  localhost:3001/users/email  ---- busca usuario por email
-server.get ('/email/:email', redirectLogin, async (req, res) => {
+server.get ('/email/:email', async (req, res) => {
     const { email } = req.params;
     // console.log(email)
     try {
@@ -120,7 +124,7 @@ server.get ('/email/:email', redirectLogin, async (req, res) => {
             province:usuario.province,
             postalcode:usuario.postalcode,
             country:usuario.country,
-            // bought_courses:usuario.bought_courses,
+            isAdmin:usuario.isAdmin ,
             coursesAndData,
             uploadedCourses
           }

@@ -52,7 +52,8 @@ server.get('/', (req, res) => {
 								categories: element.categories[0].name,
 								score: average,
 								level:element.level,
-								language:element.languaje
+								language:element.languaje,
+								solds: element.solds
 							}
 							//console.log(courses)
 							response.push(obj)
@@ -102,7 +103,11 @@ server.get('/', (req, res) => {
 						categories: c.categories[0].name,
 						score: average,
 						level:c.level,
-						language:c.languaje
+						language:c.languaje,
+						solds: c.solds,
+						numbersOfDiscounts:c.numbersOfDiscounts,
+						percentageDiscount:c.percentageDiscount
+
 						
 					}
 					return obj;
@@ -116,15 +121,15 @@ server.get('/', (req, res) => {
 })
 
 server.get('/filters', async(req, res) => {
-	const {level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
-	let parametres = [level1 , level2, level3,price1, price2, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
+	const {level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
+	let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
 	let booleanparametres = []
 	booleanparametres= parametres.map((p)=>{	
 		if(p==="false" || typeof(p)==="undefined") return false;
 		else if(p==="true") return true;
 	})
 		let coursesToFilter = []
-		console.log(category)
+		//console.log(category)
 		if(category !== "all"){
 			console.log("filtrando por category")
 			coursesCategory=[];
@@ -150,6 +155,7 @@ server.get('/filters', async(req, res) => {
 					price: c.price,
 					url: c.url,
 					id: c.id,
+					solds:c.solds,
 					categories: [{
 						name:category,
 						id:coursesCategory.id,
@@ -160,7 +166,9 @@ server.get('/filters', async(req, res) => {
 					reviews:c.reviews,
 					createdAt:c.createdAt,
 					level:c.level,
-					languaje:c.languaje
+					languaje:c.languaje,
+					numbersOfDiscounts:c.numbersOfDiscounts,
+					percentageDiscount:c.percentageDiscount
 
 				}
 				return obj;
@@ -184,17 +192,17 @@ server.get('/filters', async(req, res) => {
 
 				filteredCourses = filterLevel(coursesToFilter,booleanparametres[0],booleanparametres[1],booleanparametres[2])
 
-				console.log(filteredCourses.length)
-				filteredCourses2 = filterPrice(filteredCourses,booleanparametres[3],booleanparametres[4])
+				//console.log(filteredCourses.length)
+				filteredCourses2 = filterPrice(filteredCourses,booleanparametres[3],booleanparametres[4],booleanparametres[5])
 
-				console.log(filteredCourses2.length)
-				filteredCourses3 = filterLanguaje(filteredCourses2,booleanparametres[5],booleanparametres[6],booleanparametres[7])
-				console.log(filteredCourses3.length)
+				//console.log(filteredCourses2.length)
+				filteredCourses3 = filterLanguaje(filteredCourses2,booleanparametres[6],booleanparametres[7],booleanparametres[8])
+				//console.log(filteredCourses3.length)
 
-				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[8],booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12])
+				filteredCourses4 = filterRanking(filteredCourses3,booleanparametres[9],booleanparametres[10],booleanparametres[11],booleanparametres[12],booleanparametres[13])
 				
 				let coursesToSend = filteredCourses4.map((element)=>{
-					console.log(element)
+				//	console.log(element)
 					let average = Math.round(getScore(element))
 						const d = stringifyDate(element.createdAt)
 					 const obj = {
@@ -207,12 +215,15 @@ server.get('/filters', async(req, res) => {
 						categories: element.categories[0].name,
 						score: average,
 						level:element.level,
-						language:element.languaje
+						language:element.languaje,
+						solds: element.solds,
+						numbersOfDiscounts:element.numbersOfDiscounts,
+						percentageDiscount:element.percentageDiscount
 					}
 					return obj
 				})
 				
-				console.log(filteredCourses4.length)
+				//console.log(filteredCourses4.length)
 				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
 		
    })
@@ -237,7 +248,7 @@ server.get('/id/:id',async  (req, res) => {
 		}).then((course)=>{
 			
 			if (course) {
-				console.log(course.user)
+				//console.log(course.user)
 				const average = getScore(course)
 				const date = stringifyDate(course.createdAt)
 				const obj ={
@@ -252,7 +263,11 @@ server.get('/id/:id',async  (req, res) => {
 					reviews:course.reviews,
 					urlVideo:course.urlVideo,
             		url:course.url,
-					uploadedBy:course.user.email
+					uploadedBy:course.user.email,
+					solds:course,
+					numbersOfDiscounts:course.numbersOfDiscounts,
+					percentageDiscount:course.percentageDiscount
+
 				}
 				
 				
@@ -285,7 +300,9 @@ server.post('/newcourse', async (req, res) => {
 		urlVideo,
 		languaje,
 		level,
-		state
+		state,
+		numbersOfDiscounts, 
+		percentageDiscount
 	} = req.body
 
 	if (
@@ -296,7 +313,7 @@ server.post('/newcourse', async (req, res) => {
 		!email ||
 		!urlVideo ||
 		!languaje ||
-		!level
+		!level 
 		
 	) {	
 		console.log("no llegan los parametros")
@@ -320,7 +337,9 @@ server.post('/newcourse', async (req, res) => {
 			urlVideo,
 			languaje,
 			level,
-			state
+			state,
+			percentageDiscount,
+			numbersOfDiscounts
 		})
 
 		const categ = await Category.findOne({
@@ -463,7 +482,7 @@ server.get("/allreviews", async (req, res) => {
 		)
 })
 
-server.put("/:email",redirectLogin, async (req, res) => {
+server.put("/:email", async (req, res) => {
 	const email = req.params;
 	const {
 		courseId,

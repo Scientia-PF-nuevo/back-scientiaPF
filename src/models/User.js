@@ -57,10 +57,7 @@ module.exports = (sequelize) => {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true,
 		},
-		isLoggin:{
-			type: DataTypes.BOOLEAN,
-			defaultValue: false,
-		}
+		
 
 	})
 }

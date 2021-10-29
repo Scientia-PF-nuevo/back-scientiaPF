@@ -9,12 +9,14 @@ mercadopago.configure({
 //localhost:3001/purchase/
 const redirectLogin = require('../middleware/redirectLogin')
 
-server.post('/:email', redirectLogin,async (req, res) => {
+server.post('/:email', async (req, res) => {
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer } = req.body
-    const disc = req.body.disc ? req.body.disc : 0;
-
-    if (disc === 0) {
+   // const disc = req.body.disc ? req.body.disc : 0;
+    const disc = false;
+    let discountPercentage;
+    const finalDiscounts = [];
+    if (!disc) {
         const user = await User.findOne({
             where: {
                 email: email
@@ -30,20 +32,45 @@ server.post('/:email', redirectLogin,async (req, res) => {
                         where: {
                             id: c.coursesId
                         },
-                        attributes: ['price', 'id']
+                        attributes: ['price', 'id','numbersOfDiscounts','percentageDiscount']
                     })
                     const price = await course.get('price')
                     const id = await course.get('id')
+                    const numbersOfDiscounts = await course.get('numbersOfDiscounts')
+                    discountPercentage = await course.get('percentageDiscount')
+                    
+                    const obj = {
+                            id:id,
+                            discountPercentage:discountPercentage,
+                            numbersOfDiscounts:numbersOfDiscounts,
+                            price:price
+                    }
+                    finalDiscounts.push(obj)
 
-                    totalPrice = totalPrice + price;
+                   // totalPrice = totalPrice + price;
                     return (
-                        totalPrice,
+                        //totalPrice,
                         coursesIds.push(id))
                 })
                 Promise.all(response).then(async () => {
+                   
+                   
                     try {
+                        let acc = 0;
+                        console.log(finalDiscounts)
+                        const final = finalDiscounts.map( (c) => {
+                            const numbersOfDiscounts =  c.numbersOfDiscounts
+                            if (numbersOfDiscounts) {
+                                let priceDiscount =c.price - (c.price * (c.discountPercentage / 100))
+                                acc = acc + priceDiscount;
+                                //console.log("entre", priceDiscount, acc)
+                                return acc;
+
+                            }else{ return acc = acc + c.price }
+                        })
+                      
                         const payment_data = {
-                            transaction_amount: totalPrice,
+                            transaction_amount: acc,
                             token,
                             description: 'payment',
                             installments,
@@ -56,6 +83,7 @@ server.post('/:email', redirectLogin,async (req, res) => {
                             .then((r) => {
                                 if (r.status === 201) {
                                     const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${email}`)
+
                                 }
                                 return res.status(r.status).json({
                                     status: r.body.status,
@@ -68,92 +96,10 @@ server.post('/:email', redirectLogin,async (req, res) => {
                     }
                 })
             })
-    } else {
-        const descuento = await Stock.findOne({
-            where: {
-                id: disc
-            }
-        })
-        if (descuento === null) {
-            return res.json({ msg: "el codigo no existe o ya fue utilizado demaciadas veces" })
-        }
-        if (descuento !== null) {
-            const ifActive = descuento.ifActive
-            const amount = descuento.amount
-            const percentage = descuento.percentage
-            if (ifActive === false || amount === 0) {
-                return res.json({ msg: "el codigo de descuento fue utilizado demaciadas veces" })
-            }
-            const user = await User.findOne({
-                where: {
-                    email: email
-                }
-            })
-            let totalPrice = 0;
-            const coursesIds = [];
-            const fetching = await axios.get(`http://localhost:3001/order/${email}`)
-                .then(async (curses) => {
-                    const data = curses.data;
-                    let response = data.map(async (c) => {
-                        const course = await Course.findOne({
-                            where: {
-                                id: c.coursesId
-                            },
-                            attributes: ['price', 'id']
-                        })
-                        const price = await course.get('price')
-                        const id = await course.get('id')
-
-                        totalPrice = totalPrice + price;
-                        return (
-                            totalPrice,
-                            coursesIds.push(id))
-                    })
-                    Promise.all(response).then(async () => {
-                        try {
-                            const finalPrice = totalPrice * percentage
-                            const payment_data = {
-                                transaction_amount: finalPrice,
-                                token,
-                                description: 'payment',
-                                installments,
-                                payment_method_id,
-                                issuer_id,
-                                payer
-                            }
-                            mercadopago.payment
-                                .save(payment_data)
-                                .then(async (r) => {
-                                    if (r.status === 201) {
-                                        const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${email}`)
-                                    }
-
-                                    const updated = await Stock.update({
-                                        amount: --amount,
-                                        active: --amount === 0 ? false : true
-                                    }, {
-                                        where: {
-                                            discountId: disc
-                                        }
-                                    }
-                                    )
-
-                                    return res.status(r.status).json({
-                                        status: r.body.status,
-                                        status_detail: r.body.detail,
-                                        id: r.body.id
-                                    })
-                                })
-                        } catch (e) {
-                            return res.status(500).send(e)
-                        }
-                    })
-                })
-        }
     }
 })
 
-server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
+server.post('/orders_destroy/:email', async (req, res) => {
     const email = req.params.email;
     const user = await User.findOne({
         where: {
@@ -163,26 +109,31 @@ server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
     const fetching = axios.get(`http://localhost:3001/order/${email}`)
         .then(async (curses) => {
             const data = curses.data;
-            //  console.log(curses)
+            // console.log(curses)
             let response = data.map(async (c) => {
 
                 const course = await Course.findOne({
                     where: {
                         id: c.coursesId
                     },
-                    attributes: ['price', 'id', 'name']
+                    attributes: ['price', 'id', 'name', "solds", "numbersOfDiscounts"]
 
                 })
                 const price = await course.get('price')
                 const id = await course.get('id')
                 const name = await course.get('name')
-
+                let solds = await course.get('solds')
+                let numbersOfDiscounts = await course.get('numbersOfDiscounts')
+                const final = solds + 1;
+                const disc = numbersOfDiscounts - 1 ;
+                //console.log(solds)
+                course.update({ solds: final, numbersOfDiscounts: disc })
                 const purchase = await Bought_course.create({
                     courseName: name,
                     courseId: id,
                     owner: email,
                     price: price,
-                    state: 'started'
+                    state: 'bought'
 
                 })
                 purchase.setCourse(course);
@@ -204,26 +155,6 @@ server.post('/orders_destroy/:email',redirectLogin ,async (req, res) => {
         })
 
 })
-/* server.get('/feedback', function (req, res) {
-
-    switch (req.query.status) {
-        case 'success': {
-            server.post(`http://localhost:3001/purchase/orders_destroy/${email}`)
-
-
-        };
-        case 'failure': res.send('fallo el pago');
-        case 'pending': res.send('pago pendiente')
-    }
-    res.json({
-        Payment: req.query.payment_id,
-        Status: req.query.status,
-        MerchantOrder: req.query.merchant_order_id,
-        data: req.query
-    });
-});
- */
-
 
 
 module.exports = server

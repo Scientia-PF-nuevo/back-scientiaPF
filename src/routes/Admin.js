@@ -10,19 +10,20 @@ server.get("/listdata" ,async(req, res)=>{
 
   const courses = await Course.findAll();
   
-   const filter= courses.filter(course => course.state === 'pendingToApprove')
+  const filter= courses.filter(course => course.state === 'pendingToApprove')
   res.send(filter);
 
 
 } )
 
 // put para cambiar el estado del curso 
-server.patch("/editcoursestate:/state:/id" ,(req, res)=>{
+server.put("/editcoursestate/:state/:id" ,(req, res)=>{
  
   const { state, id } = req.params 
 
 	Course.findByPk(id)
 		.then((course) => {
+      console.log(course)
 			if (!course) return res.status(404).send('Id not valid')
 			return course.update({ state: state })
 		})
