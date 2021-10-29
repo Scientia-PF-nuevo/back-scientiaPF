@@ -52,7 +52,7 @@ server.get('/:userEmail', async (req, res) => {
         //console.log(findUserOrder)
         Promise.all(calculate).then((c)=>{ res.send(c)})
     }else{ 
-        res.send("el usuario no tiene ordenes")}
+        res.send([])}
 });
 
 server.post('/:userEmail', async (req, res) => {
@@ -106,7 +106,7 @@ server.delete('/:userEmail' , async (req, res) => {
                     
                 //res.send({msg:"orden eliminada"});
                }else{ 
-                res.send({msg:"no se encontro la orden"})}
+                res.send({msg:"error ruta delete"})}
         });
 
 module.exports = server;
