@@ -111,7 +111,7 @@ server.get ('/email/:email', async (req, res) => {
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            uploadedBy:course.user.email,
+            uploadedBy:course.dataValues.email,
             state:course.state,
 
 

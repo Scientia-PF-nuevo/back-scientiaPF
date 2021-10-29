@@ -45,7 +45,7 @@ server.get('/:userEmail', async (req, res) => {
             obj.percentageDiscount= percentageDiscount;
             obj.courseName = name;
             obj.url = url;
-            obj.offerPrice = obj.price - (obj.price * (percentageDiscount/100))
+            obj.offerPrice = parseFloat((obj.price - (obj.price * (percentageDiscount/100))).toFixed(2))
         
            return obj
         })
