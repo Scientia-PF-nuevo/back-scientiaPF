@@ -82,6 +82,7 @@ const cargaPago = () => {
 }
 const cargaCompra = async () => {
   buy.forEach(async(u) => {
+    
    const response = await fetch(`http://localhost:3001/order/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },

@@ -26,7 +26,7 @@ server.get('/:userEmail', async (req, res) => {
                 price:c.dataValues.price,
                 offerPrice:0,
                 percentageDiscount:0,
-                courseName:"",
+                name:"",
                 coursesId:c.dataValues.coursesId,
                 url:""
             }
@@ -43,7 +43,7 @@ server.get('/:userEmail', async (req, res) => {
             const url = await course.get('url')
             const percentageDiscount = await course.get('percentageDiscount')
             obj.percentageDiscount= percentageDiscount;
-            obj.courseName = name;
+            obj.name = name;
             obj.url = url;
             obj.offerPrice = parseFloat((obj.price - (obj.price * (percentageDiscount/100))).toFixed(2))
         
@@ -99,20 +99,20 @@ server.post('/delete/:userEmail/:courseId' , async (req, res) => {
                     },includes:[Course]            
                 });
                 console.log(findUserOrder)
-               if(findUserOrder || findUserOrder === null){
-                   if (findUserOrder === null){
-                    const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
-                    res.send(fetching.data)
-                   } else {
-                       findUserOrder.destroy();
-                       
-                           const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
-                           res.send(fetching.data)
-                   }
-                    
-                //res.send({msg:"orden eliminada"});
-               }else{ 
-                   console.log("no estró al IF del findUserOrder")
+                if(findUserOrder || findUserOrder === null){
+                    if (findUserOrder === null){
+                        const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                        res.send(fetching.data)
+                    } else {
+                        findUserOrder.destroy();
+                        
+                            const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                            res.send(fetching.data)
+                    }
+                        
+                    //res.send({msg:"orden eliminada"});
+                }else{ 
+                    console.log("no estró al IF del findUserOrder")
                 res.send([])}
         });
 
