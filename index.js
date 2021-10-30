@@ -28,81 +28,121 @@ const payment = require("./testPayment");
 const { default: fetch } = require('node-fetch');
 const axios = require('axios');
 
-const cargaCategoria = () => {
-  category.forEach((c) => {
-    const response = fetch('http://localhost:3001/courses/newcategory', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(c)
-    })
+//usersloader = async()=>{
 
-  })
+//}
 
-}
-const cargaCursos = () => {
-  courses.forEach((c) => {
-    const response = fetch('http://localhost:3001/courses/newcourse', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(c)
-    })
-
-  })
-
-}
-const cargaUsers = () => {
-  Users.forEach(async (u) => {
-    const response = fetch('http://localhost:3001/users/register', {
+const cargaUsers = async () => {
+  const cargausers=Users.map(async (u) => {
+    const response = await fetch('http://localhost:3001/users/register', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
     })
-
+    return response
   })
-
+  Promise.all(cargausers).then(() => {
+    return console.log("Users cargados")
+  })
+}
+const cargaCategoria = async () => {
+  const cargaCategorias= category.map(async (c) => {
+    const response = await fetch('http://localhost:3001/courses/newcategory', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(c)
+    })
+    return response
+    
+  })
+  Promise.all(cargaCategorias).then(() => {
+    return console.log("Categorias cargadas")
+  })
+}
+const cargaCursos = async () => {
+  const cargacursos=courses.map(async (c) => {
+    const response = await fetch('http://localhost:3001/courses/newcourse', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(c)
+    })
+    
+    return response
+  })
+  Promise.all(cargacursos).then(() => {
+    return console.log("Cursos cargados")
+  })
 }
 
 const cargaReviews = async () => {
-  reviews.forEach((u) => {
-    const response = fetch('http://localhost:3001/courses/newreview', {
+  const cargareviews=reviews.map(async (u) => {
+    const response = await fetch('http://localhost:3001/courses/newreview', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
     })
+    return response
   })
-}
-const cargaPago = () => {
-  payment.forEach((u) => {
-    const response = fetch(`http://localhost:3001/purchase/orders_destroy/${u.emailBuyer}`, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(u)
-    })
+  Promise.all(cargareviews).then(() => {
+    return console.log("Reviews cargadas")
   })
 }
 const cargaCompra = async () => {
-  buy.forEach(async(u) => {
+  const cargacompras=buy.map(async(u) => {
     
-   const response = await fetch(`http://localhost:3001/order/${u.emailBuyer}`, {
+    const response = await fetch(`http://localhost:3001/order/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
     })
-   
+    
+    return response
+  })
+  Promise.all(cargacompras).then(() => {
+    return console.log("Compras cargadas")
   })
   
-
+  
+}
+const cargaPago = async () => {
+  const cargapagos=payment.map(async(u) => {
+    const response = await fetch(`http://localhost:3001/purchase/orders_destroy/${u.emailBuyer}`, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(u)
+    })
+    return response
+  })
+  Promise.all(cargapagos).then(() => {
+    return console.log("Pagos cargados")
+  })
 }
 
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async () => {
   server.listen(3001, async () => {
-    /* cargaUsers();
-    cargaCategoria();
-    cargaCursos();
-    cargaReviews();
-    cargaCompra(); */
+    // await cargaUsers().then(async (u) => {
+    //   await cargaCategoria().then(async (ca) => {
+    //     await cargaCursos().then(async (cu) => {
+    //       await cargaReviews().then(async(re) => {
+    //         await cargaCompra().then(async (co) => {
+    //           await cargaPago().then(async(pa) => {
+    //             console.log("Base de datos cargada")
+    //           })
+    //         })
+    //       })
+    //     })
+    //   })
+    // })
+    
+    
+   /*  await cargaUsers();
+    await cargaCategoria();
+    await cargaCursos();
+    await cargaReviews();
+    await cargaCompra();
+    await cargaPago(); */
     setTimeout(cargaUsers, 0000, 'usuarios reg')
     setTimeout(cargaCategoria, 4000, 'categorias')
     setTimeout(cargaCursos, 7000, 'cursos')

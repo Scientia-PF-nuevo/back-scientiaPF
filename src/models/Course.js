@@ -56,7 +56,11 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('pendingToApprove', 'active', 'ban', 'rejected'),
       defaultValue: 'pendingToApprove',
    },
-    
+    adminComments:{
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defultValue:''
+    },
   numbersOfDiscounts: {
     type: DataTypes.INTEGER,
     defaultValue:0,

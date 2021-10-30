@@ -487,6 +487,13 @@ server.post('/validateGift/:email', async(req,res)=>{
     newCourse.setCourse(course);
     newCourse.setUser(user)
 
+    const update = await Gift.update({
+      state:false
+    },{
+      where:{
+        coupon:coupon
+      }
+    })
     res.send("Cupon validado con exito")
   } else{
     res.send("Cupon invalido")
