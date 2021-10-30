@@ -24,20 +24,20 @@ try {
 
 server.post('/login' , async (req, res) => {
   const {email , password, cart, isGoogle, firstName,lastName} = req.body;
-   
 
- if (email && password) {
-   if(isGoogle){
-     console.log("me encontro")
-    const userGoogle = await User.findOne({
+
+  if (email && password) {
+    if(isGoogle){
+      
+      const userGoogle = await User.findOne({
       where: {
         email: email,
         password: password
-      }
+      },
+      attributes: { exclude: 'password' }
     })
     //si el usuario de google esta registrado
     if (userGoogle) {
-
       //busco sus ordenes anteriores
       const findUserOrder =await Order.findAll({
         where:{
@@ -67,11 +67,10 @@ server.post('/login' , async (req, res) => {
               }
             })
           })
-         }
+        }
         //si no tenia ordenes anteriores las creo solamente
         else{
-          //si el carro trae algo creo las ordenes
-          
+          //si el carro trae algo creo las ordenes          
             const newOrders = cart.map(async(o)=>{
               const c =await Course.findOne({
                 where: {
@@ -90,11 +89,12 @@ server.post('/login' , async (req, res) => {
             }) 
           
           }}
+         
           //guardo el inicio de sesion de back
           req.session.userId = userGoogle.email;
           res.send(userGoogle)
     }
-     else {// si el uruario de google no esta registro el usuario de google
+    else {// si el uruario de google no esta registro el usuario de google
       const userGoogleRegister = await User.create(
         {
           firstName,
@@ -133,8 +133,13 @@ server.post('/login' , async (req, res) => {
               })
           }) 
         }
+        const userToSend = {
+          firstName: userGoogleRegister.firstName,
+          lastName: userGoogleRegister.lastName,
+          email: userGoogleRegister.email        
+        }
         req.session.userId = userGoogleRegister.email;
-        res.send(userGoogleRegister)
+        res.send(userToSend)
        
       } else {
         res.send("error al crear usuario de google o  carga de ordenes pendientes")
@@ -148,13 +153,17 @@ server.post('/login' , async (req, res) => {
       where: {
         email: email,
         password: password
-      }
+      },
+      attributes: { exclude: 'password' }
+
     })
     if(userNotGoogle){
       const findUserOrder =await Order.findAll({
         where:{
             userEmail:email
-        },includes:[Course]            
+        },
+        includes:[Course],
+        attributes: { exclude: 'password' }
     })
        //si tenia ordenes anteriores debo agregar el array cart
         if(cart.length > 0){
@@ -203,6 +212,7 @@ server.post('/login' , async (req, res) => {
             }) 
           
           }}
+          
           //guardo el inicio de sesion de back
           req.session.userId = userNotGoogle.email;
           res.send(userNotGoogle)
@@ -212,6 +222,8 @@ server.post('/login' , async (req, res) => {
       res.send("Check your email and password")
     }
    }
+ } else{
+   res.send("No recibio email o password")
  }
 })
 
