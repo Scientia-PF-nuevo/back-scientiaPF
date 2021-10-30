@@ -98,15 +98,22 @@ server.post('/delete/:userEmail/:courseId' , async (req, res) => {
                         coursesId:courseId
                     },includes:[Course]            
                 });
-               if(findUserOrder){
-                findUserOrder.destroy();
-                
+                console.log(findUserOrder)
+               if(findUserOrder || findUserOrder === null){
+                   if (findUserOrder === null){
                     const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
                     res.send(fetching.data)
+                   } else {
+                       findUserOrder.destroy();
+                       
+                           const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                           res.send(fetching.data)
+                   }
                     
                 //res.send({msg:"orden eliminada"});
                }else{ 
-                res.send({msg:"error ruta delete"})}
+                   console.log("no estró al IF del findUserOrder")
+                res.send([])}
         });
 
 module.exports = server;

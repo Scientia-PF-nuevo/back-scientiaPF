@@ -60,7 +60,7 @@ server.post('/:email', async (req, res) => {
                    
                     try {
                         let acc = 0;
-                        console.log(finalDiscounts)
+                        // console.log(finalDiscounts)
                         const final = finalDiscounts.map( (c) => {
                             const numbersOfDiscounts =  c.numbersOfDiscounts
                             if (numbersOfDiscounts) {
@@ -153,7 +153,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                         payerEmail:emailBuyer
                         })
                         gift.setCourse(course);
-                        console.log(gift)
+                        // console.log(gift)
                         var mailOptions = {
                             from: emailBuyer,
                             to: emailGift,
@@ -239,7 +239,7 @@ server.post('/gift/:email', async (req, res) => {
                    
                     try {
                         let acc = 0;
-                        console.log(finalDiscounts)
+                        // console.log(finalDiscounts)
                         const final = finalDiscounts.map( (c) => {
                             const numbersOfDiscounts =  c.numbersOfDiscounts
                             if (numbersOfDiscounts) {
