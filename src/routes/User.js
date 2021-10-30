@@ -1,6 +1,7 @@
 const server = require('express').Router()
-const { User, Bought_course,Review,Course, Category,Gift} = require('../db');
+const { User, Bought_course,Review,Course, Category,Gift, Order} = require('../db');
 const jwt =require("jsonwebtoken");
+
 const redirectLogin = require('../middleware/redirectLogin');
 //var sendMail = require('../mailer/mailer');
 
@@ -22,25 +23,194 @@ try {
 })
 
 server.post('/login' , async (req, res) => {
-  const {email , password} = req.body;
+  const {email , password, cart, isGoogle, firstName,lastName} = req.body;
    
 
  if (email && password) {
-   const user = await User.findOne({
-     where: {
-       email: email,
-       password: password
-     }
-   })
+   if(isGoogle){
+     console.log("me encontro")
+    const userGoogle = await User.findOne({
+      where: {
+        email: email,
+        password: password
+      }
+    })
+    //si el usuario de google esta registrado
+    if (userGoogle) {
 
-   if (user) {
+      //busco sus ordenes anteriores
+      const findUserOrder =await Order.findAll({
+        where:{
+            userEmail:email
+        },includes:[Course]            
+    })
+       //si tenia ordenes anteriores debo agregar el array cart
+        if(cart.length > 0){
+          if(findUserOrder > 0){
+          const filterOrdersToCreate = findUserOrder.map((o)=>{
+            const cartMap= cart.map(async(c)=>{
+              if(c.coursesId != o.coursesId){
+                const course =await Course.findOne({
+                  where: {
+                      id: c.coursesId,               
+                  }
+                  });
+                  //console.log(c.price)
+                  const order = await Order.create({      
+                      coursesId:c.coursesId,
+                      price:c.price            
+                  })
+                  .then(async(order)=>{
+                    await order.addCourse(course)
+                    await order.setUser(userGoogle)
+                  })
+              }
+            })
+          })
+         }
+        //si no tenia ordenes anteriores las creo solamente
+        else{
+          //si el carro trae algo creo las ordenes
+          
+            const newOrders = cart.map(async(o)=>{
+              const c =await Course.findOne({
+                where: {
+                    id: o.coursesId,               
+                }
+                });
+                //console.log(c.price)
+                const order = await Order.create({      
+                    coursesId:o.coursesId,
+                    price:o.price            
+                })
+                .then(async(order)=>{
+                  await order.addCourse(c)
+                  await order.setUser(userGoogle)
+                })
+            }) 
+          
+          }}
+          //guardo el inicio de sesion de back
+          req.session.userId = userGoogle.email;
+          res.send(userGoogle)
+    }
+     else {// si el uruario de google no esta registro el usuario de google
+      const userGoogleRegister = await User.create(
+        {
+          firstName,
+          lastName,
+          email,
+          password,
+          active:true,
+        },
+        {
+          fields: [
+            "firstName",
+            "lastName",
+            "email",
+            "password"
+            
+          ],
+        }
+      );
+  
+      if (userGoogleRegister) {
+        if(cart.length > 0){
+          const newOrders = cart.map(async(o)=>{
+            const c =await Course.findOne({
+              where: {
+                  id: o.coursesId,               
+              }
+              });
+              //console.log(c.price)
+              const order = await Order.create({      
+                  coursesId:o.coursesId,
+                  price:o.price            
+              })
+              .then(async(order)=>{
+                await order.addCourse(c)
+                await order.setUser(userGoogleRegister)
+              })
+          }) 
+        }
+        req.session.userId = userGoogleRegister.email;
+        res.send(userGoogleRegister)
+       
+      } else {
+        res.send("error al crear usuario de google o  carga de ordenes pendientes")
 
-    
+      }
+      
+    }
+   }else// si no es usuario de google
+   {
+    const userNotGoogle = await User.findOne({
+      where: {
+        email: email,
+        password: password
+      }
+    })
+    if(userNotGoogle){
+      const findUserOrder =await Order.findAll({
+        where:{
+            userEmail:email
+        },includes:[Course]            
+    })
+       //si tenia ordenes anteriores debo agregar el array cart
+        if(cart.length > 0){
+          if(findUserOrder.length > 0){
+            console.log("primer if")
+          const filterOrdersToCreate = findUserOrder.map((o)=>{
+            const cartMap= cart.map(async(c)=>{
+              if(c.coursesId != o.coursesId){
+                const course =await Course.findOne({
+                  where: {
+                      id: c.coursesId,               
+                  }
+                  });
+                  //console.log(c.price)
+                  const order = await Order.create({      
+                      coursesId:c.coursesId,
+                      price:c.price            
+                  })
+                  .then(async(order)=>{
+                    await order.addCourse(course)
+                    await order.setUser(userNotGoogle)
+                  })
+              }
+            })
+          })
+         }
+        //si no tenia ordenes anteriores las creo solamente
+        else{
+          //si el carro trae algo creo las ordenes
+          console.log("sin ordenes pendientes")
+            const newOrders = cart.map(async(o)=>{
+              const course =await Course.findOne({
+                where: {
+                    id: o.coursesId,               
+                }
+                });
+                //console.log(c.price)
+                const order = await Order.create({      
+                    coursesId:o.coursesId,
+                    price:o.price            
+                })
+                .then(async(order)=>{
+                  await order.addCourse(course)
+                  await order.setUser(userNotGoogle)
+                })
+            }) 
+          
+          }}
+          //guardo el inicio de sesion de back
+          req.session.userId = userNotGoogle.email;
+          res.send(userNotGoogle)
 
-    req.session.userId = user.email;
-     res.send(user)
-   } else {
-     res.send("Check your email and password")
+    }
+    else{
+      res.send("Check your email and password")
+    }
    }
  }
 })
@@ -210,7 +380,7 @@ server.post('/register', async (req, res)=> {
 })
 
 server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
-  const {firstName, lastName,password,address,phone,city,province,postalcode,country,
+  const {firstName, lastName,password,address,phone,city,province,postalcode,country, profilePicture
   } = req.body;
   const email = req.params.email;
   const user = await User.findOne({
@@ -231,7 +401,8 @@ server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
           city, 
           province, 
           postalcode,
-          country
+          country,
+          profilePicture
       },{
         where:{
         email:email
