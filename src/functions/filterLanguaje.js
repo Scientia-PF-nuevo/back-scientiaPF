@@ -1,8 +1,7 @@
 // recibe un array de courses y y los parametros de languajes
 //languaje1 = "spanish" languaje2 = "english" languaje3="others"
 function filterLanguaje(array, languaje1, languaje2,languaje3){ 
-    // console.log(typeof(languaje1),typeof(languaje2),typeof(languaje3))
-    console.log((languaje1),(languaje2),(languaje3))
+    
     const filtered = [];
     if (languaje1&&languaje2&&languaje3) return array 
     if (!languaje1&&!languaje2&&!languaje3) return array 

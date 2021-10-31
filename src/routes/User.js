@@ -1,12 +1,15 @@
 const server = require('express').Router()
-const { User, Bought_course,Review,Course, Category } = require('../db');
+const { User, Bought_course,Review,Course, Category,Gift, Order} = require('../db');
 const jwt =require("jsonwebtoken");
-const redirectLogin = require('../middleware/redirectLogin')
+
+const redirectLogin = require('../middleware/redirectLogin');
+//var sendMail = require('../mailer/mailer');
+
 
 // localhost:3001/users  ----   busca todos los usuarios
 server.get('/' , async (req, res) => {
 try {
-  const users = await User.findAll();
+  const users = await User.findAll({attributes: {exclude: ['password']}});
   if(users.length > 1){
     //console.log(usuarios)
     res.status(200).send(users)
@@ -19,25 +22,230 @@ try {
 
 })
 
-server.get('/login' , async (req, res) => {
-  const {email , password} = req.body;
-  if(email && password) {
-    const user = await User.findOne({
-      where: {
-          email:email,
-          password:password
-        }
-    })
-    
-  if(user){
+server.post('/login' , async (req, res) => {
+  console.log(req.body)
+  const {email , password, cart, isGoogle, firstName,lastName} = req.body;
 
-    req.session.userId = user.email;
-    console.log(req.session)
-    res.send({msg:"usuario logueado",session:req.session})
-    
-  }else{
-    res.send("Check your email and password")
-   } 
+
+  if (email && password) {
+    if(isGoogle){
+      
+      const userGoogle = await User.findOne({
+      where: {
+        email: email,
+        password: password
+      },
+      attributes: { exclude: 'password' }
+    })
+    //si el usuario de google esta registrado
+    if (userGoogle) {
+      //busco sus ordenes anteriores
+      const findUserOrder =await Order.findAll({
+        where:{
+            userEmail:email
+        },includes:[Course]            
+    })
+       //si tenia ordenes anteriores debo agregar el array cart
+        if(cart.length > 0){
+          if(findUserOrder.length > 0){
+            console.log("primer if")
+          const cartMap= cart.map(async(c)=>{
+            let alreadyExists = false;
+            const filterOrdersToCreate = findUserOrder.map((o)=>{
+              console.log(typeof(o.coursesId),typeof(c.coursesId))
+              console.log(o.coursesId,c.coursesId)
+              if(o.coursesId == c.coursesId){
+                alreadyExists = true;
+                console.log(alreadyExists)
+              }
+            })
+            if(alreadyExists===false){
+              console.log("creando")
+              const course =await Course.findOne({
+                where: {
+                    id: c.coursesId,               
+                }
+                });
+              const newOrder = await Order.create({      
+                  
+                    coursesId:c.coursesId,
+                  price:c.price           
+              })
+                .then(async(order)=>{
+                  // filterOrdersToCreate.push(order)
+                await order.addCourse(course)
+                await order.setUser(userNotGoogle)
+              })
+            }
+          })    
+          
+        }
+        //si no tenia ordenes anteriores las creo solamente
+        else{
+          //si el carro trae algo creo las ordenes          
+            const newOrders = cart.map(async(o)=>{
+              const c =await Course.findOne({
+                where: {
+                    id: o.coursesId,               
+                }
+                });
+                //console.log(c.price)
+                const order = await Order.create({      
+                    coursesId:o.coursesId,
+                    price:o.price            
+                })
+                .then(async(order)=>{
+                  await order.addCourse(c)
+                  await order.setUser(userGoogle)
+                })
+            }) 
+          
+          }}
+        
+          //guardo el inicio de sesion de back
+          req.session.userId = userGoogle.email;
+          res.send(userGoogle)
+    }
+    else {// si el uruario de google no esta registro el usuario de google
+      const userGoogleRegister = await User.create(
+        {
+          firstName,
+          lastName,
+          email,
+          password,
+          active:true,
+        },
+        {
+          fields: [
+            "firstName",
+            "lastName",
+            "email",
+            "password"
+            
+          ],
+        }
+      );
+  
+      if (userGoogleRegister) {
+        if(cart.length > 0){
+          const newOrders = cart.map(async(o)=>{
+            const c =await Course.findOne({
+              where: {
+                  id: o.coursesId,               
+              }
+              });
+              //console.log(c.price)
+              const order = await Order.create({      
+                  coursesId:o.coursesId,
+                  price:o.price            
+              })
+              .then(async(order)=>{
+                await order.addCourse(c)
+                await order.setUser(userGoogleRegister)
+              })
+          }) 
+        }
+        const userToSend = {
+          firstName: userGoogleRegister.firstName,
+          lastName: userGoogleRegister.lastName,
+          email: userGoogleRegister.email        
+        }
+        req.session.userId = userGoogleRegister.email;
+        res.send(userToSend)
+      
+      } else {
+        res.send("error al crear usuario de google o  carga de ordenes pendientes")
+
+      }
+      
+    }
+   }else// si no es usuario de google
+   {
+    const userNotGoogle = await User.findOne({
+      where: {
+        email: email,
+        password: password
+      },
+      attributes: { exclude: 'password' }
+
+    })
+    if(userNotGoogle){
+      const findUserOrder =await Order.findAll({
+        where:{
+            userEmail:email
+        },
+        includes:[Course],
+        attributes: { exclude: 'password' }
+    })
+       //si tenia ordenes anteriores debo agregar el array cart
+        if(cart.length > 0){
+          if(findUserOrder.length > 0){
+            console.log("primer if")
+          const cartMap= cart.map(async(c)=>{
+            let alreadyExists = false;
+            const filterOrdersToCreate = findUserOrder.map((o)=>{
+              console.log(typeof(o.coursesId),typeof(c.coursesId))
+              console.log(o.coursesId,c.coursesId)
+              if(o.coursesId == c.coursesId){
+                alreadyExists = true;
+                console.log(alreadyExists)
+              }
+            })
+            if(alreadyExists===false){
+              console.log("creando")
+              const course =await Course.findOne({
+                where: {
+                    id: c.coursesId,               
+                }
+                });
+              const newOrder = await Order.create({      
+                  
+                    coursesId:c.coursesId,
+                  price:c.price           
+              })
+                .then(async(order)=>{
+                  // filterOrdersToCreate.push(order)
+                await order.addCourse(course)
+                await order.setUser(userNotGoogle)
+              })
+            }
+          })
+          
+        }
+        //si no tenia ordenes anteriores las creo solamente
+        else{
+          //si el carro trae algo creo las ordenes
+          console.log("sin ordenes pendientes")
+            const newOrders = cart.map(async(o)=>{
+              const course =await Course.findOne({
+                where: {
+                    id: o.coursesId,               
+                }
+                });
+                //console.log(c.price)
+                const order = await Order.create({      
+                    coursesId:o.coursesId,
+                    price:o.price            
+                })
+                .then(async(order)=>{
+                  await order.addCourse(course)
+                  await order.setUser(userNotGoogle)
+                })
+            }) 
+          
+          }}
+          
+          //guardo el inicio de sesion de back
+          req.session.userId = userNotGoogle.email;
+          res.send(userNotGoogle)
+
+    }
+    else{
+      res.send("Check your email and password")
+    }
+   }
+ } else{
+   res.send("No recibio email o password")
  }
 })
 
@@ -73,7 +281,14 @@ server.get ('/email/:email', async (req, res) => {
       //res.send(usuario)
       if(usuario){
         const coursesAndData=[];
+
+        const giftedCourses = await Gift.findAll({
+          where: {
+            payerEmail:usuario.email
+          }
+        })
         const coursesId = usuario.bought_courses.map(async(c)=>{
+
 
           const reviews = []
           const course = await Course.findOne({
@@ -93,15 +308,16 @@ server.get ('/email/:email', async (req, res) => {
             } 
 
           })
-        //res.send(course)
+
           const courseInfo = {
             course:c,
             categories:course.categories[0].name,
             reviews,
             urlVideo:course.urlVideo,
             url:course.dataValues.url,
-            uploadedBy:course.user.email,
-            state:course.state
+            uploadedBy:course.dataValues.email,
+            state:course.state,
+
 
           }
           coursesAndData.push(courseInfo)
@@ -118,7 +334,7 @@ server.get ('/email/:email', async (req, res) => {
             firstName:usuario.firstName,
             lastName:usuario.lastName,
             email:usuario.email,
-            address:usuario.addres,
+            address:usuario.address,
             phone:usuario.phone,
             city:usuario.city,
             province:usuario.province,
@@ -126,7 +342,8 @@ server.get ('/email/:email', async (req, res) => {
             country:usuario.country,
             isAdmin:usuario.isAdmin ,
             coursesAndData,
-            uploadedCourses
+            uploadedCourses,
+            giftedCourses
           }
           res.send(obj)
         })
@@ -197,7 +414,7 @@ server.post('/register', async (req, res)=> {
 })
 
 server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
-  const {firstName, lastName,password,address,phone,city,province,postalcode,country,
+  const {firstName, lastName,password,address,phone,city,province,postalcode,country, profilePicture
   } = req.body;
   const email = req.params.email;
   const user = await User.findOne({
@@ -218,7 +435,8 @@ server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
           city, 
           province, 
           postalcode,
-          country
+          country,
+          profilePicture
       },{
         where:{
         email:email
@@ -262,8 +480,78 @@ server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
   }
 })
 
+server.post('/validateGift/:email', async(req,res)=>{
+  const{email} = req.params;
+  const {coupon} = req.body;
+  try{const user = await User.findOne({
+    where:{
+      email
+    }
+  })
+  const gift = await Gift.findOne({
+    where:{
+      coupon,
+    }
+  })
+  // console.log(gift.courseId)
+  if(gift.state){
+    const course = await Course.findOne({
+      where:{id:gift.courseId}
+    })
+    const newCourse = await Bought_course.create({
+      courseName: course.name,
+      courseId: course.id,
+      owner: email,
+      price: 0,
+      state: 'bought'
+    })
 
+    newCourse.setCourse(course);
+    newCourse.setUser(user)
 
+    const update = await Gift.update({
+      state:false
+    },{
+      where:{
+        coupon:coupon
+      }
+    })
+    res.send("Cupon validado con exito")
+  } else{
+    res.send("Cupon invalido")
+  }}catch(e){
+    console.log(e)
+  }
+
+})
+
+server.put('/updateProfilePicture/:email', async(req,res)=>{
+  const { imageUrl } = req.body;
+  console.log(imageUrl, 'estoy en imageUrl del back', req.body)
+  const {email} = req.params
+  console.log(email)
+  const user = await User.findOne({
+    where: {
+      email
+    }
+  })
+  if(user){
+    try{
+      const update = await User.update({
+        profilePicture: imageUrl
+      },{
+        where:{
+        email:email
+      }
+    })
+      res.send("Informacion actualizada con exito")
+    } catch(e){
+      console.log(e)
+    }
+  }else {
+    res.status(404).send("El email no corresponden a un usuario")
+  }
+})
 
 
 module.exports = server

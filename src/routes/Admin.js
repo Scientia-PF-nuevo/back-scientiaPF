@@ -20,12 +20,13 @@ server.get("/listdata" ,async(req, res)=>{
 server.put("/editcoursestate/:state/:id" ,(req, res)=>{
  
   const { state, id } = req.params 
+  const { motivo } = req.body
 
 	Course.findByPk(id)
 		.then((course) => {
-      console.log(course)
+      
 			if (!course) return res.status(404).send('Id not valid')
-			return course.update({ state: state })
+			return course.update({ state: state, adminComments: motivo })
 		})
 		.then((course) => res.send(course))
 		.catch((err) => res.status(500).send(err))

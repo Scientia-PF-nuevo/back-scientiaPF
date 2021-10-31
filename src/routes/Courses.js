@@ -131,7 +131,7 @@ server.get('/filters', async(req, res) => {
 		let coursesToFilter = []
 		//console.log(category)
 		if(category !== "all"){
-			console.log("filtrando por category")
+			// console.log("filtrando por category")
 			coursesCategory=[];
 			coursesCategory= await Category.findAll({
 				where:{
@@ -181,7 +181,7 @@ server.get('/filters', async(req, res) => {
 				include: [{model: Category},
 				{model: Review}]
 			})
-			console.log("todos")
+
 			
 		}		
 		
@@ -316,7 +316,7 @@ server.post('/newcourse', async (req, res) => {
 		!level 
 		
 	) {	
-		console.log("no llegan los parametros")
+
 		res.status(400).send({
 			msg: 'Todos los campos requeridos'
 		})
@@ -333,7 +333,7 @@ server.post('/newcourse', async (req, res) => {
 			description,
 			price,
 			url,
-			email,
+			email:email,
 			urlVideo,
 			languaje,
 			level,
@@ -398,7 +398,7 @@ server.post('/newcategory', async (req, res) => {
 
 // localhost:3001/courses/allcategories
 server.get('/allcategories', async (req, res) => {
-	console.log("estoy aqui")
+
 	try {
 		const allcategories = await Category.findAll()
 
@@ -520,7 +520,40 @@ server.put("/:email", async (req, res) => {
 	}
 })
 
+server.get("/getGift",async(req,res)=>{
+	const {
+		email,coupon
+	} = req.body;
+	try {
+		const user = await User.findOne({
+			where: {
+				email: email
+			}
+		})
+		const gift = await Gift.findOne({
+			where: {coupon}
+		})
+		const course = await Course.findOne({
+			where:{
+				id:gift.courseId
+			}
+		})
+		const newBoughtCourse = await Bought_course.create({
+			courseName: course.name,
+			courseId: course.id,
+			owner: email,
+			price: 0,
+			state: 'bought',
 
+		})
+		newBoughtCourse.setCourse(course);
+        newBoughtCourse.setUser(user)
+
+		res.send("El curso ha sido adquirido")
+	} catch (e) {
+		console.log(e)
+	}
+})
 
 
 

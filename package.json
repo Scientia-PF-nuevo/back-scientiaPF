@@ -26,6 +26,7 @@
     "mercadopago": "^1.5.8",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.5",
+    "nodemailer": "^6.7.0",
     "pg": "^8.5.1",
     "sequelize": "^6.3.5"
   },

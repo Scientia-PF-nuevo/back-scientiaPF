@@ -3,34 +3,30 @@ const { DataTypes } = require('sequelize')
 // Luego le injectamos la conexion a sequelize
 module.exports = (sequelize) => {
 	// defino el modelo
-	sequelize.define('bought_course', {
+	sequelize.define('gift', {
 		courseId: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
-		courseName: {
-			type: DataTypes.TEXT,
+		coupon: {
+			primaryKey: true,
+			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
 			allowNull: false,
 		},
 		state: {
-			type: DataTypes.ENUM('completed', 'started', 'bought' ),
-			defaultValue: 'bought'
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
 		},
-		timeWatched:{
-			type:DataTypes.INTEGER,
-			defaultValue:0
-		},
-		lenghtVideo:{
-			type:DataTypes.INTEGER,
-			defaultValue:0
-		},
-		owner: {
-			type: DataTypes.TEXT,
-			allowNull: false,
-		},
-		price: {
-			type: DataTypes.INTEGER,
+		giftEmail:{
+			type: DataTypes.STRING,
 			allowNull: false
+		},
+		payerEmail:{
+			type: DataTypes.STRING,
+			allowNull: false
+
 		}
+		
 	})
 }
