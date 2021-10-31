@@ -85,8 +85,8 @@ server.post('/:email', async (req, res) => {
                             .then((r) => {
                                 if (r.status === 201) {
 
-                                    orders.length>1? payload =orders : payload={}
-                                const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${email}`,payload)
+                                    // orders.length>1? payload =orders : payload={}
+                                const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${email}`,{Giftorders: orders})
 
                                 }
                                 return res.status(r.status).json({
@@ -106,97 +106,121 @@ server.post('/:email', async (req, res) => {
 server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     
     const {emailBuyer} = req.params;
-    const {orders} = req.body;
-    
-    const {emailGift} = req.query;
-    
+    const {Giftorders} = req.body;
+    // console.log(orders)
     const user = await User.findOne({
         where: {
             email: emailBuyer
         }
     })
-
-    orders.map(async(o)=>{
-        const course = await Course.findOne({
-            where: {
-                id: o.courseId
-            }
-            // attributes: ['price', 'id', 'name', "solds", "numbersOfDiscounts"]
-
-        })
-        const price = course.price
-        const id =  course.id
-        const name =  course.name
-        let solds =  course.solds
-
-        let numbersOfDiscounts =  course.numbersOfDiscounts
-        const disc = numbersOfDiscounts - 1 ;
-        const final = solds + 1;
-        numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
-
-        if(!o.gift){
-            const purchase = await Bought_course.create({
-                courseName: course.name,
-                courseId: course.id,
-                owner: emailBuyer,
-                price: price,
-                state: 'bought'
-
+    //const {emailGift} = req.query;
+    let gifts = Giftorders.map(async(o)=>{
+        console.log(o.gift)
+        if(o.gift){
+            const course = await Course.findOne({
+                where: {
+                    id: o.courseId
+                }
+                // attributes: ['price', 'id', 'name', "solds", "numbersOfDiscounts"]
+    
             })
-            purchase.setCourse(course);
-            purchase.setUser(user)
-        } else{
             
-            const gift = await Gift.create({
-                courseId:id,
-                giftEmail:o.emailGift,
-                payerEmail:emailBuyer
-                })
-                gift.setCourse(course);
-                // console.log(gift)
-                var mailOptions = {
-                from: emailBuyer,
-                to: o.emailGift,
-                subject: 'Course gift',
-                text: 'Using code for change your gift!',
-                html: `<b>Use this code to exchange it foryour gift! Your code:${gift.coupon}</b>`
+            let solds =  course.solds    
+            let numbersOfDiscounts =  course.numbersOfDiscounts
+            const disc = numbersOfDiscounts - 1 ;
+            const final = solds + 1;
+            numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
+    
+            
                 
-                };
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                    console.log(error);
-                    } else {
-                    console.log('Email sent: ' + info.response);
-                    }
+                const gift = await Gift.create({
+                    courseId:course.id,
+                    giftEmail:o.emailGift,
+                    payerEmail:emailBuyer
+                    })
+                    gift.setCourse(course);
+                    // console.log(gift)
+                    var mailOptions = {
+                    from: emailBuyer,
+                    to: o.emailGift,
+                    subject: 'Course gift',
+                    text: 'Using code for change your gift!',
+                    html: `<b>Use this code to exchange it foryour gift! Your code:${gift.coupon}</b>`
+                    
+                    };
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                        console.log(error);
+                        } else {
+                        console.log('Email sent: ' + info.response);
+                        }
+                    });
+            //}
+            const del = async () => {
+                const findUserOrder = await Order.findOne({
+                    where: {
+                        id: o.orderId
+                    }, includes: [Order]
                 });
+                await findUserOrder.destroy();
+            }
+            return del()
+            
         }
+    })
+    Promise.all(gifts).then(async()=>{        
+        const orders = await Order.findAll({
+            where: {
+                userEmail: emailBuyer
+            },includes:[Course]
+        })
+        console.log(orders.length)
+        orders.map(async(o)=>{
+            // console.log(o)
+            const course = await Course.findOne({
+                where: {
+                    id: o.coursesId
+                }
+                // attributes: ['price', 'id', 'name', "solds", "numbersOfDiscounts"]
+        
+            })    
+            
+            let solds =  course.solds
+    
+            let numbersOfDiscounts =  course.numbersOfDiscounts
+            const disc = numbersOfDiscounts - 1 ;
+            const final = solds + 1;
+            numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
+            console.log(course.name)
+    
+            const purchase = await Bought_course.create({
+            courseName: course.name,
+            courseId: course.id,
+            owner: emailBuyer,
+            price: course.price,
+            state: 'bought'
+        
+                    })
+        purchase.setCourse(course);
+        purchase.setUser(user)
+    
+    
         const del = async () => {
             const findUserOrder = await Order.findOne({
                 where: {
-                    id: o.orderId
+                    id: o.id
                 }, includes: [Order]
             });
+            // console.log(findUserOrder)
             await findUserOrder.destroy();
         }
         del()
+        })
+        res.send({ msg: "orders destoyed and succes payment" })
     })
-    res.send({ msg: "orders destoyed and succes payment" })
-    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // const fetching = axios.get(`http://localhost:3001/order/${emailBuyer}`)
+})
+  // const fetching = axios.get(`http://localhost:3001/order/${emailBuyer}`)
     //     .then(async (curses) => {
     //         const data = curses.data;
             
@@ -271,7 +295,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     //         res.send({ msg: "orders destoyed and succes payment" })
     //     })
 
-})
+
 
 // server.post('/gift/:email', async (req, res) => {
 //     const emailBuyer = req.params.email;

@@ -71,7 +71,7 @@ server.post('/:userEmail', async (req, res) => {
                         id: courseId,               
                     }
                 });
-                //console.log(c.price)
+                console.log(req.body)
                 const order = await Order.create({      
                     coursesId:courseId,
                     state:state,
