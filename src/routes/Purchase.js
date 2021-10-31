@@ -195,7 +195,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     
             const purchase = await Bought_course.create({
             courseName: course.name,
-            courseId: course.id,
+            courseId: o.coursesId,
             owner: emailBuyer,
             price: course.price,
             state: 'bought'
