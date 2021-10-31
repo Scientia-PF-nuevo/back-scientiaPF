@@ -23,6 +23,7 @@ try {
 })
 
 server.post('/login' , async (req, res) => {
+  console.log(req.body)
   const {email , password, cart, isGoogle, firstName,lastName} = req.body;
 
 
@@ -46,27 +47,38 @@ server.post('/login' , async (req, res) => {
     })
        //si tenia ordenes anteriores debo agregar el array cart
         if(cart.length > 0){
-          if(findUserOrder > 0){
-          const filterOrdersToCreate = findUserOrder.map((o)=>{
-            const cartMap= cart.map(async(c)=>{
-              if(c.coursesId != o.coursesId){
-                const course =await Course.findOne({
-                  where: {
-                      id: c.coursesId,               
-                  }
-                  });
-                  //console.log(c.price)
-                  const order = await Order.create({      
-                      coursesId:c.coursesId,
-                      price:c.price            
-                  })
-                  .then(async(order)=>{
-                    await order.addCourse(course)
-                    await order.setUser(userGoogle)
-                  })
+          if(findUserOrder.length > 0){
+            console.log("primer if")
+          const cartMap= cart.map(async(c)=>{
+            let alreadyExists = false;
+            const filterOrdersToCreate = findUserOrder.map((o)=>{
+              console.log(typeof(o.coursesId),typeof(c.coursesId))
+              console.log(o.coursesId,c.coursesId)
+              if(o.coursesId == c.coursesId){
+                alreadyExists = true;
+                console.log(alreadyExists)
               }
             })
-          })
+            if(alreadyExists===false){
+              console.log("creando")
+              const course =await Course.findOne({
+                where: {
+                    id: c.coursesId,               
+                }
+                });
+              const newOrder = await Order.create({      
+                  
+                    coursesId:c.coursesId,
+                  price:c.price           
+              })
+                .then(async(order)=>{
+                  // filterOrdersToCreate.push(order)
+                await order.addCourse(course)
+                await order.setUser(userNotGoogle)
+              })
+            }
+          })    
+          
         }
         //si no tenia ordenes anteriores las creo solamente
         else{
@@ -89,7 +101,7 @@ server.post('/login' , async (req, res) => {
             }) 
           
           }}
-         
+        
           //guardo el inicio de sesion de back
           req.session.userId = userGoogle.email;
           res.send(userGoogle)
@@ -140,7 +152,7 @@ server.post('/login' , async (req, res) => {
         }
         req.session.userId = userGoogleRegister.email;
         res.send(userToSend)
-       
+      
       } else {
         res.send("error al crear usuario de google o  carga de ordenes pendientes")
 
@@ -169,27 +181,37 @@ server.post('/login' , async (req, res) => {
         if(cart.length > 0){
           if(findUserOrder.length > 0){
             console.log("primer if")
-          const filterOrdersToCreate = findUserOrder.map((o)=>{
-            const cartMap= cart.map(async(c)=>{
-              if(c.coursesId != o.coursesId){
-                const course =await Course.findOne({
-                  where: {
-                      id: c.coursesId,               
-                  }
-                  });
-                  //console.log(c.price)
-                  const order = await Order.create({      
-                      coursesId:c.coursesId,
-                      price:c.price            
-                  })
-                  .then(async(order)=>{
-                    await order.addCourse(course)
-                    await order.setUser(userNotGoogle)
-                  })
+          const cartMap= cart.map(async(c)=>{
+            let alreadyExists = false;
+            const filterOrdersToCreate = findUserOrder.map((o)=>{
+              console.log(typeof(o.coursesId),typeof(c.coursesId))
+              console.log(o.coursesId,c.coursesId)
+              if(o.coursesId == c.coursesId){
+                alreadyExists = true;
+                console.log(alreadyExists)
               }
             })
+            if(alreadyExists===false){
+              console.log("creando")
+              const course =await Course.findOne({
+                where: {
+                    id: c.coursesId,               
+                }
+                });
+              const newOrder = await Order.create({      
+                  
+                    coursesId:c.coursesId,
+                  price:c.price           
+              })
+                .then(async(order)=>{
+                  // filterOrdersToCreate.push(order)
+                await order.addCourse(course)
+                await order.setUser(userNotGoogle)
+              })
+            }
           })
-         }
+          
+        }
         //si no tenia ordenes anteriores las creo solamente
         else{
           //si el carro trae algo creo las ordenes
@@ -312,7 +334,7 @@ server.get ('/email/:email', async (req, res) => {
             firstName:usuario.firstName,
             lastName:usuario.lastName,
             email:usuario.email,
-            address:usuario.addres,
+            address:usuario.address,
             phone:usuario.phone,
             city:usuario.city,
             province:usuario.province,
@@ -503,6 +525,33 @@ server.post('/validateGift/:email', async(req,res)=>{
 
 })
 
+server.put('/updateProfilePicture/:email', async(req,res)=>{
+  const { imageUrl } = req.body;
+  console.log(imageUrl, 'estoy en imageUrl del back', req.body)
+  const {email} = req.params
+  console.log(email)
+  const user = await User.findOne({
+    where: {
+      email
+    }
+  })
+  if(user){
+    try{
+      const update = await User.update({
+        profilePicture: imageUrl
+      },{
+        where:{
+        email:email
+      }
+    })
+      res.send("Informacion actualizada con exito")
+    } catch(e){
+      console.log(e)
+    }
+  }else {
+    res.status(404).send("El email no corresponden a un usuario")
+  }
+})
 
 
 module.exports = server

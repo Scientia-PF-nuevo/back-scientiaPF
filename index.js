@@ -17,50 +17,78 @@
 //     =====`-.____`.___ \_____/___.-`___.-'=====
 //                       `=---='
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const { User, Bought_course,Review,Course, Category,Gift, Order} = require('./src/db');
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
-const courses = require("./testCourses");
+const Courses = require("./testCourses");
 const Users = require("./testUsers");
 const reviews = require("./testReviews");
-const category = require("./testCategories")
+const Categories = require("./testCategories")
 const buy = require("./testBuy");
 const payment = require("./testPayment");
 const { default: fetch } = require('node-fetch');
 const axios = require('axios');
 
-//usersloader = async()=>{
-
-//}
-
-const cargaUsers = async () => {
-  const cargausers=Users.map(async (u) => {
-    const response = await fetch('http://localhost:3001/users/register', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(u)
-    })
-    return response
-  })
-  Promise.all(cargausers).then(() => {
-    return console.log("Users cargados")
-  })
-}
-const cargaCategoria = async () => {
-  const cargaCategorias= category.map(async (c) => {
-    const response = await fetch('http://localhost:3001/courses/newcategory', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(c)
-    })
-    return response
+usersloader = async()=>{
+  Users.forEach(async(u)=>{
     
-  })
-  Promise.all(cargaCategorias).then(() => {
-    return console.log("Categorias cargadas")
+    const user = await User.create(
+      {
+        firstName: u.firstName,
+        lastName: u.lastName,
+        email : u.email,
+        password : u.password,
+        address : u.address,
+        phone : u.phone,
+        city : u.city,
+        province : u.province,
+        postalcode : u.postalcode,
+        country : u.country
+      })
+      console.log("user",user.email)
   })
 }
+
+categoriesLoader =async()=>{
+  Categories.forEach(async(c)=>{
+    const cat = await Category.create(
+      {name: c.name})
+      console.log("category",cat.name)
+    })
+  }
+  
+  cursosLoader = async()=>{
+    Courses.forEach(async (c)=>{
+      const user = await User.findOne({
+        where: {email:c.email}
+      })
+      const categ = await Category.findOne({
+        where: {
+          name: c.category
+        }
+      })
+      const newcurso = await Course.create(
+        {
+          state: c.state,
+          numbersOfDiscounts: c.numbersOfDiscounts,
+          percentageDiscount: c.percentageDiscount,
+          name: c.name,
+          level: c.level,
+          languaje: c.languaje,
+          description: c.description,
+          email: c.email,
+          url: c.url,
+          urlVideo: c.urlVideo,
+          price: c.price,
+          category: c.category
+        })
+        console.log("course",newcurso.id)
+  })
+
+}
+
 const cargaCursos = async () => {
-  const cargacursos=courses.map(async (c) => {
+  const cargacursos=Courses.map(async (c) => {
     const response = await fetch('http://localhost:3001/courses/newcourse', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
@@ -121,6 +149,9 @@ const cargaPago = async () => {
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async () => {
+  await usersloader();
+  await categoriesLoader();
+  //await cursosLoader();
   server.listen(3001, async () => {
     // await cargaUsers().then(async (u) => {
     //   await cargaCategoria().then(async (ca) => {
@@ -143,12 +174,12 @@ conn.sync({ force: true }).then(async () => {
     await cargaReviews();
     await cargaCompra();
     await cargaPago(); */
-    setTimeout(cargaUsers, 0000, 'usuarios reg')
-    setTimeout(cargaCategoria, 4000, 'categorias')
-    setTimeout(cargaCursos, 7000, 'cursos')
-    setTimeout(cargaReviews, 12000, 'reviews');
-    setTimeout(cargaCompra, 16000, 'compra de ema');
-    setTimeout(cargaPago, 20000, 'pago de emma');
+    //setTimeout(cargaUsers, 0000, 'usuarios reg')
+    //setTimeout(cargaCategoria, 4000, 'categorias')
+    setTimeout(cargaCursos, 5000, 'cursos')
+    setTimeout(cargaReviews, 8000, 'reviews');
+    setTimeout(cargaCompra, 12000, 'compra de ema');
+    setTimeout(cargaPago, 16000, 'pago de emma');
 
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 
