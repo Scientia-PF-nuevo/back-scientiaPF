@@ -357,7 +357,7 @@ server.post('/newcourse', async (req, res) => {
 		})
 	}
 	catch (error) {
-		console.log("error de ruta")
+		console.log(error)
 		res.status(400).send({
 			msg: 'Error ruta crear curso'
 		})
