@@ -43,7 +43,8 @@ usersloader = async()=>{
         city : u.city,
         province : u.province,
         postalcode : u.postalcode,
-        country : u.country
+        country : u.country,
+        isAdmin : u.isAdmin,
       })
       console.log("user",user.email)
   })
