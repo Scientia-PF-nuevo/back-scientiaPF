@@ -177,8 +177,8 @@ conn.sync({ force: true }).then(async () => {
     await cargaPago(); */
     //setTimeout(cargaUsers, 0000, 'usuarios reg')
     //setTimeout(cargaCategoria, 4000, 'categorias')
-    setTimeout(cargaCursos, 5000, 'cursos')
-    setTimeout(cargaReviews, 8000, 'reviews');
+    setTimeout(cargaCursos, 3000, 'cursos')
+    setTimeout(cargaReviews, 8500, 'reviews');
     setTimeout(cargaCompra, 12000, 'compra de ema');
     setTimeout(cargaPago, 16000, 'pago de emma');
 
