@@ -115,7 +115,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     })
     //const {emailGift} = req.query;
     let gifts = Giftorders.map(async(o)=>{
-        console.log(o.gift)
+        // console.log(o.gift)
         if(o.gift){
             const course = await Course.findOne({
                 where: {
@@ -174,7 +174,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                 userEmail: emailBuyer
             },includes:[Course]
         })
-        console.log(orders.length)
+        
         orders.map(async(o)=>{
             // console.log(o)
             const course = await Course.findOne({
@@ -191,7 +191,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
             const disc = numbersOfDiscounts - 1 ;
             const final = solds + 1;
             numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
-            console.log(course.name)
+            
     
             const purchase = await Bought_course.create({
             courseName: course.name,

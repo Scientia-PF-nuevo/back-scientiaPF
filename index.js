@@ -58,35 +58,35 @@ categoriesLoader =async()=>{
     })
   }
   
-  cursosLoader = async()=>{
-    Courses.forEach(async (c)=>{
-      const user = await User.findOne({
-        where: {email:c.email}
-      })
-      const categ = await Category.findOne({
-        where: {
-          name: c.category
-        }
-      })
-      const newcurso = await Course.create(
-        {
-          state: c.state,
-          numbersOfDiscounts: c.numbersOfDiscounts,
-          percentageDiscount: c.percentageDiscount,
-          name: c.name,
-          level: c.level,
-          languaje: c.languaje,
-          description: c.description,
-          email: c.email,
-          url: c.url,
-          urlVideo: c.urlVideo,
-          price: c.price,
-          category: c.category
-        })
-        console.log("course",newcurso.id)
-  })
+//   cursosLoader = async()=>{
+//     Courses.forEach(async (c)=>{
+//       const user = await User.findOne({
+//         where: {email:c.email}
+//       })
+//       const categ = await Category.findOne({
+//         where: {
+//           name: c.category
+//         }
+//       })
+//       const newcurso = await Course.create(
+//         {
+//           state: c.state,
+//           numbersOfDiscounts: c.numbersOfDiscounts,
+//           percentageDiscount: c.percentageDiscount,
+//           name: c.name,
+//           level: c.level,
+//           languaje: c.languaje,
+//           description: c.description,
+//           email: c.email,
+//           url: c.url,
+//           urlVideo: c.urlVideo,
+//           price: c.price,
+//           category: c.category
+//         })
+//         console.log("course",newcurso.id)
+//   })
 
-}
+// }
 
 const cargaCursos = async () => {
   const cargacursos=Courses.map(async (c) => {
@@ -146,7 +146,45 @@ const cargaPago = async () => {
     return console.log("Pagos cargados")
   })
 }
+const updateSolds=async()=>{
+  const updateAll = await Course.findAll({})
+  let update1 = updateAll.map(async(u,index)=>{
+    await Course.update({
+      solds:(index*2)
+    },{
+      where:{
+        id:u.id
+      }
+    })
+    return console.log("updated1",index)
+  })
 
+  Promise.all(update1).then(async() => {
+     console.log("updated1")
+    const updateFreeOnes = await Course.findAll({
+      where:{
+        price:0
+      }
+    })
+    let updated = updateFreeOnes.map(async(u,index)=>{
+      await Course.update({
+        solds:(index*12)
+      },{
+        where:{
+          id:u.id
+        }
+      })
+      return console.log("updated free course id", u.id, u.solds)
+    })
+  
+    Promise.all(updated).then(() => {
+      return console.log("updated")
+    })
+
+
+  })
+
+}
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async () => {
@@ -177,11 +215,11 @@ conn.sync({ force: true }).then(async () => {
     await cargaPago(); */
     //setTimeout(cargaUsers, 0000, 'usuarios reg')
     //setTimeout(cargaCategoria, 4000, 'categorias')
-    setTimeout(cargaCursos, 5000, 'cursos')
-    setTimeout(cargaReviews, 8000, 'reviews');
-    setTimeout(cargaCompra, 12000, 'compra de ema');
-    setTimeout(cargaPago, 16000, 'pago de emma');
-
+    setTimeout(cargaCursos, 3000, 'cursos')
+    setTimeout(cargaReviews, 6500, 'reviews');
+    setTimeout(cargaCompra, 10000, 'compra de ema');
+    setTimeout(cargaPago, 13000, 'pago de emma');
+    setTimeout(updateSolds, 16000, 'update');
     console.log('%s listening at 3001'); // eslint-disable-line no-console
 
   });

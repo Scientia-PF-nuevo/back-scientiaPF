@@ -331,6 +331,7 @@ server.get ('/email/:email', async (req, res) => {
             usuario.courses.forEach((c)=>uploadedCourses.push(c.id))
           }
           const obj={
+            profilePicture: usuario.profilePicture,
             firstName:usuario.firstName,
             lastName:usuario.lastName,
             email:usuario.email,

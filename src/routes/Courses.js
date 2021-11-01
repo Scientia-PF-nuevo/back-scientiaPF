@@ -438,7 +438,7 @@ server.post("/newreview", async (req, res) => {
 		courseId
 	} = req.body;
 
-	const newReview = await Review.create({
+	try{const newReview = await Review.create({
 
 		comments: comments,
 		score: score,
@@ -466,7 +466,9 @@ server.post("/newreview", async (req, res) => {
 	res.status(201).send({
 		msg: 'review cargado exitosamente',
 		newReview
-	})
+	})}catch(e){
+		console.log(e)
+	}
 
 })
 
