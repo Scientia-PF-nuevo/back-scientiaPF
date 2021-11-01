@@ -220,6 +220,44 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     })
 
 })
+
+server.post("/freecourses/:email/:id", async(req,res)=>{
+ 
+const {email, id } = req.params;
+
+  try {
+    if(email && id){
+        const user = await User.findOne({
+        where: {
+            email: email
+        }
+    })
+    const course = await Course.findOne({
+        where: {
+            id: id
+        }
+    })
+
+    const freePurchase = await Bought_course.create({
+        courseName: course.name,
+        courseId: id,
+        owner: email,
+        price: course.price,
+        state: 'bought'
+    
+                })
+        freePurchase.setCourse(course);
+        freePurchase.setUser(user)
+    res.send("free course succes")
+}
+    else{
+        res.send("not id or email")
+    }
+  } catch (error) {
+     res.send(error) 
+  }
+
+})
   // const fetching = axios.get(`http://localhost:3001/order/${emailBuyer}`)
     //     .then(async (curses) => {
     //         const data = curses.data;
