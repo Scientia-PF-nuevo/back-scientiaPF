@@ -44,7 +44,7 @@ server.get('/', (req, res) => {
 
 							const obj = {
 								name: element.name,
-								date: date,
+								date: element.createdAt,
 								description: element.description,
 								price: element.price,
 								url: element.url,
@@ -94,7 +94,7 @@ server.get('/', (req, res) => {
 					
 
 					const obj = {
-						date: d,
+						date: c.createdAt,
 						name: c.name,
 						description: c.description,
 						price: c.price,
@@ -207,7 +207,7 @@ server.get('/filters', async(req, res) => {
 						const d = stringifyDate(element.createdAt)
 					 const obj = {
 						name: element.name,
-						date: d,
+						date: element.createdAt,
 						description: element.description,
 						price: element.price,
 						url: element.url,
@@ -253,7 +253,7 @@ server.get('/id/:id',async  (req, res) => {
 				const date = stringifyDate(course.createdAt)
 				const obj ={
 					name: course.name,
-					date: date,
+					date: course.createdAt,
 					description: course.description,
 					price: course.price,
 					url: course.url,
