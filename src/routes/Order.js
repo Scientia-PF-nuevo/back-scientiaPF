@@ -82,7 +82,7 @@ server.post('/:userEmail', async (req, res) => {
                    await order.setUser(user)
                   
                 }).then(async(order)=>{ 
-                    const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                    const fetching = await axios.get(`/order/${userEmail}`)
                     res.send(fetching.data)
                    })
                      
@@ -101,12 +101,12 @@ server.post('/delete/:userEmail/:courseId' , async (req, res) => {
                 console.log(findUserOrder)
                 if(findUserOrder || findUserOrder === null){
                     if (findUserOrder === null){
-                        const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                        const fetching = await axios.get(`/order/${userEmail}`)
                         res.send(fetching.data)
                     } else {
                         findUserOrder.destroy();
                         
-                            const fetching = await axios.get(`http://localhost:3001/order/${userEmail}`)
+                            const fetching = await axios.get(`/order/${userEmail}`)
                             res.send(fetching.data)
                     }
                         

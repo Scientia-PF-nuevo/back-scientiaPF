@@ -28,8 +28,20 @@ const buy = require("./testBuy");
 const payment = require("./testPayment");
 const { default: fetch } = require('node-fetch');
 const axios = require('axios');
+const dot = require('dotenv')
 
-usersloader = async()=>{
+dot.config()
+axios.defaults.baseURL = 'http://localhost:3001';
+
+var local = "";
+
+if(process.env.PORT == 3001){
+  local = "http://localhost:3001";
+}else{
+  local = "http://scientiapf.herokuapp.com";
+}
+
+const usersloader = async()=>{
   Users.forEach(async(u)=>{
     
     const user = await User.create(
@@ -49,8 +61,8 @@ usersloader = async()=>{
       console.log("user",user.email)
   })
 }
-
-categoriesLoader =async()=>{
+console.log(process.env.PORT)
+const categoriesLoader =async()=>{
   Categories.forEach(async(c)=>{
     const cat = await Category.create(
       {name: c.name})
@@ -58,39 +70,40 @@ categoriesLoader =async()=>{
     })
   }
   
-//   cursosLoader = async()=>{
-//     Courses.forEach(async (c)=>{
-//       const user = await User.findOne({
-//         where: {email:c.email}
-//       })
-//       const categ = await Category.findOne({
-//         where: {
-//           name: c.category
-//         }
-//       })
-//       const newcurso = await Course.create(
-//         {
-//           state: c.state,
-//           numbersOfDiscounts: c.numbersOfDiscounts,
-//           percentageDiscount: c.percentageDiscount,
-//           name: c.name,
-//           level: c.level,
-//           languaje: c.languaje,
-//           description: c.description,
-//           email: c.email,
-//           url: c.url,
-//           urlVideo: c.urlVideo,
-//           price: c.price,
-//           category: c.category
-//         })
-//         console.log("course",newcurso.id)
-//   })
+/*   cursosLoader = async()=>{
+    Courses.forEach(async (c)=>{
+      const user = await User.findOne({
+        where: {email:c.email}
+      })
+      const categ = await Category.findOne({
+        where: {
+          name: c.category
+        }
+      })
+      const newcurso = await Course.create(
+        {
+          state: c.state,
+          numbersOfDiscounts: c.numbersOfDiscounts,
+          percentageDiscount: c.percentageDiscount,
+          name: c.name,
+          level: c.level,
+          languaje: c.languaje,
+          description: c.description,
+          email: c.email,
+          url: c.url,
+          urlVideo: c.urlVideo,
+          price: c.price,
+          category: c.category
+        })
+        console.log("course",newcurso.id)
+  })
 
-// }
+} */
+
 
 const cargaCursos = async () => {
   const cargacursos=Courses.map(async (c) => {
-    const response = await fetch('http://localhost:3001/courses/newcourse', {
+    const response = await fetch(`${local}/courses/newcourse`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(c)
@@ -105,7 +118,7 @@ const cargaCursos = async () => {
 
 const cargaReviews = async () => {
   const cargareviews=reviews.map(async (u) => {
-    const response = await fetch('http://localhost:3001/courses/newreview', {
+    const response = await fetch(`${local}/courses/newreview`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
@@ -119,7 +132,7 @@ const cargaReviews = async () => {
 const cargaCompra = async () => {
   const cargacompras=buy.map(async(u) => {
     
-    const response = await fetch(`http://localhost:3001/order/${u.emailBuyer}`, {
+    const response = await fetch(`${local}/order/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
@@ -135,7 +148,7 @@ const cargaCompra = async () => {
 }
 const cargaPago = async () => {
   const cargapagos=payment.map(async(u) => {
-    const response = await fetch(`http://localhost:3001/purchase/orders_destroy/${u.emailBuyer}`, {
+    const response = await fetch(`${local}/purchase/orders_destroy/${u.emailBuyer}`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(u)
@@ -188,11 +201,12 @@ const updateSolds=async()=>{
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async () => {
-  await usersloader();
-  await categoriesLoader();
+  
   //await cursosLoader();
   server.listen(process.env.PORT, async () => {
-    
+
+    setTimeout(usersloader, 0, "users");
+    setTimeout(categoriesLoader, 0, "categories");
     setTimeout(cargaCursos, 3000, 'cursos')
     setTimeout(cargaReviews, 6500, 'reviews');
     setTimeout(cargaCompra, 10000, 'compra de ema');

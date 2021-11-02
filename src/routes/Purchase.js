@@ -28,7 +28,7 @@ server.post('/:email', async (req, res) => {
         })
         let totalPrice = 0;
         const coursesIds = [];
-        const fetching = await axios.get(`http://localhost:3001/order/${email}`)
+        const fetching = await axios.get(`/order/${email}`)
             .then(async (curses) => {
                 const data = curses.data;
                 let response = data.map(async (c) => {
@@ -86,7 +86,7 @@ server.post('/:email', async (req, res) => {
                                 if (r.status === 201) {
 
                                     // orders.length>1? payload =orders : payload={}
-                                const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${email}`,{Giftorders: orders})
+                                const destroy = axios.post(`/purchase/orders_destroy/${email}`,{Giftorders: orders})
 
                                 }
                                 return res.status(r.status).json({
@@ -258,7 +258,7 @@ const {email, id } = req.params;
   }
 
 })
-  // const fetching = axios.get(`http://localhost:3001/order/${emailBuyer}`)
+  // const fetching = axios.get(`/order/${emailBuyer}`)
     //     .then(async (curses) => {
     //         const data = curses.data;
             
@@ -352,7 +352,7 @@ const {email, id } = req.params;
 //         // console.log(emailBuyer)
 //         let totalPrice = 0;
 //         const coursesIds = [];
-//         const fetching = await axios.get(`http://localhost:3001/order/${emailBuyer}`)
+//         const fetching = await axios.get(`/order/${emailBuyer}`)
 //             .then(async (curses) => {
 //                 const data = curses.data;
 //                 let response = data.map(async (c) => {
@@ -410,7 +410,7 @@ const {email, id } = req.params;
 //                             .save(payment_data)
 //                             .then((r) => {
 //                                 if (r.status === 201) {
-//                                     const destroy = axios.post(`http://localhost:3001/purchase/orders_destroy/${emailBuyer}/?emailGift=${giftEmail}`)
+//                                     const destroy = axios.post(`/purchase/orders_destroy/${emailBuyer}/?emailGift=${giftEmail}`)
 
 //                                 }
 //                                 return res.status(r.status).json({
