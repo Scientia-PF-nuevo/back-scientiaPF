@@ -188,8 +188,8 @@ const updateSolds=async()=>{
 
 // Syncing all the models at once.
 conn.sync({ force: true }).then(async () => {
-  await usersloader();
-  await categoriesLoader();
+ // await usersloader();
+ // await categoriesLoader();
   //await cursosLoader();
   server.listen(process.env.PORT, async () => {
     
