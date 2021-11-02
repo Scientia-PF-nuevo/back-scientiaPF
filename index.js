@@ -191,36 +191,14 @@ conn.sync({ force: true }).then(async () => {
   await usersloader();
   await categoriesLoader();
   //await cursosLoader();
-  server.listen(3001, async () => {
-    // await cargaUsers().then(async (u) => {
-    //   await cargaCategoria().then(async (ca) => {
-    //     await cargaCursos().then(async (cu) => {
-    //       await cargaReviews().then(async(re) => {
-    //         await cargaCompra().then(async (co) => {
-    //           await cargaPago().then(async(pa) => {
-    //             console.log("Base de datos cargada")
-    //           })
-    //         })
-    //       })
-    //     })
-    //   })
-    // })
+  server.listen(process.env.PORT, async () => {
     
-    
-   /*  await cargaUsers();
-    await cargaCategoria();
-    await cargaCursos();
-    await cargaReviews();
-    await cargaCompra();
-    await cargaPago(); */
-    //setTimeout(cargaUsers, 0000, 'usuarios reg')
-    //setTimeout(cargaCategoria, 4000, 'categorias')
     setTimeout(cargaCursos, 3000, 'cursos')
     setTimeout(cargaReviews, 6500, 'reviews');
     setTimeout(cargaCompra, 10000, 'compra de ema');
     setTimeout(cargaPago, 13000, 'pago de emma');
     setTimeout(updateSolds, 16000, 'update');
-    console.log('%s listening at 3001'); // eslint-disable-line no-console
+    console.log('%s listening at ',process.env.PORT); // eslint-disable-line no-console
 
   });
 
