@@ -362,9 +362,44 @@ server.post('/newcourse', async (req, res) => {
 			msg: 'Error ruta crear curso'
 		})
 	}
-	 
-
 })
+
+server.post('/delete/:email/:id' , async (req, res) => {
+	const email = req.params.email
+	const courseId = req.params.id
+	const password = req.body.password
+
+	try {
+	  const user = await User.findOne({
+		 where:{
+			 email:email,
+			 password:password
+		 }, include :[Bought_course] 
+	  });
+	  if(user.email){
+		  
+	  const boughts= user.bought_courses.forEach( async()=>{
+		const deleteBoughts = await Bought_course.findOne({
+			where:{
+				courseId:courseId
+			}
+		 });
+			if(typeof(deleteBoughts) == "object"){ 
+				deleteBoughts.destroy()
+				}
+			});
+			
+			res.send("course deleted")
+	  }else{
+		  res.send("wrong password")
+	  }
+
+
+	} catch (err) {
+	  res.send(err)
+	}
+	})
+
 // localhost:3001/courses/newcategory
 server.post('/newcategory', async (req, res) => {
 	const {
