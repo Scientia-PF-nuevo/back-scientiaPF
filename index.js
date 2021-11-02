@@ -38,7 +38,7 @@ var local = "";
 if(process.env.PORT == 3001){
   local = "http://localhost:3001";
 }else{
-  local = "http://scientiapf.herokuapp.com";
+  local = "https://scientiapf.herokuapp.com";
 }
 
 const usersloader = async()=>{
@@ -198,18 +198,18 @@ const updateSolds=async()=>{
 }
 
 // Syncing all the models at once.
-conn.sync({ force: true }).then(async () => {
+conn.sync({ force: false }).then(async () => {
   
   //await cursosLoader();
   server.listen(process.env.PORT, async () => {
 
-    setTimeout(usersloader, 0, "users");
+   /*setTimeout(usersloader, 0, "users");
     setTimeout(categoriesLoader, 0, "categories");
     setTimeout(cargaCursos, 3000, 'cursos')
     setTimeout(cargaReviews, 6500, 'reviews');
     setTimeout(cargaCompra, 10000, 'compra de ema');
     setTimeout(cargaPago, 13000, 'pago de emma');
-    setTimeout(updateSolds, 16000, 'update');
+    setTimeout(updateSolds, 16000, 'update'); */
     console.log('%s listening at ',process.env.PORT); // eslint-disable-line no-console
 
   });
