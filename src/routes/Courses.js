@@ -204,7 +204,7 @@ server.get('/filters', async(req, res) => {
 				let coursesToSend = filteredCourses4.map((element)=>{
 				//	console.log(element)
 					let average = Math.round(getScore(element))
-						const d = stringifyDate(element.createdAt)
+						//const d = stringifyDate(element.createdAt)
 					 const obj = {
 						name: element.name,
 						date: element.createdAt,
@@ -250,7 +250,7 @@ server.get('/id/:id',async  (req, res) => {
 			if (course) {
 				//console.log(course.user)
 				const average = getScore(course)
-				const date = stringifyDate(course.createdAt)
+				//const date = stringifyDate(course.createdAt)
 				const obj ={
 					name: course.name,
 					date: course.createdAt,
