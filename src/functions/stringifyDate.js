@@ -18,6 +18,6 @@ module.exports = function randomDate(element) {
         randomMonth = `0${randomMonth}`
     }
     const date = randomMonth.concat(randomYear)
-    console.log(date)
+    //console.log(date)
     return date
 }
