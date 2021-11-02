@@ -3,6 +3,7 @@ const { User, Bought_course,Review,Course, Category,Gift, Order} = require('../d
 const jwt =require("jsonwebtoken");
 
 const redirectLogin = require('../middleware/redirectLogin');
+const stringifyDate = require('../functions/stringifyDate');
 //var sendMail = require('../mailer/mailer');
 
 
@@ -328,7 +329,25 @@ server.get ('/email/:email', async (req, res) => {
         Promise.all(coursesId).then(()=>{
           const uploadedCourses =[]
           if(usuario.courses){
-            usuario.courses.forEach((c)=>uploadedCourses.push(c.id))
+            usuario.courses.forEach((element)=>{
+              const date = stringifyDate(element.createdAt)
+
+              const obj = {
+								name: element.name,
+								date: date,
+								description: element.description,
+								price: element.price,
+								url: element.url,
+								urlVideo: element.urlVideo,
+								id: element.id,								
+								level:element.level,
+								language:element.languaje,
+								solds: element.solds,
+                percentageDiscount: element.percentageDiscount,
+                numbersOfDiscounts: element.numbersOfDiscounts
+							}
+              
+              uploadedCourses.push(obj)})
           }
           const obj={
             profilePicture: usuario.profilePicture,
