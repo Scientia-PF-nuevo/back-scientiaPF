@@ -340,6 +340,7 @@ server.get ('/email/:email', async (req, res) => {
             province:usuario.province,
             postalcode:usuario.postalcode,
             country:usuario.country,
+            profilePicture: usuario.profilePicture,
             isAdmin:usuario.isAdmin ,
             coursesAndData,
             uploadedCourses,
@@ -413,7 +414,7 @@ server.post('/register', async (req, res)=> {
     }
 })
 
-server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
+server.put('/updateInfo/:email', async(req,res)=>{
   const {firstName, lastName,password,address,phone,city,province,postalcode,country, profilePicture
   } = req.body;
   const email = req.params.email;
@@ -452,7 +453,7 @@ server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
 
 })
 
-server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
+server.put('/updatePw/:email', async(req,res)=>{
   const {oldPassword,newPassword} = req.body;
   const {email} = req.params
   console.log(email)
