@@ -193,9 +193,7 @@ const updateSolds=async()=>{
     Promise.all(updated).then(() => {
       return console.log("updated")
     })
-
-
-  })
+ })
 
 }
 
