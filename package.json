@@ -28,8 +28,8 @@
     "node-fetch": "^2.6.5",
     "nodemailer": "^6.7.0",
     "pg": "^8.5.1",
-   
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.12",
