@@ -193,12 +193,12 @@ conn.sync({ force: true }).then(async () => {
   //await cursosLoader();
   server.listen(process.env.PORT, async () => {
     
-    setTimeout(cargaCursos, 3000, 'cursos')
+   /*  setTimeout(cargaCursos, 3000, 'cursos')
     setTimeout(cargaReviews, 6500, 'reviews');
     setTimeout(cargaCompra, 10000, 'compra de ema');
     setTimeout(cargaPago, 13000, 'pago de emma');
     setTimeout(updateSolds, 16000, 'update');
-    console.log('%s listening at ',process.env.PORT); // eslint-disable-line no-console
+     */console.log('%s listening at ',process.env.PORT); // eslint-disable-line no-console
 
   });
 
