@@ -1,9 +1,7 @@
 
 
 //real function
-module.exports = function stringifyDate(element){
-    return JSON.stringify(element).slice(0, 8).split('-').reverse().join('').replace(`"`, "")
-}
+
 
 module.exports = function randomDate(element) {
     const startM = 01

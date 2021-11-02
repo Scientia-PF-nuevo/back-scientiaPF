@@ -2,7 +2,7 @@ const server = require('express').Router()
 const {Course,Category,Review,User,Bought_course} = require('../db');
 
 const getScore = require('../functions/getScore')
-const stringifyDate = require('../functions/stringifyDate')
+
 const filterLevel = require('../functions/filterLevel')
 const filterPrice = require('../functions/filterPrice')
 const filterLanguaje = require('../functions/filterLanguaje')
@@ -39,12 +39,12 @@ server.get('/', (req, res) => {
 						let average=Math.round(getScore(element))
 
 						if (element.name.toLowerCase().includes(n)) {
-							const date = stringifyDate(element.createdAt)
+							
 
 
 							const obj = {
 								name: element.name,
-								date: date,
+								date: element.createdAt,
 								description: element.description,
 								price: element.price,
 								url: element.url,
@@ -90,11 +90,11 @@ server.get('/', (req, res) => {
 
 				const filteredCourses = courses.map(c => {
 					let average = Math.round(getScore(c))
-					const d = stringifyDate(c.createdAt)
+					
 					
 
 					const obj = {
-						date: d,
+						date: c.createdAt,
 						name: c.name,
 						description: c.description,
 						price: c.price,
@@ -204,10 +204,10 @@ server.get('/filters', async(req, res) => {
 				let coursesToSend = filteredCourses4.map((element)=>{
 				//	console.log(element)
 					let average = Math.round(getScore(element))
-						const d = stringifyDate(element.createdAt)
+						
 					 const obj = {
 						name: element.name,
-						date: d,
+						date: element.createdAt,
 						description: element.description,
 						price: element.price,
 						url: element.url,
@@ -250,7 +250,7 @@ server.get('/id/:id',async  (req, res) => {
 			if (course) {
 				//console.log(course.user)
 				const average = getScore(course)
-				const date = stringifyDate(course.createdAt)
+				const date = course.createdAt
 				const obj ={
 					name: course.name,
 					date: date,
