@@ -1,9 +1,22 @@
 const server = require('express').Router()
 const { Order, User ,Course } =require('../db.js')
 const axios = require('axios');
+const dot = require('dotenv')
 
 const redirectLogin = require('../middleware/redirectLogin');
 const { on } = require('superagent');
+
+dot.config()
+axios.defaults.baseURL = 'http://localhost:3001';
+
+var local = "";
+
+if(process.env.PORT == 3001){
+  local = "http://localhost:3001";
+}else{
+  local = "https://scientiapf.herokuapp.com";
+}
+
 
 
 //localhost:3001/order/:userId crear orden completa
@@ -82,7 +95,7 @@ server.post('/:userEmail', async (req, res) => {
                    await order.setUser(user)
                   
                 }).then(async(order)=>{ 
-                    const fetching = await axios.get(`/order/${userEmail}`)
+                    const fetching = await axios.get(`${local}/order/${userEmail}`)
                     res.send(fetching.data)
                    })
                      
@@ -101,12 +114,12 @@ server.post('/delete/:userEmail/:courseId' , async (req, res) => {
                 console.log(findUserOrder)
                 if(findUserOrder || findUserOrder === null){
                     if (findUserOrder === null){
-                        const fetching = await axios.get(`/order/${userEmail}`)
+                        const fetching = await axios.get(`${local}/order/${userEmail}`)
                         res.send(fetching.data)
                     } else {
                         findUserOrder.destroy();
                         
-                            const fetching = await axios.get(`/order/${userEmail}`)
+                            const fetching = await axios.get(`${local}/order/${userEmail}`)
                             res.send(fetching.data)
                     }
                         

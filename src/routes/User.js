@@ -1,6 +1,7 @@
 const server = require('express').Router()
 const { User, Bought_course,Review,Course, Category,Gift, Order} = require('../db');
 const jwt =require("jsonwebtoken");
+const dot = require('dotenv')
 
 const redirectLogin = require('../middleware/redirectLogin');
 //var sendMail = require('../mailer/mailer');
