@@ -203,7 +203,7 @@ conn.sync({ force: true }).then(async () => {
   //await cursosLoader();
   server.listen(process.env.PORT, async () => {
 
-   setTimeout(usersloader, 0, "users");
+     setTimeout(usersloader, 0, "users");
     setTimeout(categoriesLoader, 0, "categories");
     setTimeout(cargaCursos, 3000, 'cursos')
     setTimeout(cargaReviews, 6500, 'reviews');
