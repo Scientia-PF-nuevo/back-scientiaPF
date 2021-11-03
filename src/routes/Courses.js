@@ -388,7 +388,6 @@ server.post('/delete/:email/:id' , async (req, res) => {
 	  const user = await User.findOne({
 		 where:{
 			 email:email,
-			 password:password
 		 }, include :[Bought_course] 
 	  });
 	  if(user.email){
