@@ -274,6 +274,117 @@ server.post('/logout', (req, res) => {
 
 //  localhost:3001/users/email  ---- busca usuario por email
 server.get ('/email/:email', async (req, res) => {
+  const { email } = req.params;
+  // console.log(email)
+  try {
+    const usuario = await User.findOne({
+        where: {
+            email:email
+        },
+        include: [
+          {model:Bought_course},
+          {model:Course}
+        ]
+    })
+    //res.send(usuario)
+    if(usuario){
+      const coursesAndData=[];
+
+      const giftedCourses = await Gift.findAll({
+        where: {
+          payerEmail:usuario.email
+        }
+      })
+      const coursesId = usuario.bought_courses.map(async(c)=>{
+
+
+        const reviews = []
+        const course = await Course.findOne({
+          where:{
+            id:c.courseId
+          },
+          include:[
+            {model:Review},
+            {model:Category},
+            {model:User},
+          ]
+        })
+       // console.log(course)
+        course.dataValues.reviews.forEach((r)=>{            
+          if(c.courseId === r.dataValues.courseId) {
+            reviews.push(r.dataValues)
+          } 
+
+        })
+
+        const courseInfo = {
+          course:c,
+          categories:course.categories[0].name,
+          reviews,
+          urlVideo:course.urlVideo,
+          url:course.dataValues.url,
+          uploadedBy:course.dataValues.email,
+          state:course.state,
+
+
+        }
+        coursesAndData.push(courseInfo)
+
+        return reviews
+      })
+      
+      Promise.all(coursesId).then(()=>{
+        const uploadedCourses =[]
+        if(usuario.courses){
+          usuario.courses.forEach((element)=>{
+            
+
+            const obj = {
+              name: element.name,
+              date: element.createdAt,
+              description: element.description,
+              price: element.price,
+              url: element.url,
+              urlVideo: element.urlVideo,
+              id: element.id,								
+              level:element.level,
+              language:element.languaje,
+              solds: element.solds,
+              percentageDiscount: element.percentageDiscount,
+              numbersOfDiscounts: element.numbersOfDiscounts
+            }
+            
+            uploadedCourses.push(obj)})
+        }
+
+        const obj={
+          profilePicture: usuario.profilePicture,
+          firstName:usuario.firstName,
+          lastName:usuario.lastName,
+          email:usuario.email,
+          address:usuario.address,
+          phone:usuario.phone,
+          city:usuario.city,
+          province:usuario.province,
+          postalcode:usuario.postalcode,
+          country:usuario.country,
+          isAdmin:usuario.isAdmin ,
+          coursesAndData,
+          uploadedCourses,
+          giftedCourses
+        }
+        res.send(obj)
+      })
+    } else {
+      res.status(404).send("El usuario no se ha encontrado")
+    }
+    
+  } catch (err) {
+    res.send(err , {status:500 ,msg:"se requiere un email"})
+  }
+})
+
+/* server.get ('/email/:email', async (req, res) => {
     const { email } = req.params;
     // console.log(email)
     try {
@@ -373,7 +484,7 @@ server.get ('/email/:email', async (req, res) => {
       res.send(err , {status:500 ,msg:"se requiere un email"})
     }
 })
-
+ */
 
 
 server.post('/register', async (req, res)=> { 
