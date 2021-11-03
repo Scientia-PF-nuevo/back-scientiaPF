@@ -2,6 +2,10 @@ const server = require('express').Router()
 const { Course, Category, Review, User, Bought_course, Order, Gift } = require('../db');
 const axios = require('axios');
 const mercadopago = require('mercadopago');
+const ejs = require('ejs');
+const path = require('path');
+
+const exampleTemplate= path.join(__dirname, '../templates/example.ejs');
 // const token = 'TEST-5014021276587978-102020-2aa0263c739b5941b77085e513aa6fad-90743208';
 mercadopago.configure({
     access_token: 'TEST-5014021276587978-102020-2aa0263c739b5941b77085e513aa6fad-90743208'
@@ -137,7 +141,13 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                     courseId:course.id,
                     giftEmail:o.emailGift,
                     payerEmail:emailBuyer
-                    })
+                })
+                    const giftEmail= o.emailGift
+                    console.log(giftEmail)
+                    const name = course.name
+                    const subject= 'You have a gift on scientia!'
+                    const emailData = {giftEmail,subject,emailBuyer,name,gift} ;
+                    const html = await ejs.renderFile(exampleTemplate,emailData)
                     gift.setCourse(course);
                     // console.log(gift)
                     var mailOptions = {
@@ -145,7 +155,8 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
                     to: o.emailGift,
                     subject: 'Course gift',
                     text: 'Using code for change your gift!',
-                    html: `<b>Use this code to exchange it foryour gift! Your code:${gift.coupon}</b>`
+                    //html: `<b>Use this code to exchange it foryour gift! Your code: ${gift.coupon}</b>`
+                    html: html
                     
                     };
                     transporter.sendMail(mailOptions, function(error, info){
