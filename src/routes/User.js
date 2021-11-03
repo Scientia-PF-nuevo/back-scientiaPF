@@ -286,9 +286,17 @@ server.get ('/email/:email', async (req, res) => {
           {model:Course}
         ]
     })
+    const coursesRejected = await Course.findAll({
+      where:{
+        email:email,
+        state:'rejected'
+      }
+    })
     //res.send(usuario)
     if(usuario){
       const coursesAndData=[];
+      const rejectedCourses =[]
+      rejectedCourses.push(coursesRejected)
 
       const giftedCourses = await Gift.findAll({
         where: {
@@ -337,7 +345,7 @@ server.get ('/email/:email', async (req, res) => {
         const uploadedCourses =[]
         if(usuario.courses){
           usuario.courses.forEach((element)=>{
-            
+            console.log(element)
 
             const obj = {
               name: element.name,
@@ -350,6 +358,8 @@ server.get ('/email/:email', async (req, res) => {
               level:element.level,
               language:element.languaje,
               solds: element.solds,
+              state:element.state,
+              admincomments:element.admincomments,
               percentageDiscount: element.percentageDiscount,
               numbersOfDiscounts: element.numbersOfDiscounts
             }
@@ -371,7 +381,8 @@ server.get ('/email/:email', async (req, res) => {
           isAdmin:usuario.isAdmin ,
           coursesAndData,
           uploadedCourses,
-          giftedCourses
+          giftedCourses,
+          rejectedCourses
         }
         res.send(obj)
       })
