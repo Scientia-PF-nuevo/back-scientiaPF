@@ -257,7 +257,7 @@ server.post('/login' , async (req, res) => {
 
 })
 
-server.post('/logout', redirectLogin, (req, res) => {
+server.post('/logout', (req, res) => {
  try{ 
    req.session.destroy(err =>{
     if(err) {
