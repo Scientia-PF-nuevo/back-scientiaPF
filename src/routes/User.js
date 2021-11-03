@@ -28,7 +28,8 @@ server.post('/login' , async (req, res) => {
   console.log(req.body)
   const {email , password, cart, isGoogle, firstName,lastName} = req.body;
 
-
+  try {
+    
   if (email && password) {
     if(isGoogle){
       
@@ -249,6 +250,11 @@ server.post('/login' , async (req, res) => {
  } else{
    res.send("No recibio email o password")
  }
+    
+  } catch (error) {
+    res.send(error)
+  }
+
 })
 
 server.post('/logout', redirectLogin, (req, res) => {
@@ -420,45 +426,52 @@ server.put('/updateInfo/:email', redirectLogin,async(req,res)=>{
   const {firstName, lastName,password,address,phone,city,province,postalcode,country, profilePicture
   } = req.body;
   const email = req.params.email;
-  const user = await User.findOne({
-    where: {
-      email,
-      password
-    }
-  })
 
-  if(user){
-    try{
-      const update = await User.update({
-          firstName,
-          lastName,
-          password,
-          address,
-          phone,
-          city, 
-          province, 
-          postalcode,
-          country,
-          profilePicture
-      },{
-        where:{
-        email:email
+  try {
+    const user = await User.findOne({
+      where: {
+        email,
+        password
       }
     })
-      res.send("Informacion actualizada con exito")
-    } catch(e){
-      console.log(e)
-    }
-  }else {
-    res.status(404).send("El email y constraseña no corresponden a un usuario")
+  
+    if(user){
+      try{
+        const update = await User.update({
+            firstName,
+            lastName,
+            password,
+            address,
+            phone,
+            city, 
+            province, 
+            postalcode,
+            country,
+            profilePicture
+        },{
+          where:{
+          email:email
+        }
+      })
+        res.send("Informacion actualizada con exito")
+      } catch(e){
+        console.log(e)
+      }
+    }else {
+      res.status(404).send("El email y constraseña no corresponden a un usuario")
+    }   
+  } catch (error) {
+        res.send(error)
   }
+ 
 
 })
 
 server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
   const {oldPassword,newPassword} = req.body;
   const {email} = req.params
-  console.log(email)
+ // console.log(email)
+ try {
   const user = await User.findOne({
     where: {
       email,
@@ -481,12 +494,17 @@ server.put('/updatePw/:email', redirectLogin ,async(req,res)=>{
   }else {
     res.status(404).send("El email y password no corresponden a un usuario")
   }
+   
+ } catch (error) {
+   res.send(error)
+ } 
 })
 
 server.post('/validateGift/:email', async(req,res)=>{
   const{email} = req.params;
   const {coupon} = req.body;
-  try{const user = await User.findOne({
+  try{
+    const user = await User.findOne({
     where:{
       email
     }
@@ -530,30 +548,38 @@ server.post('/validateGift/:email', async(req,res)=>{
 
 server.put('/updateProfilePicture/:email', async(req,res)=>{
   const { imageUrl } = req.body;
-  console.log(imageUrl, 'estoy en imageUrl del back', req.body)
+ // console.log(imageUrl, 'estoy en imageUrl del back', req.body)
   const {email} = req.params
-  console.log(email)
-  const user = await User.findOne({
-    where: {
-      email
-    }
-  })
-  if(user){
-    try{
-      const update = await User.update({
-        profilePicture: imageUrl
-      },{
-        where:{
-        email:email
+  //console.log(email)
+  
+  try {
+    const user = await User.findOne({
+      where: {
+        email
       }
     })
-      res.send("Informacion actualizada con exito")
-    } catch(e){
-      console.log(e)
+    if(user){
+      try{
+        const update = await User.update({
+          profilePicture: imageUrl
+        },{
+          where:{
+          email:email
+        }
+      })
+        res.send("Informacion actualizada con exito")
+      } catch(e){
+        console.log(e)
+      }
+    }else {
+      res.status(404).send("El email no corresponden a un usuario")
     }
-  }else {
-    res.status(404).send("El email no corresponden a un usuario")
+    
+  } catch (error) {
+    res.send(error)
+    
   }
+  
 })
 
 

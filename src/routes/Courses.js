@@ -17,7 +17,8 @@ server.get('/', (req, res) => {
 		name
 	} = req.query;
 
-	name ? (
+	try {
+		name ? (
 
 			Course.findAll({
 				include: [{model: Category},
@@ -118,11 +119,18 @@ server.get('/', (req, res) => {
 			}
 		})
 
+		
+	} catch (error) {
+		res.send(error)
+	}
+
+	
 })
 
 server.get('/filters', async(req, res) => {
 	const {level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
-	let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
+	try {
+		let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
 	let booleanparametres = []
 	booleanparametres= parametres.map((p)=>{	
 		if(p==="false" || typeof(p)==="undefined") return false;
@@ -225,7 +233,10 @@ server.get('/filters', async(req, res) => {
 				
 				//console.log(filteredCourses4.length)
 				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
-		
+
+	} catch (error) {
+		res.send(error)
+	}		
    })
 
 server.get('/id/:id',async  (req, res) => {
@@ -305,62 +316,66 @@ server.post('/newcourse', async (req, res) => {
 		percentageDiscount
 	} = req.body
 
-	if (
-		!name ||
-		!description ||
-		!url ||
-		!category ||
-		!email ||
-		!urlVideo ||
-		!languaje ||
-		!level 
-		
-	) {	
-
-		res.status(400).send({
-			msg: 'Todos los campos requeridos'
-		})
-	}
-
 	try {
-		const user = await User.findOne({
-			where: {email:email}
-		})
-		
-
-		const newCourse = await Course.create({
-			name,
-			description,
-			price,
-			url,
-			email:email,
-			urlVideo,
-			languaje,
-			level,
-			state,
-			percentageDiscount,
-			numbersOfDiscounts
-		})
-
-		const categ = await Category.findOne({
-			where: {
-				name: category
-			}
-		})
-		await newCourse.addCategories(categ)
-		
-		await user.addCourses(newCourse)
-
-		res.status(201).send({
-			msg: 'curso cargado exitosamente',
-			newCourse
-		})
-	}
-	catch (error) {
-		console.log(error)
-		res.status(400).send({
-			msg: 'Error ruta crear curso'
-		})
+		if (
+			!name ||
+			!description ||
+			!url ||
+			!category ||
+			!email ||
+			!urlVideo ||
+			!languaje ||
+			!level 
+			
+		) {	
+	
+			res.status(400).send({
+				msg: 'Todos los campos requeridos'
+			})
+		}
+	
+		try {
+			const user = await User.findOne({
+				where: {email:email}
+			})
+			
+	
+			const newCourse = await Course.create({
+				name,
+				description,
+				price,
+				url,
+				email:email,
+				urlVideo,
+				languaje,
+				level,
+				state,
+				percentageDiscount,
+				numbersOfDiscounts
+			})
+	
+			const categ = await Category.findOne({
+				where: {
+					name: category
+				}
+			})
+			await newCourse.addCategories(categ)
+			
+			await user.addCourses(newCourse)
+	
+			res.status(201).send({
+				msg: 'curso cargado exitosamente',
+				newCourse
+			})
+		}
+		catch (error) {
+			console.log(error)
+			res.status(400).send({
+				msg: 'Error ruta crear curso'
+			})
+		}
+	} catch (error) {
+		res.send(error)
 	}
 })
 
@@ -406,6 +421,7 @@ server.post('/newcategory', async (req, res) => {
 		name
 	} = req.body
 
+try {
 	if (
 		!name
 	) {
@@ -429,6 +445,9 @@ server.post('/newcategory', async (req, res) => {
 			msg: "fallo la carga de la categoria"
 		})
 	}
+} catch (error) {
+	res.send(error)
+}
 })
 
 // localhost:3001/courses/allcategories
@@ -452,17 +471,21 @@ server.get("/coursescategory", async (req, res) => {
 		name
 	} = req.body;
 
-	const categories = await Category.findAll({
-		where: {
-			name: name,
-			state:'active'
-		},
-		include: Course
-	})
-	Promise.all(categories)
-		.then(data =>
-			res.json(data)
-		)
+	try {
+		const categories = await Category.findAll({
+			where: {
+				name: name,
+				state:'active'
+			},
+			include: Course
+		})
+		Promise.all(categories)
+			.then(data =>
+				res.json(data)
+			)
+	} catch (error) {
+		res.send(error)
+	}
 })
 
 server.post("/newreview", async (req, res) => {
@@ -473,7 +496,8 @@ server.post("/newreview", async (req, res) => {
 		courseId
 	} = req.body;
 
-	try{const newReview = await Review.create({
+	try{
+		const newReview = await Review.create({
 
 		comments: comments,
 		score: score,
@@ -508,7 +532,8 @@ server.post("/newreview", async (req, res) => {
 })
 
 server.get("/allreviews", async (req, res) => {
-
+try {
+	
 	const rev = await Review.findAll({
 
 		include: Course
@@ -517,6 +542,9 @@ server.get("/allreviews", async (req, res) => {
 		.then(data =>
 			res.json(data)
 		)
+} catch (error) {
+	res.send(error)
+}
 })
 
 server.put("/:email", async (req, res) => {
