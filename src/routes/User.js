@@ -286,10 +286,18 @@ server.get ('/email/:email', async (req, res) => {
             {model:Course}
           ]
       })
-      //res.send(usuario)
-      if(usuario){
-        const coursesAndData=[];
 
+      const coursesRejected = await Course.findAll({
+        where:{
+          email:email,
+          state:'rejected'
+        }
+      })
+      
+      if(usuario){
+        const rejectedCourses = [];
+        const coursesAndData=[];
+        rejectedCourses.push(coursesRejected)
         const giftedCourses = await Gift.findAll({
           where: {
             payerEmail:usuario.email
@@ -352,7 +360,8 @@ server.get ('/email/:email', async (req, res) => {
             isAdmin:usuario.isAdmin ,
             coursesAndData,
             uploadedCourses,
-            giftedCourses
+            giftedCourses,
+            rejectedCourses
           }
           res.send(obj)
         })
