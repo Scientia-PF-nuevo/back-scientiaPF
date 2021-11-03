@@ -349,6 +349,9 @@ server.get ('/email/:email', async (req, res) => {
               
               uploadedCourses.push(obj)})
           }
+
+
+          
           const obj={
             profilePicture: usuario.profilePicture,
             firstName:usuario.firstName,
