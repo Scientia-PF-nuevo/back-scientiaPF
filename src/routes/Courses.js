@@ -17,7 +17,8 @@ server.get('/', (req, res) => {
 		name
 	} = req.query;
 
-	name ? (
+	try {
+		name ? (
 
 			Course.findAll({
 				include: [{model: Category},
@@ -44,7 +45,7 @@ server.get('/', (req, res) => {
 
 							const obj = {
 								name: element.name,
-								date: date,
+								date: element.createdAt,
 								description: element.description,
 								price: element.price,
 								url: element.url,
@@ -94,7 +95,7 @@ server.get('/', (req, res) => {
 					
 
 					const obj = {
-						date: d,
+						date: c.createdAt,
 						name: c.name,
 						description: c.description,
 						price: c.price,
@@ -118,11 +119,18 @@ server.get('/', (req, res) => {
 			}
 		})
 
+		
+	} catch (error) {
+		res.send(error)
+	}
+
+	
 })
 
 server.get('/filters', async(req, res) => {
 	const {level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5,category } = req.query;
-	let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
+	try {
+		let parametres = [level1 , level2, level3,price1, price2,price3, languaje1, languaje2,languaje3,ranking1,ranking2,ranking3, ranking4, ranking5]
 	let booleanparametres = []
 	booleanparametres= parametres.map((p)=>{	
 		if(p==="false" || typeof(p)==="undefined") return false;
@@ -204,10 +212,10 @@ server.get('/filters', async(req, res) => {
 				let coursesToSend = filteredCourses4.map((element)=>{
 				//	console.log(element)
 					let average = Math.round(getScore(element))
-						const d = stringifyDate(element.createdAt)
+						//const d = stringifyDate(element.createdAt)
 					 const obj = {
 						name: element.name,
-						date: d,
+						date: element.createdAt,
 						description: element.description,
 						price: element.price,
 						url: element.url,
@@ -225,7 +233,10 @@ server.get('/filters', async(req, res) => {
 				
 				//console.log(filteredCourses4.length)
 				filteredCourses.length>0 ? res.send(coursesToSend) : res.send("No hay cursos")
-		
+
+	} catch (error) {
+		res.send(error)
+	}		
    })
 
 server.get('/id/:id',async  (req, res) => {
@@ -250,10 +261,10 @@ server.get('/id/:id',async  (req, res) => {
 			if (course) {
 				//console.log(course.user)
 				const average = getScore(course)
-				const date = stringifyDate(course.createdAt)
+				//const date = stringifyDate(course.createdAt)
 				const obj ={
 					name: course.name,
-					date: date,
+					date: course.createdAt,
 					description: course.description,
 					price: course.price,
 					url: course.url,
@@ -305,72 +316,111 @@ server.post('/newcourse', async (req, res) => {
 		percentageDiscount
 	} = req.body
 
-	if (
-		!name ||
-		!description ||
-		!url ||
-		!category ||
-		!email ||
-		!urlVideo ||
-		!languaje ||
-		!level 
-		
-	) {	
-
-		res.status(400).send({
-			msg: 'Todos los campos requeridos'
-		})
+	try {
+		if (
+			!name ||
+			!description ||
+			!url ||
+			!category ||
+			!email ||
+			!urlVideo ||
+			!languaje ||
+			!level 
+			
+		) {	
+	
+			res.status(400).send({
+				msg: 'Todos los campos requeridos'
+			})
+		}
+	
+		try {
+			const user = await User.findOne({
+				where: {email:email}
+			})
+			
+	
+			const newCourse = await Course.create({
+				name,
+				description,
+				price,
+				url,
+				email:email,
+				urlVideo,
+				languaje,
+				level,
+				state,
+				percentageDiscount,
+				numbersOfDiscounts
+			})
+	
+			const categ = await Category.findOne({
+				where: {
+					name: category
+				}
+			})
+			await newCourse.addCategories(categ)
+			
+			await user.addCourses(newCourse)
+	
+			res.status(201).send({
+				msg: 'curso cargado exitosamente',
+				newCourse
+			})
+		}
+		catch (error) {
+			console.log(error)
+			res.status(400).send({
+				msg: 'Error ruta crear curso'
+			})
+		}
+	} catch (error) {
+		res.send(error)
 	}
+})
+
+server.post('/delete/:email/:id' , async (req, res) => {
+	const email = req.params.email
+	const courseId = req.params.id
+	const password = req.body.password
 
 	try {
-		const user = await User.findOne({
-			where: {email:email}
-		})
-		
-
-		const newCourse = await Course.create({
-			name,
-			description,
-			price,
-			url,
-			email:email,
-			urlVideo,
-			languaje,
-			level,
-			state,
-			percentageDiscount,
-			numbersOfDiscounts
-		})
-
-		const categ = await Category.findOne({
-			where: {
-				name: category
+	  const user = await User.findOne({
+		 where:{
+			 email:email,
+		 }, include :[Bought_course] 
+	  });
+	  if(user.email){
+		  
+	  const boughts= user.bought_courses.forEach( async()=>{
+		const deleteBoughts = await Bought_course.findOne({
+			where:{
+				courseId:courseId
 			}
-		})
-		await newCourse.addCategories(categ)
-		
-		await user.addCourses(newCourse)
+		 });
+			if(typeof(deleteBoughts) == "object"){ 
+				deleteBoughts.destroy()
+				}
+			});
+			
+			res.send("course deleted")
+	  }else{
+		  res.send("wrong email")
+	  }
 
-		res.status(201).send({
-			msg: 'curso cargado exitosamente',
-			newCourse
-		})
-	}
-	catch (error) {
-		console.log(error)
-		res.status(400).send({
-			msg: 'Error ruta crear curso'
-		})
-	}
-	 
 
-})
+	} catch (err) {
+	  res.send(err)
+	}
+	})
+
 // localhost:3001/courses/newcategory
 server.post('/newcategory', async (req, res) => {
 	const {
 		name
 	} = req.body
 
+try {
 	if (
 		!name
 	) {
@@ -394,6 +444,9 @@ server.post('/newcategory', async (req, res) => {
 			msg: "fallo la carga de la categoria"
 		})
 	}
+} catch (error) {
+	res.send(error)
+}
 })
 
 // localhost:3001/courses/allcategories
@@ -417,17 +470,21 @@ server.get("/coursescategory", async (req, res) => {
 		name
 	} = req.body;
 
-	const categories = await Category.findAll({
-		where: {
-			name: name,
-			state:'active'
-		},
-		include: Course
-	})
-	Promise.all(categories)
-		.then(data =>
-			res.json(data)
-		)
+	try {
+		const categories = await Category.findAll({
+			where: {
+				name: name,
+				state:'active'
+			},
+			include: Course
+		})
+		Promise.all(categories)
+			.then(data =>
+				res.json(data)
+			)
+	} catch (error) {
+		res.send(error)
+	}
 })
 
 server.post("/newreview", async (req, res) => {
@@ -438,7 +495,8 @@ server.post("/newreview", async (req, res) => {
 		courseId
 	} = req.body;
 
-	const newReview = await Review.create({
+	try{
+		const newReview = await Review.create({
 
 		comments: comments,
 		score: score,
@@ -466,12 +524,15 @@ server.post("/newreview", async (req, res) => {
 	res.status(201).send({
 		msg: 'review cargado exitosamente',
 		newReview
-	})
+	})}catch(e){
+		console.log(e)
+	}
 
 })
 
 server.get("/allreviews", async (req, res) => {
-
+try {
+	
 	const rev = await Review.findAll({
 
 		include: Course
@@ -480,6 +541,9 @@ server.get("/allreviews", async (req, res) => {
 		.then(data =>
 			res.json(data)
 		)
+} catch (error) {
+	res.send(error)
+}
 })
 
 server.put("/:email", async (req, res) => {
