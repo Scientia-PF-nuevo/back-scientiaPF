@@ -14,7 +14,7 @@ var local = "";
 if(process.env.PORT == 3001){
   local = "http://localhost:3001";
 }else{
-  local = "https://scientiapfdeploy.herokuapp.com/";
+  local = "https://scientiapfdeploy.herokuapp.com";
 }
 
 
