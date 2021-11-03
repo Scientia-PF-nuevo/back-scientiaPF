@@ -405,7 +405,7 @@ server.post('/delete/:email/:id' , async (req, res) => {
 			
 			res.send("course deleted")
 	  }else{
-		  res.send("wrong password")
+		  res.send("wrong email")
 	  }
 
 
