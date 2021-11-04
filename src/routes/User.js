@@ -365,11 +365,20 @@ server.get ('/email/:email', async (req, res) => {
               admincomments:element.admincomments,
               percentageDiscount: element.percentageDiscount,
               numbersOfDiscounts: element.numbersOfDiscounts,
+              
             }
             
             uploadedCourses.push(obj)})
         }
-
+        let  credit=0;
+        if(uploadedCourses.length>0){
+          uploadedCourses.map((c)=>{
+            if(c.solds>0){
+              let x = c.price*c.solds;
+              credit = credit+x;
+            }
+          })
+        }
         const obj={
           profilePicture: usuario.profilePicture,
           firstName:usuario.firstName,
@@ -386,7 +395,8 @@ server.get ('/email/:email', async (req, res) => {
           uploadedCourses,
           giftedCourses,
           rejectedCourses,
-          google: usuario.google
+          google: usuario.google,
+          credit: credit
         }
         res.send(obj)
       })
