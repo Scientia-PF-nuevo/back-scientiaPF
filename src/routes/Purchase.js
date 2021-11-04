@@ -100,6 +100,9 @@ server.post('/:email', async (req, res) => {
                         mercadopago.payment
                             .save(payment_data)
                             .then(async(r) => {
+                                console.log('---------')
+                                console.log('---------')
+                                console.log('--------------------------------',r.status)
                                 console.log(r.status)
                                 console.log(r)
                                 if (r.status === 201) {
