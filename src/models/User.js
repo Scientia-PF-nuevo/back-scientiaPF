@@ -64,7 +64,8 @@ module.exports = (sequelize) => {
 		google: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
-		}
+		},
+		
 		
 
 	})

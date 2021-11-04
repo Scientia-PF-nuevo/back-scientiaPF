@@ -26,7 +26,7 @@ try {
 
 server.post('/login' , async (req, res) => {
   console.log(req.body)
-  const {email , password, cart, isGoogle, firstName,lastName} = req.body;
+  const {email , password, cart, isGoogle, firstName,lastName, profilePicture} = req.body;
 
   try {
     
@@ -117,7 +117,8 @@ server.post('/login' , async (req, res) => {
           email,
           password,
           active:true,
-          google: true
+          google: true,
+          profilePicture
         },
         {
           fields: [
