@@ -93,7 +93,7 @@ server.post('/:email', async (req, res) => {
 
                             }else{ return acc = acc + c.price }
                         })
-                        try {
+                        
                             console.log('DESTRUYENDO')
                             console.log('DESTRUYENDO')
                             console.log('DESTRUYENDO')
@@ -105,7 +105,7 @@ server.post('/:email', async (req, res) => {
                                 }
                             })
                             //const {emailGift} = req.query;
-                            let gifts = Giftorders.map(async(o)=>{
+                            let gifts = orders.map(async(o)=>{
                                 // console.log(o.gift)
                                 if(o.gift){
                                     const course = await Course.findOne({
@@ -222,9 +222,7 @@ server.post('/:email', async (req, res) => {
                                 console.log({ msg: "orders destoyed and succes payment" })
                             })
                             
-                        } catch (error) {
-                             console.log(error)
-                        }
+                        
                         const payment_data = {
                             transaction_amount: acc,
                             token,
