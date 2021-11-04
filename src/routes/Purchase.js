@@ -79,7 +79,9 @@ server.post('/:email', async (req, res) => {
                         //totalPrice,
                         coursesIds.push(id))
                 })
+
                 Promise.all(response).then(async () => {
+                    destroyOrders(email, orders)
                     // destroyOrders(email, orders)      
                     try {
                         let acc = 0;
@@ -116,7 +118,7 @@ server.post('/:email', async (req, res) => {
 
                                     // orders.length>1? payload =orders : payload={}
                                 // const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
-                                   destroyOrders(email, orders)
+                                  
                                 
                                 return res.status(r.status).json({
                                     status: r.body.status,
