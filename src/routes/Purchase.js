@@ -100,6 +100,8 @@ server.post('/:email', async (req, res) => {
                         mercadopago.payment
                             .save(payment_data)
                             .then(async(r) => {
+                                console.log(r.status)
+                                console.log(r)
                                 if (r.status === 201) {
 
                                     // orders.length>1? payload =orders : payload={}
