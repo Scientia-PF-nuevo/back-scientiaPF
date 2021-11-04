@@ -613,7 +613,7 @@ server.post('/updateInfo/:email', async(req,res)=>{
 
 })
 
-server.put('/updatePw/:email', async(req,res)=>{
+server.post('/updatePw/:email', async(req,res)=>{
   const {oldPassword,newPassword} = req.body;
   const {email} = req.params
  // console.log(email)
@@ -633,12 +633,12 @@ server.put('/updatePw/:email', async(req,res)=>{
         email:email
       }
     })
-      res.send("Informacion actualizada con exito")
+      res.send("ok")
     } catch(e){
-      console.log(e)
+    //  console.log(e)
     }
   }else {
-    res.status(404).send("El email y password no corresponden a un usuario")
+    res.send("error")
   }
    
  } catch (error) {
