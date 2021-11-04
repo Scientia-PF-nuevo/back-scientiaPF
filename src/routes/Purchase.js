@@ -93,7 +93,138 @@ server.post('/:email', async (req, res) => {
 
                             }else{ return acc = acc + c.price }
                         })
+                        try {
+                            console.log('DESTRUYENDO')
+                            console.log('DESTRUYENDO')
+                            console.log('DESTRUYENDO')
+                            console.log('DESTRUYENDO')
+                            console.log('DESTRUYENDO')
+                            const user = await User.findOne({
+                                where: {
+                                    email: emailBuyer
+                                }
+                            })
+                            //const {emailGift} = req.query;
+                            let gifts = Giftorders.map(async(o)=>{
+                                // console.log(o.gift)
+                                if(o.gift){
+                                    const course = await Course.findOne({
+                                        where: {
+                                            id: o.courseId
+                                        }       
+                                    })
+                                    
+                                    let solds =  course.solds    
+                                    let numbersOfDiscounts =  course.numbersOfDiscounts
+                                    const disc = numbersOfDiscounts - 1 ;
+                                    const final = solds + 1;
+                                    numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
+                            
+                                    
+                                        
+                                        const gift = await Gift.create({
+                                            courseId:course.id,
+                                            giftEmail:o.emailGift,
+                                            payerEmail:emailBuyer 
+                                            })
+                                            gift.setCourse(course);
+                                            
+                                            const giftEmail= o.emailGift
+                                            const name = user.name
+                                            const subject= 'You have a gift on scientia!'
+                                            const emailData = {giftEmail,subject,user,course,gift} ;
+                                            const html = await ejs.renderFile(giftEmailTemp,emailData)
                     
+                                            // console.log(gift)
+                                            var mailOptions = {
+                                            from: user.name,
+                                            to: giftEmail,
+                                            subject: 'Course gift',
+                                            text: 'Using code for change your gift!',
+                                            html: html
+                                            
+                                            };
+                                            transporter.sendMail(mailOptions, function(error, info){
+                                                if (error) {
+                                                console.log(error);
+                                                } else {
+                                                console.log('Email sent: ' + info.response +o.emailGift);
+                                                }
+                                            });
+                                    //}
+                                    const del = async () => {
+                                        const findUserOrder = await Order.findOne({
+                                            where: {
+                                                id: o.orderId
+                                            }, includes: [Order]
+                                        });
+                                        await findUserOrder.destroy();
+                                    }
+                                    return del()
+                                    
+                                }
+                            })
+                            let coursesToSend = []
+                            Promise.all(gifts).then(async()=>{        
+                                const orders = await Order.findAll({
+                                    where: {
+                                        userEmail: emailBuyer
+                                    },includes:[Course]
+                                })
+                                
+                                orders.map(async(o)=>{
+                                    // console.log(o)
+                                    const course = await Course.findOne({
+                                        where: {
+                                            id: o.coursesId
+                                        }
+                                        // attributes: ['price', 'id', 'name', "solds", "numbersOfDiscounts"]
+                                
+                                    })    
+                                    coursesToSend.push(course.name)
+                                    let solds =  course.solds
+                            
+                                    let numbersOfDiscounts =  course.numbersOfDiscounts
+                                    const disc = numbersOfDiscounts - 1 ;
+                                    const final = solds + 1;
+                                    numbersOfDiscounts>0? course.update({ solds: final, numbersOfDiscounts: disc }): null
+                                    
+                            
+                                    const purchase = await Bought_course.create({
+                                    courseName: course.name,
+                                    courseId: o.coursesId,
+                                    owner: emailBuyer,
+                                    price: course.price,
+                                    state: 'bought'
+                                
+                                            })
+                                purchase.setCourse(course);
+                                purchase.setUser(user)
+                                
+                    
+                                
+                                
+                                
+                            
+                                const del = async () => {
+                                    const findUserOrder = await Order.findOne({
+                                        where: {
+                                            id: o.id
+                                        }, includes: [Order]
+                                    });
+                                    // console.log(findUserOrder)
+                                    await findUserOrder.destroy();
+                                }
+                                del()
+                                })
+                                
+                                
+                                console.log({ msg: "orders destoyed and succes payment" })
+                            })
+                            
+                        } catch (error) {
+                             console.log(error)
+                        }
                         const payment_data = {
                             transaction_amount: acc,
                             token,
@@ -104,6 +235,7 @@ server.post('/:email', async (req, res) => {
                             payer
                         }
                         mercadopago.payment
+
                             .save(payment_data)
                             .then(async(r) => {
                                 console.log('---------')
@@ -115,7 +247,7 @@ server.post('/:email', async (req, res) => {
 
                                     // orders.length>1? payload =orders : payload={}
                                 // const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
-                                   await destroyOrders(email, orders)
+                                   //await destroyOrders(email, orders)
                                 
                                 return res.status(r.status).json({
                                     status: r.body.status,
@@ -319,12 +451,12 @@ async function destroyOrders(emailBuyer, Giftorders){
     //const {Giftorders} = req.body;
     // console.log(orders)
 
-    console.log('DESTRUYENDO')
-    console.log('DESTRUYENDO')
-    console.log('DESTRUYENDO')
-    console.log('DESTRUYENDO')
-    console.log('DESTRUYENDO')
     try {
+        console.log('DESTRUYENDO')
+        console.log('DESTRUYENDO')
+        console.log('DESTRUYENDO')
+        console.log('DESTRUYENDO')
+        console.log('DESTRUYENDO')
         const user = await User.findOne({
             where: {
                 email: emailBuyer
