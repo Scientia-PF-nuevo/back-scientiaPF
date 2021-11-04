@@ -60,6 +60,10 @@ module.exports = (sequelize) => {
 		profilePicture :{
 			type: DataTypes.STRING,
 			defaultValue: ''
+		},
+		google: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
 		}
 		
 

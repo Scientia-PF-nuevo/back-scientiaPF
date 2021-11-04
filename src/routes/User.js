@@ -117,13 +117,15 @@ server.post('/login' , async (req, res) => {
           email,
           password,
           active:true,
+          google: true
         },
         {
           fields: [
             "firstName",
             "lastName",
             "email",
-            "password"
+            "password",
+            "google"
             
           ],
         }
@@ -361,7 +363,7 @@ server.get ('/email/:email', async (req, res) => {
               state:element.state,
               admincomments:element.admincomments,
               percentageDiscount: element.percentageDiscount,
-              numbersOfDiscounts: element.numbersOfDiscounts
+              numbersOfDiscounts: element.numbersOfDiscounts,
             }
             
             uploadedCourses.push(obj)})
@@ -382,7 +384,8 @@ server.get ('/email/:email', async (req, res) => {
           coursesAndData,
           uploadedCourses,
           giftedCourses,
-          rejectedCourses
+          rejectedCourses,
+          google: usuario.google
         }
         res.send(obj)
       })
@@ -554,7 +557,7 @@ server.post('/register', async (req, res)=> {
     }
 })
 
-server.put('/updateInfo/:email', async(req,res)=>{
+server.post('/updateInfo/:email', async(req,res)=>{
   const {firstName, lastName,password,address,phone,city,province,postalcode,country, profilePicture
   } = req.body;
   const email = req.params.email;
@@ -585,12 +588,12 @@ server.put('/updateInfo/:email', async(req,res)=>{
           email:email
         }
       })
-        res.send("Informacion actualizada con exito")
+        res.send("ok")
       } catch(e){
         console.log(e)
       }
     }else {
-      res.status(404).send("El email y constraseña no corresponden a un usuario")
+      res.send("error")
     }   
   } catch (error) {
         res.send(error)
