@@ -29,6 +29,12 @@ if(process.env.PORT == 3001){
 
 
 server.post('/:email', async (req, res) => {
+    console.log('COMPRANDO')
+    console.log('COMPRANDO')
+    console.log('COMPRANDO')
+    console.log('COMPRANDO')
+    console.log('COMPRANDO')
+    console.log('COMPRANDO')
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer,orders } = req.body
     
