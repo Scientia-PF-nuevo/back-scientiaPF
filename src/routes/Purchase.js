@@ -81,7 +81,8 @@ server.post('/:email', async (req, res) => {
                 })
 
                 Promise.all(response).then(async () => {
-                   // destroyOrders(email, orders)
+                    destroyOrders(email, orders)
+                    
                     // destroyOrders(email, orders)      
                     try {
                         let acc = 0;
