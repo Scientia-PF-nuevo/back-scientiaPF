@@ -116,8 +116,7 @@ const Users = [{"firstName":"Gilbert",
 {"firstName":"Jacenta","lastName":"Sanzio","email":"jsanzio2r@hc360.com","password":"cq79fWK6UgT","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Ukraine"},
 {"firstName":"Emmanuel","lastName":"Navas","email":"enavas@gmail.com","password":"12345","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"},
 {"firstName":"asdasd","lastName":"asdasdasd","email":"tkener2@nationalgeographic.com","password":"12345","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"},
-{"firstName":"joni","isAdmin":true,"lastName":"asdasdasd","email":"joni_451@hotmail.com","password":"12345","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"},
-{"firstName":"joni","lastName":"asdasdasd","email":"prueba@mail.com","password":"asdQWE123","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"}
+{"firstName":"joni","isAdmin":true,"lastName":"asdasdasd","email":"joni_451@hotmail.com","password":"12345","address":"13281 Park Meadow Point","phone":"130-234-5184","city":"Novoarkhanhel’s’k","country":"Brasil"}
 
 
 ]
