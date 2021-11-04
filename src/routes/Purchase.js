@@ -111,12 +111,12 @@ server.post('/:email', async (req, res) => {
                                 console.log('--------------------------------',r.status)
                                 console.log(r.status)
                                 console.log(r)
-                                if (r.status === 201) {
+                                
 
                                     // orders.length>1? payload =orders : payload={}
-                                //const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
-                                    await destroyOrders(email, orders)
-                                }
+                                const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
+//                                    await destroyOrders(email, orders)
+                                
                                 return res.status(r.status).json({
                                     status: r.body.status,
                                     status_detail: r.body.detail,
@@ -137,6 +137,11 @@ server.post('/:email', async (req, res) => {
 
 server.post('/orders_destroy/:emailBuyer', async (req, res) => {
     
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
     const {emailBuyer} = req.params;
     const {Giftorders} = req.body;
     // console.log(orders)
