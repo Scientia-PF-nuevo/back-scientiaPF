@@ -114,8 +114,8 @@ server.post('/:email', async (req, res) => {
                                 
 
                                     // orders.length>1? payload =orders : payload={}
-                                const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
-//                                    await destroyOrders(email, orders)
+                                // const destroy = axios.post(`${local}/purchase/orders_destroy/${email}`,{Giftorders: orders})
+                                   await destroyOrders(email, orders)
                                 
                                 return res.status(r.status).json({
                                     status: r.body.status,
@@ -277,7 +277,7 @@ server.post('/orders_destroy/:emailBuyer', async (req, res) => {
 })
 
 server.post("/freecourses/:email/:id", async(req,res)=>{
- 
+    
 const {email, id } = req.params;
 
   try {
@@ -318,6 +318,12 @@ async function destroyOrders(emailBuyer, Giftorders){
     //const {emailBuyer} = req.params;
     //const {Giftorders} = req.body;
     // console.log(orders)
+
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
+    console.log('DESTRUYENDO')
     try {
         const user = await User.findOne({
             where: {
