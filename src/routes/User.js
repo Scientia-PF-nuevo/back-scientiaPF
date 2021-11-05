@@ -733,7 +733,7 @@ server.put('/updateProfilePicture/:email', async(req,res)=>{
   
 })
 
-server.get('validar/:email',(req,res)=>{
+server.get('validar/:email',async(req,res)=>{
   const{email} = req.params;
   const {coupon} = req.body;
   console.log(req.body)
