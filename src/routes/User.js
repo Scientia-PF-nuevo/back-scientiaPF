@@ -646,11 +646,11 @@ server.post('/updatePw/:email', async(req,res)=>{
  } 
 })
 
-server.post('/validateGift/:email', async(req,res)=>{
+server.post('/validateGift/:email/:coupon', async(req,res)=>{
   
   const{email} = req.params;
-  const {coupon} = req.body;
-  console.log(req.body)
+  const {coupon} = req.params;
+   console.log(coupon)
   try{
     const user = await User.findOne({
     where:{
