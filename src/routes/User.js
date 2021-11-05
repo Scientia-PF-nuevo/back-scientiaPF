@@ -649,17 +649,20 @@ server.post('/updatePw/:email', async(req,res)=>{
 server.post('/validateGift/:email', async(req,res)=>{
   const{email} = req.params;
   const {coupon} = req.body;
+  console.log(req.body)
   try{
     const user = await User.findOne({
     where:{
       email
     }
   })
+  console.log(user)
   const gift = await Gift.findOne({
     where:{
       coupon,
     }
   })
+  console.log(gift)
   // console.log(gift.courseId)
   if(gift.state){
     const course = await Course.findOne({
