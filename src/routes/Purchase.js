@@ -37,7 +37,7 @@ server.post('/:email', async (req, res) => {
     console.log('COMPRANDO')
     const email = req.params.email;
     const { token, payment_method_id, issuer_id, installments, payer,orders } = req.body
-    
+        console.log(req.body)
    // const disc = req.body.disc ? req.body.disc : 0;
    try {
     const disc = false;
@@ -81,7 +81,7 @@ server.post('/:email', async (req, res) => {
                 })
 
                 Promise.all(response).then(async () => {
-                    destroyOrders(email, orders)
+                   // destroyOrders(email, orders)
                     
                     // destroyOrders(email, orders)      
                     try {
@@ -99,7 +99,7 @@ server.post('/:email', async (req, res) => {
                         })
                     
                         const payment_data = {
-                            transaction_amount: acc,
+                            transaction_amount: 50,
                             token,
                             description: 'payment',
                             installments,
@@ -140,7 +140,7 @@ server.post('/:email', async (req, res) => {
 })
 
 server.post('/orders_destroy/:emailBuyer', async (req, res) => {
-    
+    console.log(req.body)
     console.log('DESTRUYENDO')
     console.log('DESTRUYENDO')
     console.log('DESTRUYENDO')
