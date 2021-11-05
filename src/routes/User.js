@@ -647,93 +647,7 @@ server.post('/updatePw/:email', async(req,res)=>{
 })
 
 server.post('/validateGift/:email', async(req,res)=>{
-  const{email} = req.params;
-  const {coupon} = req.body;
-  axios.get(`validar/${email}`,{coupon: coupon})
-
-  // console.log(req.body)
-  // try{
-  //   const user = await User.findOne({
-  //   where:{
-  //     email
-  //   }
-  // })
-  // console.log(user)
-  // const gift = await Gift.findOne({
-  //   where:{
-  //     coupon,
-  //   }
-  // })
-  // console.log(gift)
-  // // console.log(gift.courseId)
-  // if(gift.state){
-  //   const course = await Course.findOne({
-  //     where:{id:gift.courseId}
-  //   })
-  //   const newCourse = await Bought_course.create({
-  //     courseName: course.name,
-  //     courseId: course.id,
-  //     owner: email,
-  //     price: 0,
-  //     state: 'bought'
-  //   })
-
-  //   newCourse.setCourse(course);
-  //   newCourse.setUser(user)
-
-  //   const update = await Gift.update({
-  //     state:false
-  //   },{
-  //     where:{
-  //       coupon:coupon
-  //     }
-  //   })
-  //   res.send("Cupon validado con exito")
-  // } else{
-  //   res.send("Cupon invalido")
-  // }}catch(e){
-  //   console.log(e)
-  // }
-
-})
-
-server.put('/updateProfilePicture/:email', async(req,res)=>{
-  const { imageUrl } = req.body;
- // console.log(imageUrl, 'estoy en imageUrl del back', req.body)
-  const {email} = req.params
-  //console.log(email)
   
-  try {
-    const user = await User.findOne({
-      where: {
-        email
-      }
-    })
-    if(user){
-      try{
-        const update = await User.update({
-          profilePicture: imageUrl
-        },{
-          where:{
-          email:email
-        }
-      })
-        res.send("Informacion actualizada con exito")
-      } catch(e){
-        console.log(e)
-      }
-    }else {
-      res.status(404).send("El email no corresponden a un usuario")
-    }
-    
-  } catch (error) {
-    res.send(error)
-    
-  }
-  
-})
-
-server.get('validar/:email',async(req,res)=>{
   const{email} = req.params;
   const {coupon} = req.body;
   console.log(req.body)
@@ -781,6 +695,43 @@ server.get('validar/:email',async(req,res)=>{
   }
 
 })
+
+server.put('/updateProfilePicture/:email', async(req,res)=>{
+  const { imageUrl } = req.body;
+ // console.log(imageUrl, 'estoy en imageUrl del back', req.body)
+  const {email} = req.params
+  //console.log(email)
+  
+  try {
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    })
+    if(user){
+      try{
+        const update = await User.update({
+          profilePicture: imageUrl
+        },{
+          where:{
+          email:email
+        }
+      })
+        res.send("Informacion actualizada con exito")
+      } catch(e){
+        console.log(e)
+      }
+    }else {
+      res.status(404).send("El email no corresponden a un usuario")
+    }
+    
+  } catch (error) {
+    res.send(error)
+    
+  }
+  
+})
+
 
 module.exports = server
 
