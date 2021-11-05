@@ -160,16 +160,19 @@ const cargaPago = async () => {
   })
 }
 const updateSolds=async()=>{
-  const updateAll = await Course.findAll({})
+  const updateAll = await Course.findAll({include:Review})
   let update1 = updateAll.map(async(u,index)=>{
-    await Course.update({
-      solds:(index*2)
-    },{
-      where:{
-        id:u.id
-      }
-    })
-    return console.log("updated1",index)
+    if(u.reviews.length>0){
+      await Course.update({
+        solds:(index*2)
+      },{
+        where:{
+          id:u.id
+        }
+      })
+      return console.log("updated1",index)
+
+    }
   })
 
   Promise.all(update1).then(async() => {
